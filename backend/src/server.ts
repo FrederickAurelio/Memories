@@ -1,6 +1,6 @@
 "use strict";
 
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction, Router } from "express";
 import session from "express-session";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
@@ -18,6 +18,22 @@ mongoose
 
 const PORT = process.env.PORT || 2000;
 const app = express();
+
+const router = Router();
+
+const getA = (req: Request, res: Response) => {
+  const data = req.body;
+  res.status(200).send({
+    success: true,
+    data: {
+      hello: "World",
+    },
+  });
+};
+
+router.get("/getA", getA);
+
+app.use("/api/shop", router);
 
 app.use(
   cors({
@@ -111,4 +127,4 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).send({ error: "Something went wrong" });
 });
 
-app.listen(PORT, () => console.log(`Server is now running on port PORT`));
+app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
