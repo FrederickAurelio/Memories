@@ -1,34 +1,53 @@
 import Image from "next/image";
 import Logo from "@/public/Logo.png";
+
 import Link from "next/link";
 import Form from "next/form";
 import Input from "../_components/Input";
 import { FaGithub } from "react-icons/fa6";
 import Button from "../_components/Button";
+import UserLogin from "../_components/UserLogin";
 
-function Login() {
+function SignUp() {
   return (
     <div className="grid h-dvh w-full grid-cols-5 gap-28 px-60 py-20">
-      <div className="col-span-2 flex items-center justify-center">
-        <Image quality={80} src={Logo} alt="logo" />
+      <div className="col-span-2 py-10">
+        <Image
+          className="pb-2"
+          quality={80}
+          height={100}
+          src={Logo}
+          alt="logo"
+        />
+        <h1 className="text-3xl font-semibold">Recent login</h1>
+        <p>Welcome back! Click your account below to log in quickly.</p>
+        <div className="flex flex-wrap gap-3 py-5">
+          <UserLogin firstName="Frederick" image="/Frederick.jpeg" />
+          <UserLogin firstName="Ayaka" image="/Genshin.jpg" />
+        </div>
       </div>
       {/* add action */}
       <Form className="col-span-3 flex flex-col justify-center gap-4 px-10">
         <div className="flex h-fit w-full items-end justify-between pb-4">
-          <h1 className="text-4xl font-semibold">Create an account</h1>
-          <Link href="/login" className="underline">
-            log in instead
+          <h1 className="text-4xl font-semibold">Log in</h1>
+          <Link href="/signup" className="underline">
+            Don&apos;t have account?
           </Link>
         </div>
-        <Input placeholder="First Name" id="firstName" />
-        <Input placeholder="Last Name" id="lastName" />
         <Input placeholder="Email" id="email" />
         <Input placeholder="Password" id="password" type="password" />
-        <div className="flex w-full justify-between pt-4">
-          <Button variant="primary" type="submit">
-            Create an account
-          </Button>
-          <span className="mx-4 border-r-2 border-neutral-400"></span>
+        <Button variant="primary" type="submit" className="mt-2">
+          Log in
+        </Button>
+        <Link href="/signup" className="text-center font-semibold underline">
+          Forget your password?
+        </Link>
+        <div className="grid w-full grid-cols-9 justify-between pt-2">
+          <span className="col-span-4 mt-2 border-t-2 border-neutral-400"></span>
+          <span className="col-span-1 -translate-y-1 text-center">OR</span>
+          <span className="col-span-4 mt-2 border-t-2 border-neutral-400"></span>
+        </div>
+        <div className="flex w-full justify-between pt-2">
           <Button
             variant="secondary"
             className="flex justify-center gap-1"
@@ -43,4 +62,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SignUp;
