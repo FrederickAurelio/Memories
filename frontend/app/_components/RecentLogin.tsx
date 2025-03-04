@@ -108,13 +108,13 @@ function RecentLogin() {
                 type="password"
                 autoComplete="current-password"
               />
-              <Button variant="primary" type="submit" className="mt-2">
+              <Button variant="primary" type="submit" className="mt-3">
                 Log in
               </Button>
             </Form>
             <DialogDescription className="mt-2">
               <Link
-                href="/signup"
+                href="/forgot"
                 className="text-center font-semibold underline"
               >
                 Forget your password?

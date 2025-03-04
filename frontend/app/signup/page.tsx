@@ -22,7 +22,7 @@ function SignUp() {
         <div className="flex h-fit w-full items-end justify-between pb-4">
           <h1 className="text-4xl font-semibold">Create an account</h1>
           <Link href="/login" className="underline">
-            log in instead
+            login instead
           </Link>
         </div>
         <Input placeholder="First Name" id="firstName" />

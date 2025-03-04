@@ -41,7 +41,7 @@ function Login() {
         <Button variant="primary" type="submit" className="mt-2">
           Log in
         </Button>
-        <Link href="/signup" className="text-center font-semibold underline">
+        <Link href="/forgot" className="text-center font-semibold underline">
           Forget your password?
         </Link>
         <div className="grid w-full grid-cols-9 justify-between pt-2">
