@@ -1,7 +1,7 @@
 "use client";
 
-import UserLogin from "../_components/UserLogin";
-import AddUserLogin from "../_components/AddUserLogin";
+import UserLogin from "./UserLogin";
+import AddUserLogin from "./AddUserLogin";
 import {
   Dialog,
   DialogContent,
@@ -13,8 +13,8 @@ import {
 import { useState } from "react";
 import Image from "next/image";
 import Form from "next/form";
-import Input from "./Input";
-import Button from "./Button";
+import Input from "../_components/Input";
+import Button from "../_components/Button";
 import Link from "next/link";
 
 type User = {

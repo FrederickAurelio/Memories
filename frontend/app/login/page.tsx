@@ -5,7 +5,7 @@ import Form from "next/form";
 import Input from "../_components/Input";
 import { FaGithub } from "react-icons/fa6";
 import Button from "../_components/Button";
-import RecentLogin from "../_components/RecentLogin";
+import RecentLogin from "./RecentLogin";
 
 function Login() {
   return (

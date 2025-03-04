@@ -1,7 +1,6 @@
 import Form from "next/form";
 import Input from "../_components/Input";
 import Button from "../_components/Button";
-import Link from "next/link";
 
 function Reset() {
   return (
