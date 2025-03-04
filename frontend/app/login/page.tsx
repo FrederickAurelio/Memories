@@ -1,17 +1,17 @@
 import Image from "next/image";
 import Logo from "@/public/Logo.png";
-
 import Link from "next/link";
 import Form from "next/form";
 import Input from "../_components/Input";
 import { FaGithub } from "react-icons/fa6";
 import Button from "../_components/Button";
 import UserLogin from "../_components/UserLogin";
+import AddUserLogin from "../_components/AddUserLogin";
 
-function SignUp() {
+function Login() {
   return (
     <div className="grid h-dvh w-full grid-cols-5 gap-28 px-60 py-20">
-      <div className="col-span-2 py-10">
+      <div className="col-span-2">
         <Image
           className="pb-2"
           quality={80}
@@ -24,6 +24,8 @@ function SignUp() {
         <div className="flex flex-wrap gap-3 py-5">
           <UserLogin firstName="Frederick" image="/Frederick.jpeg" />
           <UserLogin firstName="Ayaka" image="/Genshin.jpg" />
+          <UserLogin firstName="Kirby" image="/Kirby.jpg" />
+          <AddUserLogin />
         </div>
       </div>
       {/* add action */}
@@ -31,11 +33,16 @@ function SignUp() {
         <div className="flex h-fit w-full items-end justify-between pb-4">
           <h1 className="text-4xl font-semibold">Log in</h1>
           <Link href="/signup" className="underline">
-            Don&apos;t have account?
+            Don&apos;t have an account?
           </Link>
         </div>
-        <Input placeholder="Email" id="email" />
-        <Input placeholder="Password" id="password" type="password" />
+        <Input autoComplete="email" placeholder="Email" id="email" />{" "}
+        <Input
+          placeholder="Password"
+          id="password"
+          type="password"
+          autoComplete="current-password"
+        />
         <Button variant="primary" type="submit" className="mt-2">
           Log in
         </Button>
@@ -62,4 +69,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Login;

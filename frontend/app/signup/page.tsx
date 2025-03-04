@@ -10,7 +10,12 @@ function SignUp() {
   return (
     <div className="grid h-dvh w-full grid-cols-5 gap-28 px-60 py-20">
       <div className="col-span-2 flex items-center justify-center">
-        <Image quality={80} src={Logo} alt="logo" />
+        <Image
+          className="animate-wiggle animate-infinite animate-duration-[3000ms] animate-ease-in"
+          quality={80}
+          src={Logo}
+          alt="logo"
+        />
       </div>
       {/* add action */}
       <Form className="col-span-3 flex flex-col justify-center gap-4 px-10">
@@ -22,8 +27,13 @@ function SignUp() {
         </div>
         <Input placeholder="First Name" id="firstName" />
         <Input placeholder="Last Name" id="lastName" />
-        <Input placeholder="Email" id="email" />
-        <Input placeholder="Password" id="password" type="password" />
+        <Input autoComplete="email" placeholder="Email" id="email" />
+        <Input
+          autoComplete="new-password"
+          placeholder="Password"
+          id="password"
+          type="password"
+        />
         <div className="flex w-full justify-between pt-3">
           <Button variant="primary" type="submit">
             Create an account
