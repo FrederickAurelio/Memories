@@ -5,8 +5,7 @@ import Form from "next/form";
 import Input from "../_components/Input";
 import { FaGithub } from "react-icons/fa6";
 import Button from "../_components/Button";
-import UserLogin from "../_components/UserLogin";
-import AddUserLogin from "../_components/AddUserLogin";
+import RecentLogin from "../_components/RecentLogin";
 
 function Login() {
   return (
@@ -16,17 +15,13 @@ function Login() {
           className="pb-2"
           quality={80}
           height={100}
+          width={100}
           src={Logo}
           alt="logo"
         />
         <h1 className="text-3xl font-semibold">Recent login</h1>
         <p>Welcome back! Click your account below to log in quickly.</p>
-        <div className="flex flex-wrap gap-3 py-5">
-          <UserLogin firstName="Frederick" image="/Frederick.jpeg" />
-          <UserLogin firstName="Ayaka" image="/Genshin.jpg" />
-          <UserLogin firstName="Kirby" image="/Kirby.jpg" />
-          <AddUserLogin />
-        </div>
+        <RecentLogin />
       </div>
       {/* add action */}
       <Form className="col-span-3 flex flex-col justify-center gap-4 px-10">
