@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../model/User";
 import { genSaltSync, hashSync } from "bcrypt-ts";
-import { Error } from "mongoose";
 import { z } from "zod";
+import { errorHandlers } from "../helpers";
 
 // Authentication middleware
 export function isAuthenticated(
@@ -58,34 +58,13 @@ export async function registerUserByEmail(req: Request, res: Response) {
       message: "User registered successfully",
     });
   } catch (error: any) {
-    if (error instanceof z.ZodError) {
-      const errors: Record<string, string> = {};
-      error.errors.forEach((err) => {
-        errors[err.path[0]] = err.message;
-      });
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
 
-      return void res.status(400).json({
-        success: false,
-        message: "Validation errors occurred",
-        errors: errors,
-      });
-    }
-
-    if (error instanceof Error.ValidationError) {
-      const errors: Record<string, string> = {};
-      Object.keys(error.errors).forEach((key) => {
-        errors[key] = error.errors[key].message;
-      });
-
-      return void res.status(400).json({
-        success: false,
-        message: "Validation errors occurred",
-        errors: errors,
-      });
-    }
-    return void res.status(500).json({
+    return void res.status(statusCode).json({
       success: false,
-      message: error.message || "Internal Server Error",
+      message: message,
+      errors: errors,
     });
   }
 }
