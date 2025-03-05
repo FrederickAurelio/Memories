@@ -1,12 +1,13 @@
 "use strict";
 
-import express, { Request, Response, NextFunction, Router } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import session from "express-session";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+import authRouter from "./router/authRoute";
 
 dotenv.config();
 
@@ -18,22 +19,6 @@ mongoose
 
 const PORT = process.env.PORT || 2000;
 const app = express();
-
-const router = Router();
-
-const getA = (req: Request, res: Response) => {
-  const data = req.body;
-  res.status(200).send({
-    success: true,
-    data: {
-      hello: "World",
-    },
-  });
-};
-
-router.get("/getA", getA);
-
-app.use("/api/shop", router);
 
 app.use(
   cors({
@@ -80,12 +65,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-// Authentication middleware
-function isAuthenticated(req: Request, res: Response, next: NextFunction) {
-  if (req.session.userId) return next();
-  res.status(401).send({ msg: "Not Authenticated" });
-}
-
 // Login route
 app.post("/api/auth", (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -100,13 +79,6 @@ app.post("/api/auth", (req: Request, res: Response) => {
     req.session.userId = findUser.id;
     res.status(200).send(findUser);
   });
-});
-
-// Auth status route
-app.get("/api/auth/status", isAuthenticated, (req: Request, res: Response) => {
-  const findUser = mockusers.find((user) => user.id === req.session.userId);
-  if (!findUser) return void res.status(404).send("User not found");
-  res.status(200).send(findUser);
 });
 
 // Logout route
@@ -126,5 +98,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).send({ error: "Something went wrong" });
 });
+
+app.use("/api/auth", authRouter);
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
