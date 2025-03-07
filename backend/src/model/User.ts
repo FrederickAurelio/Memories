@@ -1,11 +1,13 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
 type User = {
+  _id: Types.ObjectId;
   firstName: string;
   lastName?: string;
   email: string;
   password?: string;
   isEmailVerified: boolean;
+  verificationToken: string;
   provider: "local" | "github";
   providerId?: string;
   avatar?: string;
@@ -24,6 +26,7 @@ const UserSchema = new Schema<User>(
     },
     lastName: {
       type: String,
+      default: "",
       maxlength: [20, "Last name cannot exceed 20 characters"],
     },
     email: {
@@ -46,6 +49,10 @@ const UserSchema = new Schema<User>(
       type: Boolean,
       default: false,
     },
+    verificationToken: {
+      type: String,
+      default: "",
+    },
     provider: {
       type: String,
       default: "local",
@@ -54,9 +61,16 @@ const UserSchema = new Schema<User>(
     providerId: {
       type: String,
       index: true,
+      default: "",
     },
-    avatar: String,
-    githubUsername: String,
+    avatar: {
+      type: String,
+      default: "",
+    },
+    githubUsername: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

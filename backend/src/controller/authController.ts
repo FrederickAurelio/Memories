@@ -2,7 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import User from "../model/User";
 import { genSaltSync, hashSync } from "bcrypt-ts";
 import { z } from "zod";
+import { createTransport } from "nodemailer";
 import { errorHandlers } from "../helpers";
+import * as crypto from "crypto";
 
 // Authentication middleware
 export function isAuthenticated(
@@ -38,17 +40,49 @@ export async function registerUserByEmail(req: Request, res: Response) {
       return void res.status(409).json({
         success: false,
         message: "Email already exists",
+        errors: {
+          email: "Email already exists",
+        },
       });
     }
 
     const salt = genSaltSync(12);
     const hashedPassword = hashSync(password, salt);
+    const verificationToken = crypto.randomBytes(32).toString("hex");
 
     const newUser = new User({
       firstName: firstName,
-      lastName: lastName,
       email: email,
       password: hashedPassword,
+      verificationToken,
+    });
+
+    const transporter = createTransport({
+      service: "Gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Memories account Verification Link",
+      text: `Hello, ${firstName} ${
+        lastName ? lastName : ""
+      } Please verify your email by clicking this link : http://localhost:2000/api/auth/verify-email/${verificationToken}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email: ", error);
+      } else {
+        console.log("Email sent: ", info.response);
+      }
     });
 
     await newUser.save();
@@ -56,6 +90,43 @@ export async function registerUserByEmail(req: Request, res: Response) {
     return void res.status(201).json({
       success: true,
       message: "User registered successfully",
+      errors: {},
+    });
+  } catch (error: any) {
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
+
+    return void res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: errors,
+    });
+  }
+}
+
+export async function verifyEmailCallback(req: Request, res: Response) {
+  const token = req.params.verificationToken;
+  try {
+    const verifiedTokenUser = await User.findOne({ verificationToken: token });
+    if (!verifiedTokenUser) {
+      return void res.status(400).json({
+        success: false,
+        message:
+          "Your verification link may have expired or invalid. Please click on resend for verify your Email",
+        errors: {
+          verifiedToken: "Invalid",
+        },
+      });
+    }
+
+    verifiedTokenUser.isEmailVerified = true;
+    verifiedTokenUser.verificationToken = "";
+    await verifiedTokenUser.save();
+
+    return void res.status(204).json({
+      success: true,
+      message: "Verify email successfully",
+      errors: {},
     });
   } catch (error: any) {
     const { errors, message } = errorHandlers(error);

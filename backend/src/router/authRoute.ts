@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { registerUserByEmail } from "../controller/authController";
+import {
+  registerUserByEmail,
+  verifyEmailCallback,
+} from "../controller/authController";
 
 const authRouter = Router();
 
 authRouter.post("/registerUserByEmail", registerUserByEmail);
+authRouter.get("/verify-email/:verificationToken", verifyEmailCallback);
 
 export default authRouter;
