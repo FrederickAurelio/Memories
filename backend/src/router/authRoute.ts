@@ -7,6 +7,6 @@ import {
 const authRouter = Router();
 
 authRouter.post("/registerUserByEmail", registerUserByEmail);
-authRouter.get("/verify-email/:verificationToken", verifyEmailCallback);
+authRouter.get("/verify-email/:verificationToken/:userId", verifyEmailCallback);
 
 export default authRouter;

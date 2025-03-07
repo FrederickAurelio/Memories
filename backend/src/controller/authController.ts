@@ -74,7 +74,9 @@ export async function registerUserByEmail(req: Request, res: Response) {
       subject: "Memories account Verification Link",
       text: `Hello, ${firstName} ${
         lastName ? lastName : ""
-      } Please verify your email by clicking this link : http://localhost:2000/api/auth/verify-email/${verificationToken}`,
+      } Please verify your email by clicking this link : http://localhost:2000/api/auth/verify-email/${verificationToken}/${
+        newUser._id
+      }`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -105,10 +107,18 @@ export async function registerUserByEmail(req: Request, res: Response) {
 }
 
 export async function verifyEmailCallback(req: Request, res: Response) {
-  const token = req.params.verificationToken;
+  const { verificationToken, userId } = req.params;
   try {
-    const verifiedTokenUser = await User.findOne({ verificationToken: token });
-    if (!verifiedTokenUser) {
+    const verifiedTokenUser = await User.findById(userId);
+    if (verifiedTokenUser?.isEmailVerified) {
+      return void res.status(200).json({
+        success: true,
+        message: "You have already verified your email, Please log in",
+        errors: {},
+      });
+    }
+
+    if (verifiedTokenUser?.verificationToken !== verificationToken) {
       return void res.status(400).json({
         success: false,
         message:
@@ -123,7 +133,7 @@ export async function verifyEmailCallback(req: Request, res: Response) {
     verifiedTokenUser.verificationToken = "";
     await verifiedTokenUser.save();
 
-    return void res.status(204).json({
+    return void res.status(200).json({
       success: true,
       message: "Verify email successfully",
       errors: {},
