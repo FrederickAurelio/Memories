@@ -8,9 +8,9 @@ import {
 
 const authRouter = Router();
 
-authRouter.post("/registerUserByEmail", registerUserByEmail);
-authRouter.get("/loginUserByEmail", loginUserByEmail);
-authRouter.get("/authStatus", isAuthenticatedTest);
+authRouter.post("/register-email", registerUserByEmail);
+authRouter.get("/login-email", loginUserByEmail);
+authRouter.get("/auth-status", isAuthenticatedTest);
 authRouter.get("/verify-email/:verificationToken/:userId", verifyEmailCallback);
 
 export default authRouter;
