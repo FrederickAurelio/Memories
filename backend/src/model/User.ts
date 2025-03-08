@@ -5,7 +5,7 @@ type User = {
   firstName: string;
   lastName?: string;
   email: string;
-  password?: string;
+  password: string;
   isEmailVerified: boolean;
   verificationToken: string;
   provider: "local" | "github";

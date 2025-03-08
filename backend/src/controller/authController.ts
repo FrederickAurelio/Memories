@@ -1,18 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../model/User";
-import { genSaltSync, hashSync } from "bcrypt-ts";
+import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
 import { z } from "zod";
 import { createTransport } from "nodemailer";
 import { errorHandlers } from "../helpers";
 import * as crypto from "crypto";
 
 // Authentication middleware
-export function isAuthenticated(
+export function isAuthenticatedTest(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  if (req.session.userId) return next();
+  if (req.session.userId)
+    return void res.status(200).json({
+      message: "Authenticated",
+    });
   res.status(401).send({ msg: "Not Authenticated" });
 }
 
@@ -136,6 +139,52 @@ export async function verifyEmailCallback(req: Request, res: Response) {
     return void res.status(200).json({
       success: true,
       message: "Verify email successfully",
+      errors: {},
+    });
+  } catch (error: any) {
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
+
+    return void res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: errors,
+    });
+  }
+}
+
+const loginUserByEmailSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  password: z.string(),
+});
+export async function loginUserByEmail(req: Request, res: Response) {
+  const data = req.body;
+  try {
+    const { email, password } = loginUserByEmailSchema.parse(data);
+    const loginUser = await User.findOne({ email });
+    if (!loginUser) {
+      return void res.status(404).json({
+        success: false,
+        message: "User not found",
+        errors: {
+          email: "Wrong Email",
+        },
+      });
+    }
+    if (!compareSync(password, loginUser.password)) {
+      return void res.status(401).json({
+        success: false,
+        message: "Invalid Credentials",
+        errors: {
+          password: "wrong password",
+        },
+      });
+    } else {
+      req.session.userId = loginUser._id;
+    }
+    return void res.status(200).json({
+      success: true,
+      message: "Logged in successfully",
       errors: {},
     });
   } catch (error: any) {

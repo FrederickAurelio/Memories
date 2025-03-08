@@ -65,22 +65,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-// Login route
-app.post("/api/auth", (req: Request, res: Response) => {
-  const { username, password } = req.body;
-  const findUser = mockusers.find((user) => user.username === username);
-
-  if (!findUser || findUser.password !== password) {
-    return void res.status(401).send({ msg: "Bad Credentials" });
-  }
-
-  req.session.regenerate((err) => {
-    if (err) return void res.status(500).send("Error regenerating session");
-    req.session.userId = findUser.id;
-    res.status(200).send(findUser);
-  });
-});
-
 // Logout route
 app.post("/api/auth/logout", (req: Request, res: Response) => {
   if (!req.session.userId) {
