@@ -55,26 +55,10 @@ app.use(
   })
 );
 
-const mockusers = [
-  { username: "username", password: "password", id: "userId" },
-] as const;
-
 // Middleware to refresh session expiration
 app.use((req: Request, res: Response, next: NextFunction) => {
   if (req.session) req.session.touch();
   next();
-});
-
-// Logout route
-app.post("/api/auth/logout", (req: Request, res: Response) => {
-  if (!req.session.userId) {
-    return void res.sendStatus(401);
-  }
-  req.session.destroy((err) => {
-    if (err) return void res.status(500).send("Logout failed");
-    res.clearCookie("connect.sid");
-    res.send("Logged out");
-  });
 });
 
 // Centralized error handling middleware

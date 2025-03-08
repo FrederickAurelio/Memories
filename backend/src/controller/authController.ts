@@ -165,28 +165,42 @@ export async function loginUserByEmail(req: Request, res: Response) {
     if (!loginUser) {
       return void res.status(404).json({
         success: false,
-        message: "User not found",
-        errors: {
-          email: "Wrong Email",
-        },
+        message: "No account found with this email.",
+        errors: { email: "Email does not exist." },
       });
     }
     if (!compareSync(password, loginUser.password)) {
       return void res.status(401).json({
         success: false,
-        message: "Invalid Credentials",
-        errors: {
-          password: "wrong password",
-        },
+        message: "Incorrect password. Please try again.",
+        errors: { password: "Invalid password." },
       });
     } else {
-      req.session.userId = loginUser._id;
+      req.session.regenerate(function (err) {
+        if (err) {
+          return res.status(500).json({
+            success: false,
+            message: "Error regenerating session token",
+            errors: {},
+          });
+        }
+        req.session.userId = loginUser._id;
+        req.session.save(function (err) {
+          if (err) {
+            return res.status(500).json({
+              success: false,
+              message: "Error saving session",
+              errors: {},
+            });
+          }
+          return void res.status(200).json({
+            success: true,
+            message: "Logged in successfully",
+            errors: {},
+          });
+        });
+      });
     }
-    return void res.status(200).json({
-      success: true,
-      message: "Logged in successfully",
-      errors: {},
-    });
   } catch (error: any) {
     const { errors, message } = errorHandlers(error);
     const statusCode = message.includes("validation") ? 400 : 500;
@@ -197,4 +211,29 @@ export async function loginUserByEmail(req: Request, res: Response) {
       errors: errors,
     });
   }
+}
+
+export async function logoutUser(req: Request, res: Response) {
+  if (!req.session.userId) {
+    return void res.status(200).json({
+      success: true,
+      message: "You already logged out.",
+      errors: {},
+    });
+  }
+  req.session.userId = undefined;
+  req.session.destroy((err) => {
+    if (err)
+      return void res.status(500).json({
+        success: false,
+        message: "Logged out failed!",
+        errors: {},
+      });
+    res.clearCookie("connect.sid");
+    return void res.status(200).json({
+      success: true,
+      message: "Logged out successfully!",
+      errors: {},
+    });
+  });
 }
