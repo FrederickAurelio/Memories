@@ -5,6 +5,7 @@ import { z } from "zod";
 import { createTransport } from "nodemailer";
 import { errorHandlers } from "../helpers";
 import * as crypto from "crypto";
+import { add, isPast } from "date-fns";
 
 // Authentication middleware
 export function isAuthenticatedTest(
@@ -89,9 +90,7 @@ export async function registerUserByEmail(req: Request, res: Response) {
         console.log("Email sent: ", info.response);
       }
     });
-
     await newUser.save();
-
     return void res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -113,6 +112,13 @@ export async function verifyEmailCallback(req: Request, res: Response) {
   const { verificationToken, userId } = req.params;
   try {
     const verifiedTokenUser = await User.findById(userId);
+    if (!verifiedTokenUser) {
+      return void res.status(200).json({
+        success: true,
+        message: "User not exists",
+        errors: {},
+      });
+    }
     if (verifiedTokenUser?.isEmailVerified) {
       return void res.status(200).json({
         success: true,
@@ -133,7 +139,7 @@ export async function verifyEmailCallback(req: Request, res: Response) {
     }
 
     verifiedTokenUser.isEmailVerified = true;
-    verifiedTokenUser.verificationToken = "";
+    verifiedTokenUser.verificationToken = null;
     await verifiedTokenUser.save();
 
     return void res.status(200).json({
@@ -169,6 +175,15 @@ export async function loginUserByEmail(req: Request, res: Response) {
         errors: { email: "Email does not exist." },
       });
     }
+    if (!loginUser.isEmailVerified) {
+      return void res.status(401).json({
+        success: false,
+        message:
+          "Your email is not verified. Please check your inbox for the verification link.",
+        errors: {},
+      });
+    }
+
     if (!compareSync(password, loginUser.password)) {
       return void res.status(401).json({
         success: false,
@@ -237,3 +252,130 @@ export async function logoutUser(req: Request, res: Response) {
     });
   });
 }
+
+const forgetPasswordSchema = z.object({
+  email: z.string().email("Invalid email format"),
+});
+export async function forgetPassword(req: Request, res: Response) {
+  const data = req.body;
+  try {
+    const { email } = forgetPasswordSchema.parse(data);
+    const forgetPasswordUser = await User.findOne({ email });
+
+    if (!forgetPasswordUser) {
+      return void res.status(404).json({
+        success: false,
+        message: "No account found with this email.",
+        errors: { email: "Email does not exist." },
+      });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiredDate = add(new Date(), { minutes: 10 });
+
+    const transporter = createTransport({
+      service: "Gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Memories account Reset Password Link",
+      text: `Hello, ${forgetPasswordUser.firstName} ${forgetPasswordUser.lastName} To reset your account password, follow this link: http://localhost:2000/api/auth/reset-password/${resetToken}/${forgetPasswordUser._id}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email: ", error);
+      } else {
+        console.log("Email sent: ", info.response);
+      }
+    });
+
+    forgetPasswordUser.resetToken = resetToken;
+    forgetPasswordUser.resetTokenExpiredDate = resetTokenExpiredDate;
+    await forgetPasswordUser.save();
+
+    return void res.status(200).json({
+      success: true,
+      message: "Reset password email sent successfully.",
+      errors: {},
+    });
+  } catch (error: any) {
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
+
+    return void res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: errors,
+    });
+  }
+}
+
+const resetPassowrdSchema = z.object({
+  resetToken: z.string(),
+  userId: z.string(),
+  newPassword: z.string().min(8, "Password must contain at least 8 characters"),
+});
+export async function resetPassowrd(req: Request, res: Response) {
+  const data = { ...req.body, ...req.params };
+  try {
+    const { resetToken, userId, newPassword } = resetPassowrdSchema.parse(data);
+    const resetPasswordUser = await User.findById(userId);
+    if (!resetPasswordUser) {
+      return void res.status(404).json({
+        success: true,
+        message: "User not found!",
+        errors: {},
+      });
+    }
+    if (
+      resetPasswordUser.resetToken !== resetToken ||
+      resetPasswordUser.resetTokenExpiredDate == null ||
+      isPast(resetPasswordUser.resetTokenExpiredDate)
+    ) {
+      return void res.status(400).json({
+        success: false,
+        message:
+          "Your reset link may have expired or invalid. Please try again the process",
+        errors: {
+          verifiedToken: "Invalid",
+        },
+      });
+    }
+
+    const salt = genSaltSync(12);
+    const hashedPassword = hashSync(newPassword, salt);
+    resetPasswordUser.password = hashedPassword;
+    resetPasswordUser.resetToken = null;
+    resetPasswordUser.resetTokenExpiredDate = null;
+    await resetPasswordUser.save();
+
+    return void res.status(200).json({
+      success: true,
+      message: "Reset password successfully",
+      errors: {},
+    });
+  } catch (error: any) {
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
+
+    return void res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: errors,
+    });
+  }
+}
+
+// RESEND VERIFICATION EMAIL
+// RESEND VERIFICATION EMAIL
+// RESEND VERIFICATION EMAIL

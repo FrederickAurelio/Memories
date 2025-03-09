@@ -7,7 +7,9 @@ type User = {
   email: string;
   password: string;
   isEmailVerified: boolean;
-  verificationToken: string;
+  verificationToken: string | null;
+  resetToken: string | null;
+  resetTokenExpiredDate: Date | null;
   provider: "local" | "github";
   providerId?: string;
   avatar?: string;
@@ -51,7 +53,15 @@ const UserSchema = new Schema<User>(
     },
     verificationToken: {
       type: String,
-      default: "",
+      default: null,
+    },
+    resetToken: {
+      type: String,
+      default: null,
+    },
+    resetTokenExpiredDate: {
+      type: Date,
+      default: null,
     },
     provider: {
       type: String,
