@@ -113,8 +113,8 @@ export async function verifyEmailCallback(req: Request, res: Response) {
   try {
     const verifiedTokenUser = await User.findById(userId);
     if (!verifiedTokenUser) {
-      return void res.status(200).json({
-        success: true,
+      return void res.status(404).json({
+        success: false,
         message: "User not exists",
         errors: {},
       });
@@ -332,7 +332,7 @@ export async function resetPassowrd(req: Request, res: Response) {
     const resetPasswordUser = await User.findById(userId);
     if (!resetPasswordUser) {
       return void res.status(404).json({
-        success: true,
+        success: false,
         message: "User not found!",
         errors: {},
       });
