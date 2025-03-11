@@ -78,9 +78,11 @@ export async function registerUserByEmail(req: Request, res: Response) {
       subject: "Memories account Verification Link",
       text: `Hello, ${firstName} ${
         lastName ? lastName : ""
-      } Please verify your email by clicking this link : http://localhost:2000/api/auth/verify-email/${verificationToken}/${
-        newUser._id
-      }`,
+      } Please verify your email by clicking this link : ${
+        process.env.FRONTEND_URL
+      }/auth/verify-email/callback?verificationToken=${encodeURIComponent(
+        verificationToken
+      )}&userId=${encodeURIComponent(newUser._id.toString())}`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -93,7 +95,8 @@ export async function registerUserByEmail(req: Request, res: Response) {
     await newUser.save();
     return void res.status(201).json({
       success: true,
-      message: "User registered successfully",
+      message:
+        "User registered successfully. Please check your email to verify your account before logging in.",
       errors: {},
     });
   } catch (error: any) {
@@ -144,7 +147,7 @@ export async function verifyEmailCallback(req: Request, res: Response) {
 
     return void res.status(200).json({
       success: true,
-      message: "Verify email successfully",
+      message: "Verify email successfully, Please log in again",
       errors: {},
     });
   } catch (error: any) {
