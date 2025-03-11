@@ -1,21 +1,14 @@
 import { Dispatch, SetStateAction } from "react";
 
-type TypeInput = {
+type TypeInput<T> = {
   placeholder: string;
   id: string;
-  setFormData: Dispatch<
-    SetStateAction<{
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-    }>
-  >;
-  formData: Record<string, string>;
+  setFormData: Dispatch<SetStateAction<T>>;
+  formData: T;
   errors: Record<string, string> | undefined;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-function Input({
+function Input<T extends Record<string, string>>({
   placeholder,
   id,
   className,
@@ -23,7 +16,7 @@ function Input({
   formData,
   errors,
   ...rest
-}: TypeInput) {
+}: TypeInput<T>) {
   return (
     <div className="flex flex-col">
       <label className="text-neutral-500" htmlFor={id}>

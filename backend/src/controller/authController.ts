@@ -134,7 +134,7 @@ export async function verifyEmailCallback(req: Request, res: Response) {
       return void res.status(400).json({
         success: false,
         message:
-          "Your verification link may have expired or invalid. Please click on resend for verify your Email",
+          "Your verification link may have expired or is invalid. Please get a new one.",
         errors: {
           verifiedToken: "Invalid",
         },
@@ -147,7 +147,7 @@ export async function verifyEmailCallback(req: Request, res: Response) {
 
     return void res.status(200).json({
       success: true,
-      message: "Verify email successfully, Please log in again",
+      message: "Verify email successfully, Please log in",
       errors: {},
     });
   } catch (error: any) {

@@ -26,7 +26,7 @@ function SignUp() {
 
   useEffect(() => {
     if (actiionState?.success) setFormData(initialState);
-  }, [actiionState?.success]);
+  }, [actiionState]);
 
   return (
     <div className="grid h-dvh w-full grid-cols-5 gap-28 px-60 py-20">
@@ -55,6 +55,13 @@ function SignUp() {
               className={`rounded-md border p-3 ${actiionState.success ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
             >
               {actiionState?.message}
+              {actiionState.success ? (
+                <p className="cursor-pointer font-semibold underline">
+                  {""}Didn&apos;t receive the email? Click here to resend.
+                </p>
+              ) : (
+                ""
+              )}
             </div>
           )}
         <Input
