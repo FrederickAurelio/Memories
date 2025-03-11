@@ -79,7 +79,7 @@ export async function loginUserByEmail(
       path: "/",
       httpOnly: true,
       secure: false,
-      maxAge: 60000 * 60,
+      maxAge: 10080000 * 60,
     });
 
     const data = (await response.json()) as FetchResponse;
