@@ -56,6 +56,7 @@ export async function registerUserByEmail(req: Request, res: Response) {
 
     const newUser = new User({
       firstName: firstName,
+      lastName: lastName,
       email: email,
       password: hashedPassword,
       verificationToken,
