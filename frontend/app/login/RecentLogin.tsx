@@ -25,7 +25,6 @@ const initialState = {
 };
 
 function RecentLogin({ users }: { users: UserProfile[] }) {
-  console.log(users);
   const [selectedUser, setSelectedUser] = useState<null | UserProfile>(null);
   const [actiionState, formAction, isPending] = useActionState(
     loginUserByEmail,

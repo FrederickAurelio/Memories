@@ -8,15 +8,17 @@ import * as crypto from "crypto";
 import { add, isPast } from "date-fns";
 
 // Authentication middleware
-export function isAuthenticatedTest(
+export async function isAuthenticatedTest(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  if (req.session.userId)
+  if (req.session.userId) {
+    const currentUser = await User.findById(req.session.userId);
     return void res.status(200).json({
-      message: "Authenticated",
+      message: `Authenticated: ${currentUser?.firstName}`,
     });
+  }
   res.status(401).send({ msg: "Not Authenticated" });
 }
 
