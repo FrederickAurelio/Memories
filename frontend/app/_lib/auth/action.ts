@@ -98,7 +98,7 @@ export async function loginUserByEmail(
           (s) => s !== email.toString(),
         );
       recentLoginArray = [email.toString(), ...recentLoginArray];
-      recentLoginArray = recentLoginArray.slice(0, 3);
+      recentLoginArray = recentLoginArray.slice(0, 4);
       cookieStore.set("recent-login", recentLoginArray.join(";"));
     }
     return data;
