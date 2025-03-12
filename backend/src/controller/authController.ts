@@ -379,6 +379,41 @@ export async function resetPassowrd(req: Request, res: Response) {
     });
   }
 }
+export async function getUserProfile(req: Request, res: Response) {
+  const { emails } = req.query;
+  try {
+    if (typeof emails === "string") {
+      const emailList = emails.split(";");
+      const usersList = await User.find(
+        { email: { $in: emailList } },
+        "firstName lastName email avatar -_id"
+      );
+      const emailOrderMap = emailList.reduce((acc, email, index) => {
+        acc[email] = index;
+        return acc;
+      }, {} as Record<string, number>);
+      usersList.sort((a, b) => emailOrderMap[a.email] - emailOrderMap[b.email]);
+      return void res.status(200).json({
+        success: true,
+        message: "Fetch successfully",
+        errors: {},
+        data: usersList,
+      });
+    } else {
+      return void res.status(500).json({
+        success: false,
+        message: "Something problem with search query on the server",
+        errors: {},
+      });
+    }
+  } catch (error) {
+    return void res.status(500).json({
+      success: false,
+      message: "Internal server errors",
+      errors: {},
+    });
+  }
+}
 
 // RESEND VERIFICATION EMAIL
 // RESEND VERIFICATION EMAIL

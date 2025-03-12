@@ -41,8 +41,15 @@ export async function registerUserByEmail(
 
 export async function loginUserByEmail(
   _: FetchResponse | null,
-  formData: FormData,
+  formData: FormData | null,
 ) {
+  if (formData === null) {
+    return {
+      success: false,
+      message: "",
+      errors: {},
+    };
+  }
   try {
     const { password, email } = Object.fromEntries(formData);
 
@@ -83,6 +90,17 @@ export async function loginUserByEmail(
     });
 
     const data = (await response.json()) as FetchResponse;
+    if (data.success) {
+      const recentLogin = cookieStore.get("recent-login") || "";
+      let recentLoginArray = recentLogin ? recentLogin.value.split(";") : [];
+      if (recentLoginArray.includes(email.toString()))
+        recentLoginArray = recentLoginArray.filter(
+          (s) => s !== email.toString(),
+        );
+      recentLoginArray = [email.toString(), ...recentLoginArray];
+      recentLoginArray = recentLoginArray.slice(0, 3);
+      cookieStore.set("recent-login", recentLoginArray.join(";"));
+    }
     return data;
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);

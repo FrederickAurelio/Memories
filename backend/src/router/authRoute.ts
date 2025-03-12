@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   forgetPassword,
+  getUserProfile,
   isAuthenticatedTest,
   loginUserByEmail,
   logoutUser,
@@ -18,5 +19,6 @@ authRouter.post("/forget-password", forgetPassword);
 authRouter.put("/reset-password/:resetToken/:userId", resetPassowrd);
 authRouter.get("/auth-status", isAuthenticatedTest);
 authRouter.get("/verify-email/:verificationToken/:userId", verifyEmailCallback);
+authRouter.get("/users-profile", getUserProfile);
 
 export default authRouter;

@@ -27,6 +27,7 @@ function LoginForm() {
   useEffect(() => {
     if (actiionState?.success) setFormData(initialState);
   }, [actiionState]);
+
   return (
     <Form
       action={formAction}
@@ -44,6 +45,11 @@ function LoginForm() {
             className={`rounded-md border p-3 ${actiionState.success ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
           >
             {actiionState?.message}
+            {actiionState?.message.includes("not verified") && (
+              <p className="cursor-pointer font-semibold underline">
+                Click here to resend.
+              </p>
+            )}
           </div>
         )}
 

@@ -10,49 +10,49 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import Form from "next/form";
 import Input from "../_components/Input";
 import Button from "../_components/Button";
 import Link from "next/link";
+import { loginUserByEmail } from "../_lib/auth/action";
+import { startTransition } from "react";
+import { UserProfile } from "../_lib/types";
 
-type User = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  avatar: string;
+const initialState = {
+  password: "",
 };
 
-const mockUsers = [
-  {
-    email: "frederick.ah88@gmail.com",
-    firstName: "Frederick",
-    lastName: "Halim",
-    avatar: "/Frederick.jpeg",
-  },
-  {
-    email: "Ayaka@gmail.com",
-    firstName: "Ayaka",
-    lastName: "Kamisato",
-    avatar: "/Genshin.jpg",
-  },
-  {
-    email: "Kirby8@gmail.com",
-    firstName: "Kirby",
-    lastName: "",
-    avatar: "/Kirby.jpg",
-  },
-] as User[];
+function RecentLogin({ users }: { users: UserProfile[] }) {
+  console.log(users);
+  const [selectedUser, setSelectedUser] = useState<null | UserProfile>(null);
+  const [actiionState, formAction, isPending] = useActionState(
+    loginUserByEmail,
+    null,
+  );
+  const [formData, setFormData] = useState(initialState);
 
-function RecentLogin() {
-  const [selectedUser, setSelectedUser] = useState<null | User>(null);
+  useEffect(() => {
+    if (actiionState?.success) setFormData(initialState);
+  }, [actiionState]);
 
   return (
-    <Dialog onOpenChange={(isOpen) => (isOpen ? "" : setSelectedUser(null))}>
+    <Dialog
+      onOpenChange={(open) => {
+        if (!open) {
+          setSelectedUser(null);
+          setFormData(initialState);
+          if (actiionState?.message.length)
+            startTransition(() => {
+              formAction(null);
+            });
+        }
+      }}
+    >
       <div className="flex flex-wrap gap-3 py-5">
         {[
-          mockUsers.map((user) => (
+          users.map((user) => (
             <DialogTrigger
               onClick={() => setSelectedUser(user)}
               key={user.email}
@@ -61,7 +61,7 @@ function RecentLogin() {
             </DialogTrigger>
           )),
         ]}
-        <AddUserLogin />
+        {users.length < 4 && <AddUserLogin />}
       </div>
 
       <DialogContent className="p-10">
@@ -94,7 +94,15 @@ function RecentLogin() {
             </div>
           )}
           <div className="flex flex-col items-center justify-center">
-            <Form className="w-80">
+            {actiionState?.message &&
+              !actiionState?.message.includes("validation") && (
+                <div
+                  className={`mb-3 w-9/12 rounded-md border p-3 ${actiionState.success ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
+                >
+                  {actiionState?.message}
+                </div>
+              )}
+            <Form action={formAction} className="w-80">
               <input
                 defaultValue={selectedUser?.email}
                 hidden
@@ -103,10 +111,15 @@ function RecentLogin() {
                 autoComplete="email"
               />
               <Input
+                required
+                disabled={isPending}
                 placeholder="Password"
                 id="password"
                 type="password"
                 autoComplete="current-password"
+                formData={formData}
+                setFormData={setFormData}
+                errors={actiionState?.errors}
               />
               <Button variant="primary" type="submit" className="mt-3">
                 Log in
