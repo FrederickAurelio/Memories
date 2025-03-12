@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { Error } from "mongoose";
+import { createTransport } from "nodemailer";
+import { MailOptions } from "nodemailer/lib/json-transport";
 
 export function errorHandlers(error: any) {
   const errors: Record<string, string> = {};
@@ -20,4 +22,25 @@ export function errorHandlers(error: any) {
   }
 
   return { errors, message };
+}
+
+export function sendEmail(mailOptions: MailOptions) {
+  const transporter = createTransport({
+    service: "Gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Error sending email: ", error);
+    } else {
+      console.log("Email sent: ", info.response);
+    }
+  });
 }

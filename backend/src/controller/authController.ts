@@ -3,7 +3,7 @@ import User from "../model/User";
 import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
 import { z } from "zod";
 import { createTransport } from "nodemailer";
-import { errorHandlers } from "../helpers";
+import { errorHandlers, sendEmail } from "../helpers";
 import * as crypto from "crypto";
 import { add, isPast } from "date-fns";
 
@@ -22,6 +22,82 @@ export async function isAuthenticatedTest(
   res.status(401).send({ msg: "Not Authenticated" });
 }
 
+const sendEmailVerificationSchema = z.object({
+  email: z.string().email("Invalid email format"),
+});
+export async function sendEmailVerification(req: Request, res: Response) {
+  const data = req.body;
+  try {
+    const { email } = sendEmailVerificationSchema.parse(data);
+
+    const resendEmailUser = await User.findOne({ email });
+    if (!resendEmailUser) {
+      return void res.status(404).json({
+        success: false,
+        message: "There is no account with this email",
+        errors: {
+          email: "There is no account with this email",
+        },
+      });
+    }
+    if (
+      resendEmailUser.lastSentEmail === null ||
+      !isPast(resendEmailUser.lastSentEmail)
+    ) {
+      return void res.status(400).json({
+        success: false,
+        message:
+          "You need to wait at least 1 minutes to resend the email verification",
+        errors: {},
+      });
+    }
+    if (resendEmailUser.isEmailVerified) {
+      return void res.status(409).json({
+        success: false,
+        message: "This account is already verified",
+        errors: {},
+      });
+    }
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const lastSentEmail = add(new Date(), { minutes: 1 });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Memories account Verification Link",
+      text: `Hello, ${resendEmailUser.firstName} ${
+        resendEmailUser.lastName
+      } Please verify your email by clicking this link : ${
+        process.env.FRONTEND_URL
+      }/auth/verify-email/callback?verificationToken=${encodeURIComponent(
+        verificationToken
+      )}&userId=${encodeURIComponent(resendEmailUser._id.toString())}`,
+    };
+
+    resendEmailUser.verificationToken = verificationToken;
+    resendEmailUser.lastSentEmail = lastSentEmail;
+    await resendEmailUser.save();
+
+    sendEmail(mailOptions);
+
+    return void res.status(200).json({
+      success: true,
+      message: "Send email verification successfully",
+      errors: {},
+    });
+  } catch (error: any) {
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
+
+    return void res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: errors,
+    });
+  }
+}
+
 const registerUserByEmailSchema = z.object({
   firstName: z
     .string()
@@ -34,7 +110,6 @@ const registerUserByEmailSchema = z.object({
   email: z.string().email("Invalid email format"),
   password: z.string().min(8, "Password must contain at least 8 characters"),
 });
-
 export async function registerUserByEmail(req: Request, res: Response) {
   const data = req.body;
   try {
@@ -64,17 +139,6 @@ export async function registerUserByEmail(req: Request, res: Response) {
       verificationToken,
     });
 
-    const transporter = createTransport({
-      service: "Gmail",
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
@@ -88,13 +152,8 @@ export async function registerUserByEmail(req: Request, res: Response) {
       )}&userId=${encodeURIComponent(newUser._id.toString())}`,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email: ", error);
-      } else {
-        console.log("Email sent: ", info.response);
-      }
-    });
+    sendEmail(mailOptions);
+
     await newUser.save();
     return void res.status(201).json({
       success: true,
@@ -279,17 +338,6 @@ export async function forgetPassword(req: Request, res: Response) {
     const resetToken = crypto.randomBytes(32).toString("hex");
     const resetTokenExpiredDate = add(new Date(), { minutes: 10 });
 
-    const transporter = createTransport({
-      service: "Gmail",
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
@@ -297,17 +345,11 @@ export async function forgetPassword(req: Request, res: Response) {
       text: `Hello, ${forgetPasswordUser.firstName} ${forgetPasswordUser.lastName} To reset your account password, follow this link: http://localhost:2000/api/auth/reset-password/${resetToken}/${forgetPasswordUser._id}`,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email: ", error);
-      } else {
-        console.log("Email sent: ", info.response);
-      }
-    });
-
     forgetPasswordUser.resetToken = resetToken;
     forgetPasswordUser.resetTokenExpiredDate = resetTokenExpiredDate;
     await forgetPasswordUser.save();
+
+    sendEmail(mailOptions);
 
     return void res.status(200).json({
       success: true,

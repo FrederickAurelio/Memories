@@ -8,6 +8,7 @@ type User = {
   password: string;
   isEmailVerified: boolean;
   verificationToken: string | null;
+  lastSentEmail: Date | null;
   resetToken: string | null;
   resetTokenExpiredDate: Date | null;
   provider: "local" | "github";
@@ -53,6 +54,10 @@ const UserSchema = new Schema<User>(
     },
     verificationToken: {
       type: String,
+      default: null,
+    },
+    lastSentEmail: {
+      type: Date,
       default: null,
     },
     resetToken: {

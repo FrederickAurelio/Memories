@@ -86,7 +86,7 @@ export async function loginUserByEmail(
       path: "/",
       httpOnly: true,
       secure: false,
-      maxAge: 10080000 * 60,
+      maxAge: 60 * 60 * 24 * 14,
     });
 
     const data = (await response.json()) as FetchResponse;
@@ -99,7 +99,10 @@ export async function loginUserByEmail(
         );
       recentLoginArray = [email.toString(), ...recentLoginArray];
       recentLoginArray = recentLoginArray.slice(0, 4);
-      cookieStore.set("recent-login", recentLoginArray.join(";"));
+      cookieStore.set("recent-login", recentLoginArray.join(";"), {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30 * 2,
+      });
     }
     return data;
   } catch (error) {
