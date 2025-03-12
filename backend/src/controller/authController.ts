@@ -41,7 +41,7 @@ export async function sendEmailVerification(req: Request, res: Response) {
       });
     }
     if (
-      resendEmailUser.lastSentEmail === null ||
+      resendEmailUser.lastSentEmail !== null &&
       !isPast(resendEmailUser.lastSentEmail)
     ) {
       return void res.status(400).json({
@@ -60,7 +60,7 @@ export async function sendEmailVerification(req: Request, res: Response) {
     }
 
     const verificationToken = crypto.randomBytes(32).toString("hex");
-    const lastSentEmail = add(new Date(), { minutes: 1 });
+    const lastSentEmail = add(new Date(), { seconds: 55 });
 
     const mailOptions = {
       from: process.env.EMAIL,
@@ -83,7 +83,7 @@ export async function sendEmailVerification(req: Request, res: Response) {
 
     return void res.status(200).json({
       success: true,
-      message: "Send email verification successfully",
+      message: "Sending email verification...",
       errors: {},
     });
   } catch (error: any) {
@@ -160,6 +160,7 @@ export async function registerUserByEmail(req: Request, res: Response) {
       message:
         "User registered successfully. Please check your email to verify your account before logging in.",
       errors: {},
+      data: { email: email },
     });
   } catch (error: any) {
     const { errors, message } = errorHandlers(error);
@@ -199,6 +200,7 @@ export async function verifyEmailCallback(req: Request, res: Response) {
           "Your verification link may have expired or is invalid. Please get a new one.",
         errors: {
           verifiedToken: "Invalid",
+          emailLink: verifiedTokenUser.email,
         },
       });
     }
@@ -245,7 +247,7 @@ export async function loginUserByEmail(req: Request, res: Response) {
         success: false,
         message:
           "Your email is not verified. Please check your inbox for the verification link.",
-        errors: {},
+        errors: { emailLink: email },
       });
     }
 

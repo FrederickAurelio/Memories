@@ -32,7 +32,9 @@ export async function registerUserByEmail(
       },
     );
 
-    const data = (await response.json()) as FetchResponse;
+    const data = (await response.json()) as FetchResponse & {
+      data: { email: string };
+    };
     return data;
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);
@@ -104,6 +106,26 @@ export async function loginUserByEmail(
         maxAge: 60 * 60 * 24 * 30 * 2,
       });
     }
+    return data;
+  } catch (error) {
+    throw new Error(`Something's wrong: ${error}`);
+  }
+}
+
+export async function sendEmailVerification(email: string) {
+  try {
+    console.log("HEREEEE");
+    const response = await fetch(
+      `${BACKEND_BASE_URL}/api/auth//resend-verification`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      },
+    );
+    const data = (await response.json()) as FetchResponse;
     return data;
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);

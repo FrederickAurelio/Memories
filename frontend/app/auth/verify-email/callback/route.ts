@@ -12,10 +12,12 @@ export async function GET(request: Request) {
       const response = await fetch(
         `${BACKEND_BASE_URL}/api/auth/verify-email/${verificationToken}/${userId}`,
       );
-      const data = (await response.json()) as FetchResponse;
+      const data = (await response.json()) as FetchResponse & {
+        errors: { emailLink: string };
+      };
 
       return NextResponse.redirect(
-        `${origin}/login?verify=${data.success}&message=${data.message}`,
+        `${origin}/login?verify=${data.success}&message=${data.message}&emailLink=${data.errors.emailLink}`,
       );
     } catch (error) {
       throw new Error(`Something's wrong: ${error}`);

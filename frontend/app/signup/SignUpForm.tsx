@@ -5,8 +5,10 @@ import Form from "next/form";
 import Input from "../_components/Input";
 import { FaGithub } from "react-icons/fa6";
 import Button from "../_components/Button";
+
 import { registerUserByEmail } from "../_lib/auth/action";
 import { useActionState, useEffect, useState } from "react";
+import ResendEmailVerif from "./ResendEmailVerif";
 
 const initialState = {
   firstName: "",
@@ -43,9 +45,9 @@ function SignUpForm() {
           >
             {actiionState?.message}
             {actiionState.success ? (
-              <p className="cursor-pointer font-semibold underline">
-                {""}Didn&apos;t receive the email? Click here to resend.
-              </p>
+              <ResendEmailVerif email={actiionState?.data.email}>
+                {""}Didn&apos;t receive the email? Click here to resend.{" "}
+              </ResendEmailVerif>
             ) : (
               ""
             )}

@@ -8,6 +8,7 @@ import Form from "next/form";
 import Input from "../_components/Input";
 import { FaGithub } from "react-icons/fa6";
 import Button from "../_components/Button";
+import ResendEmailVerif from "../signup/ResendEmailVerif";
 
 const initialState = {
   email: "",
@@ -18,6 +19,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const linkVerify = searchParams.get("verify");
   const linkMessage = searchParams.get("message");
+  const emailLink = searchParams.get("emailLink");
   const [formData, setFormData] = useState(initialState);
   const [actiionState, formAction, isPending] = useActionState(
     loginUserByEmail,
@@ -46,9 +48,9 @@ function LoginForm() {
           >
             {actiionState?.message}
             {actiionState?.message.includes("not verified") && (
-              <p className="cursor-pointer font-semibold underline">
+              <ResendEmailVerif email={actiionState?.errors.emailLink}>
                 Click here to resend.
-              </p>
+              </ResendEmailVerif>
             )}
           </div>
         )}
@@ -59,9 +61,9 @@ function LoginForm() {
         >
           {linkMessage}
           {linkVerify === "true" || (
-            <p className="cursor-pointer font-semibold underline">
+            <ResendEmailVerif email={emailLink || ""}>
               Click here to resend.
-            </p>
+            </ResendEmailVerif>
           )}
         </div>
       )}
