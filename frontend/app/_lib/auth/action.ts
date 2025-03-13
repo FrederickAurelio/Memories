@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { BACKEND_BASE_URL } from "../const";
-import { FetchResponse } from "../types";
+import { FetchResponse, UserProfile } from "../types";
 
 export async function registerUserByEmail(
   _: FetchResponse | null,
@@ -130,4 +130,21 @@ export async function sendEmailVerification(email: string) {
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);
   }
+}
+
+export async function getUserProfile() {
+  const cookieStore = await cookies();
+  const recentLogin = cookieStore.get("recent-login") || {
+    name: "recent-login",
+    value: "",
+  };
+  const emails = recentLogin.value;
+  const response = await fetch(
+    `${BACKEND_BASE_URL}/api/auth/users-profile?emails=${emails}`,
+  );
+  const recentLoginUser = (await response.json()) as FetchResponse & {
+    data: UserProfile[];
+  };
+
+  return recentLoginUser.data;
 }
