@@ -344,7 +344,7 @@ export async function forgetPassword(req: Request, res: Response) {
       from: process.env.EMAIL,
       to: email,
       subject: "Memories account Reset Password Link",
-      text: `Hello, ${forgetPasswordUser.firstName} ${forgetPasswordUser.lastName} To reset your account password, follow this link: http://localhost:2000/api/auth/reset-password/${resetToken}/${forgetPasswordUser._id}`,
+      text: `Hello, ${forgetPasswordUser.firstName} ${forgetPasswordUser.lastName} To reset your account password, follow this link: http://localhost:3000/auth/reset-password?resetToken=${resetToken}&userId=${forgetPasswordUser._id}`,
     };
 
     forgetPasswordUser.resetToken = resetToken;
@@ -376,7 +376,7 @@ const resetPassowrdSchema = z.object({
   newPassword: z.string().min(8, "Password must contain at least 8 characters"),
 });
 export async function resetPassowrd(req: Request, res: Response) {
-  const data = { ...req.body, ...req.params };
+  const data = { ...req.body, ...req.query };
   try {
     const { resetToken, userId, newPassword } = resetPassowrdSchema.parse(data);
     const resetPasswordUser = await User.findById(userId);
@@ -411,7 +411,7 @@ export async function resetPassowrd(req: Request, res: Response) {
 
     return void res.status(200).json({
       success: true,
-      message: "Reset password successfully",
+      message: "Reset password successfully, Please login again",
       errors: {},
     });
   } catch (error: any) {

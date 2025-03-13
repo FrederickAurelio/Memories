@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { BACKEND_BASE_URL } from "../const";
 import { FetchResponse, UserProfile } from "../types";
+import { redirect } from "next/navigation";
 
 export async function registerUserByEmail(
   _: FetchResponse | null,
@@ -114,7 +115,6 @@ export async function loginUserByEmail(
 
 export async function sendEmailVerification(email: string) {
   try {
-    console.log("HEREEEE");
     const response = await fetch(
       `${BACKEND_BASE_URL}/api/auth//resend-verification`,
       {
@@ -147,4 +147,63 @@ export async function getUserProfile() {
   };
 
   return recentLoginUser.data;
+}
+
+export async function forgetPassword(
+  _: FetchResponse | null,
+  formData: FormData,
+) {
+  try {
+    const { email } = Object.fromEntries(formData);
+    if (!email) return null;
+    const response = await fetch(
+      `${BACKEND_BASE_URL}/api/auth/forget-password`,
+      {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: {
+          "Content-type": "application/json",
+        },
+      },
+    );
+    const data = (await response.json()) as FetchResponse;
+    return data;
+  } catch (error) {
+    throw new Error(`Something's wrong: ${error}`);
+  }
+}
+
+export async function resetPassowrd(
+  _: FetchResponse | null,
+  formData: FormData,
+) {
+  const { newPassword, repeatNewPassword, resetToken, userId } =
+    Object.fromEntries(formData);
+
+  if (!newPassword || !repeatNewPassword) return null;
+  if (newPassword !== repeatNewPassword)
+    return {
+      success: false,
+      message: "Passwords do not match.",
+      errors: {
+        repeatNewPassword:
+          "The repeated password does not match the new password.",
+      },
+    };
+  const response = await fetch(
+    `${BACKEND_BASE_URL}/api/auth/reset-password?resetToken=${resetToken}&userId=${userId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ newPassword }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    },
+  );
+  const data = (await response.json()) as FetchResponse;
+  if (data.success) {
+    redirect(`/login?verify=true&message=${data.message}`);
+  } else {
+    return data;
+  }
 }

@@ -19,14 +19,14 @@ const initialState = {
 
 function SignUpForm() {
   const [formData, setFormData] = useState(initialState);
-  const [actiionState, formAction, isPending] = useActionState(
+  const [actionState, formAction, isPending] = useActionState(
     registerUserByEmail,
     null,
   );
 
   useEffect(() => {
-    if (actiionState?.success) setFormData(initialState);
-  }, [actiionState]);
+    if (actionState?.success) setFormData(initialState);
+  }, [actionState]);
   return (
     <Form
       action={formAction}
@@ -38,21 +38,20 @@ function SignUpForm() {
           login instead
         </Link>
       </div>
-      {actiionState?.message &&
-        !actiionState?.message.includes("validation") && (
-          <div
-            className={`rounded-md border p-3 ${actiionState.success ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
-          >
-            {actiionState?.message}
-            {actiionState.success ? (
-              <ResendEmailVerif email={actiionState?.data.email}>
-                {""}Didn&apos;t receive the email? Click here to resend.{" "}
-              </ResendEmailVerif>
-            ) : (
-              ""
-            )}
-          </div>
-        )}
+      {actionState?.message && !actionState?.message.includes("validation") && (
+        <div
+          className={`rounded-md border p-3 ${actionState.success ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
+        >
+          {actionState?.message}
+          {actionState.success ? (
+            <ResendEmailVerif email={actionState?.data.email}>
+              {""}Didn&apos;t receive the email? Click here to resend.{" "}
+            </ResendEmailVerif>
+          ) : (
+            ""
+          )}
+        </div>
+      )}
       <Input
         required
         disabled={isPending}
@@ -60,7 +59,7 @@ function SignUpForm() {
         id="firstName"
         setFormData={setFormData}
         formData={formData}
-        errors={actiionState?.errors}
+        errors={actionState?.errors}
       />
       <Input
         disabled={isPending}
@@ -68,7 +67,7 @@ function SignUpForm() {
         id="lastName"
         setFormData={setFormData}
         formData={formData}
-        errors={actiionState?.errors}
+        errors={actionState?.errors}
       />
       <Input
         required
@@ -78,7 +77,7 @@ function SignUpForm() {
         id="email"
         setFormData={setFormData}
         formData={formData}
-        errors={actiionState?.errors}
+        errors={actionState?.errors}
       />
       <Input
         required
@@ -89,7 +88,7 @@ function SignUpForm() {
         type="password"
         setFormData={setFormData}
         formData={formData}
-        errors={actiionState?.errors}
+        errors={actionState?.errors}
       />
       <div className="flex w-full justify-between pt-3">
         <Button disabled={isPending} variant="primary" type="submit">

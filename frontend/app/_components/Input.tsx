@@ -25,7 +25,7 @@ function Input<T extends Record<string, string>>({
       <input
         name={id}
         id={id}
-        className={`w-full rounded-lg border-2 border-neutral-300 p-2 text-lg ${className}`}
+        className={`w-full rounded-lg border-2 border-neutral-300 p-2 text-lg disabled:cursor-not-allowed disabled:border-neutral-200 ${className}`}
         value={formData[id] || ""}
         onChange={(e) => {
           setFormData((prevState) => {

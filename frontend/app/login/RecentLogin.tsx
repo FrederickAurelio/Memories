@@ -26,15 +26,15 @@ const initialState = {
 
 function RecentLogin({ users }: { users: UserProfile[] }) {
   const [selectedUser, setSelectedUser] = useState<null | UserProfile>(null);
-  const [actiionState, formAction, isPending] = useActionState(
+  const [actionState, formAction, isPending] = useActionState(
     loginUserByEmail,
     null,
   );
   const [formData, setFormData] = useState(initialState);
 
   useEffect(() => {
-    if (actiionState?.success) setFormData(initialState);
-  }, [actiionState]);
+    if (actionState?.success) setFormData(initialState);
+  }, [actionState]);
 
   return (
     <Dialog
@@ -42,7 +42,7 @@ function RecentLogin({ users }: { users: UserProfile[] }) {
         if (!open) {
           setSelectedUser(null);
           setFormData(initialState);
-          if (actiionState?.message.length)
+          if (actionState?.message.length)
             startTransition(() => {
               formAction(null);
             });
@@ -93,12 +93,12 @@ function RecentLogin({ users }: { users: UserProfile[] }) {
             </div>
           )}
           <div className="flex flex-col items-center justify-center">
-            {actiionState?.message &&
-              !actiionState?.message.includes("validation") && (
+            {actionState?.message &&
+              !actionState?.message.includes("validation") && (
                 <div
-                  className={`mb-3 w-9/12 rounded-md border p-3 ${actiionState.success ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
+                  className={`mb-3 w-9/12 rounded-md border p-3 ${actionState.success ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
                 >
-                  {actiionState?.message}
+                  {actionState?.message}
                 </div>
               )}
             <Form action={formAction} className="w-80">
@@ -118,7 +118,7 @@ function RecentLogin({ users }: { users: UserProfile[] }) {
                 autoComplete="current-password"
                 formData={formData}
                 setFormData={setFormData}
-                errors={actiionState?.errors}
+                errors={actionState?.errors}
               />
               <Button variant="primary" type="submit" className="mt-3">
                 Log in

@@ -21,14 +21,14 @@ function LoginForm() {
   const linkMessage = searchParams.get("message");
   const emailLink = searchParams.get("emailLink");
   const [formData, setFormData] = useState(initialState);
-  const [actiionState, formAction, isPending] = useActionState(
+  const [actionState, formAction, isPending] = useActionState(
     loginUserByEmail,
     null,
   );
 
   useEffect(() => {
-    if (actiionState?.success) setFormData(initialState);
-  }, [actiionState]);
+    if (actionState?.success) setFormData(initialState);
+  }, [actionState]);
 
   return (
     <Form
@@ -41,21 +41,20 @@ function LoginForm() {
           Don&apos;t have an account?
         </Link>
       </div>
-      {actiionState?.message &&
-        !actiionState?.message.includes("validation") && (
-          <div
-            className={`rounded-md border p-3 ${actiionState.success ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
-          >
-            {actiionState?.message}
-            {actiionState?.message.includes("not verified") && (
-              <ResendEmailVerif email={actiionState?.errors.emailLink}>
-                Click here to resend.
-              </ResendEmailVerif>
-            )}
-          </div>
-        )}
+      {actionState?.message && !actionState?.message.includes("validation") && (
+        <div
+          className={`rounded-md border p-3 ${actionState.success ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
+        >
+          {actionState?.message}
+          {actionState?.message.includes("not verified") && (
+            <ResendEmailVerif email={actionState?.errors.emailLink}>
+              Click here to resend.
+            </ResendEmailVerif>
+          )}
+        </div>
+      )}
 
-      {linkMessage && !actiionState?.message && (
+      {linkMessage && !actionState?.message && (
         <div
           className={`rounded-md border p-3 ${linkVerify === "true" ? "border-green-500 bg-green-200" : "border-red-500 bg-red-200"}`}
         >
@@ -75,7 +74,7 @@ function LoginForm() {
         id="email"
         setFormData={setFormData}
         formData={formData}
-        errors={actiionState?.errors}
+        errors={actionState?.errors}
       />
       <Input
         required
@@ -86,7 +85,7 @@ function LoginForm() {
         autoComplete="current-password"
         setFormData={setFormData}
         formData={formData}
-        errors={actiionState?.errors}
+        errors={actionState?.errors}
       />
       <Button
         disabled={isPending}

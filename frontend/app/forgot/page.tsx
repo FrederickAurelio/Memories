@@ -1,7 +1,5 @@
-import Form from "next/form";
-import Input from "../_components/Input";
-import Button from "../_components/Button";
 import Link from "next/link";
+import ForgetForm from "./ForgetForm";
 
 function ForgotPassword() {
   return (
@@ -10,16 +8,11 @@ function ForgotPassword() {
         <h1 className="mb-3 text-center text-4xl font-semibold">
           Forgot Password
         </h1>
-        <p className="mb-6 text-center text-neutral-500">
+        <p className="mb-3 text-center text-neutral-500">
           No worries! Enter your email address below, and we&apos;ll send you a
           link to reset your password.
         </p>
-        <Form>
-          <Input autoComplete="email" placeholder="Email" id="email" />{" "}
-          <Button variant="primary" type="submit" className="mt-3">
-            Reset
-          </Button>
-        </Form>
+        <ForgetForm />
         <div className="flex items-center justify-center">
           <Link
             href="/login"
