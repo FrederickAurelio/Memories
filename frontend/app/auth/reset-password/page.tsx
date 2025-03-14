@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import ResetForm from "./ResetForm";
+import Link from "next/link";
 
 async function Reset({
   searchParams,
@@ -20,7 +21,14 @@ async function Reset({
           it&apos;s strong and secure
         </p>
         <ResetForm resetToken={resetToken} userId={userId} />
-        <div className="it ems-center flex justify-center"></div>
+        <div className="flex items-center justify-center">
+          <Link
+            href="/login"
+            className="jus mt-2 flex items-center text-center font-semibold underline"
+          >
+            Back to login
+          </Link>
+        </div>
       </div>
     </div>
   );

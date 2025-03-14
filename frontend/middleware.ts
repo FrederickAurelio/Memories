@@ -2,8 +2,7 @@
 import type { NextRequest } from "next/server";
 import { BACKEND_BASE_URL } from "./app/_lib/const";
 
-
-// ON RESET PASSWORD ROUTE, GUARDING/CHECKING WETHER IT CONTAINS THE RESETTOKEN AND THE USERID, IF NOT JUST DRIVE BACK TO LOGIN/ANYWEHERE
+// ON RESET PASSWORD ROUTE, GUARDING/CHECKING WETHER IT CONTAINS THE RESETTOKEN AND THE USERID, IF NOT JUST DRIVE BACK TO LOGIN/ANYWEHERE (KINDA SOLVED)
 export async function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get("connect.sid");
   const response = await fetch(`${BACKEND_BASE_URL}/api/auth/auth-status`, {
