@@ -5,6 +5,7 @@ import { BACKEND_BASE_URL, FRONTEND_BASE_URL } from "../const";
 import { FetchResponse, UserProfile } from "../types";
 import { redirect } from "next/navigation";
 import * as crypto from "crypto";
+import { setCookieRecentLogin, setCookieSid } from "../helpers";
 
 export async function registerUserByEmail(
   _: FetchResponse | null,
@@ -74,39 +75,11 @@ export async function loginUserByEmail(
       body: JSON.stringify({ email, password }),
     });
 
-    const cookieObj: Record<string, string> = {};
-    const setCookieHeader = response.headers.get("set-cookie");
-    if (setCookieHeader) {
-      const cookieArray = setCookieHeader.split(";");
-      cookieArray.forEach((cookie) => {
-        const [key, value] = cookie.split("=");
-        if (key && value) {
-          cookieObj[key.trim()] = value.trim();
-        }
-      });
-    }
-    cookieStore.set("connect.sid", cookieObj["connect.sid"], {
-      expires: new Date(cookieObj["Expires"]),
-      path: "/",
-      httpOnly: true,
-      secure: false,
-      maxAge: 60 * 60 * 24 * 14,
-    });
+    setCookieSid(response, cookieStore);
 
     const data = (await response.json()) as FetchResponse;
     if (data.success) {
-      const recentLogin = cookieStore.get("recent-login") || "";
-      let recentLoginArray = recentLogin ? recentLogin.value.split(";") : [];
-      if (recentLoginArray.includes(email.toString()))
-        recentLoginArray = recentLoginArray.filter(
-          (s) => s !== email.toString(),
-        );
-      recentLoginArray = [email.toString(), ...recentLoginArray];
-      recentLoginArray = recentLoginArray.slice(0, 4);
-      cookieStore.set("recent-login", recentLoginArray.join(";"), {
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30 * 2,
-      });
+      setCookieRecentLogin(cookieStore, email.toString());
     }
     return data;
   } catch (error) {

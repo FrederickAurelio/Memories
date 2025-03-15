@@ -385,6 +385,7 @@ export async function githubOauthAuthentication(req: Request, res: Response) {
             success: true,
             message: "Sign in with Github successfully",
             errors: {},
+            data: { email: newUser.email },
           });
         });
       });
@@ -418,6 +419,7 @@ export async function githubOauthAuthentication(req: Request, res: Response) {
             success: true,
             message: "Sign in with Github successfully",
             errors: {},
+            data: { email: emailUser.email },
           });
         });
       });
@@ -599,7 +601,3 @@ export async function getUserProfile(req: Request, res: Response) {
     });
   }
 }
-
-// RESEND VERIFICATION EMAIL
-// RESEND VERIFICATION EMAIL
-// RESEND VERIFICATION EMAIL

@@ -1,4 +1,5 @@
 import { BACKEND_BASE_URL } from "@/app/_lib/const";
+import { setCookieRecentLogin, setCookieSid } from "@/app/_lib/helpers";
 import { FetchResponse } from "@/app/_lib/types";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -23,26 +24,12 @@ export async function GET(request: Request) {
           Cookie: `connect.sid=${cookiesidValue?.value}`,
         },
       });
-      const data = (await response.json()) as FetchResponse;
+      const data = (await response.json()) as FetchResponse & {
+        data: { email: string };
+      };
       if (data.success) {
-        const cookieObj: Record<string, string> = {};
-        const setCookieHeader = response.headers.get("set-cookie");
-        if (setCookieHeader) {
-          const cookieArray = setCookieHeader.split(";");
-          cookieArray.forEach((cookie) => {
-            const [key, value] = cookie.split("=");
-            if (key && value) {
-              cookieObj[key.trim()] = value.trim();
-            }
-          });
-        }
-        cookieStore.set("connect.sid", cookieObj["connect.sid"], {
-          expires: new Date(cookieObj["Expires"]),
-          path: "/",
-          httpOnly: true,
-          secure: false,
-          maxAge: 60 * 60 * 24 * 14,
-        });
+        setCookieSid(response, cookieStore);
+        setCookieRecentLogin(cookieStore, data.data.email);
       }
       return NextResponse.redirect(
         `${origin}/login?verify=${data.success}&message=${data.message}`,
