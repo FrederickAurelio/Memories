@@ -22,5 +22,7 @@ export async function GET(request: Request) {
     } catch (error) {
       throw new Error(`Something's wrong: ${error}`);
     }
+  } else {
+    return NextResponse.redirect(`${origin}/login`);
   }
 }

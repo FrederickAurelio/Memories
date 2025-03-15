@@ -295,6 +295,145 @@ export async function loginUserByEmail(req: Request, res: Response) {
   }
 }
 
+type TypeGithubUser = {
+  login: string;
+  id: number;
+  avatar_url: string;
+  name: string;
+  email: string;
+};
+
+export async function githubOauthAuthentication(req: Request, res: Response) {
+  try {
+    const { code } = req.body;
+    if (!code)
+      return void res.status(401).json({
+        success: false,
+        message: "Not authorized",
+        errors: {},
+      });
+    const clientId = process.env.GITHUB_CLIENT_ID;
+    const clientSecret = process.env.GITHUB_CLIENT_SECRETS;
+    const FRONTEND_BASE_URL = process.env.FRONTEND_URL;
+    const redirectUri = `${FRONTEND_BASE_URL}/auth/github/callback`;
+
+    const response = await fetch(
+      "https://github.com/login/oauth/access_token",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          client_id: clientId,
+          client_secret: clientSecret,
+          code: code,
+          redirect_uri: redirectUri,
+        }),
+      }
+    );
+    const data = await response.json();
+    const accessToken = data.access_token;
+
+    const userRes = await fetch("https://api.github.com/user", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const githubUser = (await userRes.json()) as TypeGithubUser;
+
+    const emailUser = await User.findOne({ email: githubUser.email });
+    if (!emailUser) {
+      // CREATE NEW ONE
+      const [firstName, ...restName] = githubUser.name.split(" ").slice(0, 20);
+      const lastName =
+        restName.length > 0 ? restName.join(" ").slice(0, 20) : "";
+
+      const salt = genSaltSync(12);
+      const password = crypto.randomBytes(16).toString("hex");
+      const hashedPassword = hashSync(password, salt);
+      const newUser = new User({
+        firstName: firstName,
+        lastName: lastName,
+        password: hashedPassword,
+        email: githubUser.email,
+        isEmailVerified: true,
+        provider: "github",
+        providerId: String(githubUser.id),
+        avatar: githubUser.avatar_url,
+        githubUsername: githubUser.login,
+      });
+      await newUser.save();
+
+      req.session.regenerate(function (err) {
+        if (err) {
+          return res.status(500).json({
+            success: false,
+            message: "Error regenerating session token",
+            errors: {},
+          });
+        }
+        req.session.userId = newUser._id;
+        req.session.save(function (err) {
+          if (err) {
+            return res.status(500).json({
+              success: false,
+              message: "Error saving session",
+              errors: {},
+            });
+          }
+          return void res.status(200).json({
+            success: true,
+            message: "Sign in with Github successfully",
+            errors: {},
+          });
+        });
+      });
+    } else {
+      // UPDATE
+      emailUser.isEmailVerified = true;
+      emailUser.verificationToken = null;
+      emailUser.provider = "github";
+      emailUser.providerId = String(githubUser.id);
+      emailUser.githubUsername = githubUser.login;
+      await emailUser.save();
+
+      req.session.regenerate(function (err) {
+        if (err) {
+          return res.status(500).json({
+            success: false,
+            message: "Error regenerating session token",
+            errors: {},
+          });
+        }
+        req.session.userId = emailUser._id;
+        req.session.save(function (err) {
+          if (err) {
+            return res.status(500).json({
+              success: false,
+              message: "Error saving session",
+              errors: {},
+            });
+          }
+          return void res.status(200).json({
+            success: true,
+            message: "Sign in with Github successfully",
+            errors: {},
+          });
+        });
+      });
+    }
+  } catch (error: any) {
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
+
+    return void res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: errors,
+    });
+  }
+}
+
 export async function logoutUser(req: Request, res: Response) {
   if (!req.session.userId) {
     return void res.status(200).json({

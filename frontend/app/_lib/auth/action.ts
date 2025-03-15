@@ -1,9 +1,10 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { BACKEND_BASE_URL } from "../const";
+import { BACKEND_BASE_URL, FRONTEND_BASE_URL } from "../const";
 import { FetchResponse, UserProfile } from "../types";
 import { redirect } from "next/navigation";
+import * as crypto from "crypto";
 
 export async function registerUserByEmail(
   _: FetchResponse | null,
@@ -206,4 +207,16 @@ export async function resetPassowrd(
   } else {
     return data;
   }
+}
+
+export async function signWithGithub() {
+  const cookieStore = await cookies();
+  const state = crypto.randomBytes(16).toString("hex");
+  cookieStore.set("latestCSRFToken", state, {
+    httpOnly: true,
+  });
+  const clientId = process.env.GITHUB_CLIENT_ID;
+
+  const link = `https://github.com/login/oauth/authorize?client_id=${clientId}&response_type=code&scope=user:email&redirect_uri=${FRONTEND_BASE_URL}/auth/github/callback&state=${state}`;
+  redirect(link);
 }

@@ -6,9 +6,9 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Form from "next/form";
 import Input from "../_components/Input";
-import { FaGithub } from "react-icons/fa6";
 import Button from "../_components/Button";
 import ResendEmailVerif from "../signup/ResendEmailVerif";
+import GitHubSignInButton from "../signup/GitHubSignInButton";
 
 const initialState = {
   email: "",
@@ -104,14 +104,7 @@ function LoginForm() {
         <span className="col-span-4 mt-2 border-t-2 border-neutral-400"></span>
       </div>
       <div className="flex w-full justify-between pt-2">
-        <Button
-          variant="secondary"
-          className="flex justify-center gap-1"
-          type="button"
-        >
-          <FaGithub size={28} />
-          <span>Continue with Github</span>
-        </Button>
+        <GitHubSignInButton globalPending={isPending} />
       </div>
     </Form>
   );

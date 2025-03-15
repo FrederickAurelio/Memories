@@ -3,12 +3,12 @@
 import Link from "next/link";
 import Form from "next/form";
 import Input from "../_components/Input";
-import { FaGithub } from "react-icons/fa6";
 import Button from "../_components/Button";
 
 import { registerUserByEmail } from "../_lib/auth/action";
 import { useActionState, useEffect, useState } from "react";
 import ResendEmailVerif from "./ResendEmailVerif";
+import GitHubSignInButton from "./GitHubSignInButton";
 
 const initialState = {
   firstName: "",
@@ -95,15 +95,8 @@ function SignUpForm() {
           Create an account
         </Button>
         <span className="mx-4 border-r-2 border-neutral-400"></span>
-        <Button
-          disabled={isPending}
-          variant="secondary"
-          className="flex justify-center gap-1"
-          type="button"
-        >
-          <FaGithub size={28} />
-          <span>Continue with Github</span>
-        </Button>
+
+        <GitHubSignInButton globalPending={isPending} />
       </div>
     </Form>
   );
