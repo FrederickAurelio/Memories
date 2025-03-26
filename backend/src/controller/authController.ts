@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import User from "../model/User";
 import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
 import { z } from "zod";
-import { createTransport } from "nodemailer";
 import { errorHandlers, sendEmail } from "../helpers";
 import * as crypto from "crypto";
 import { add, isPast } from "date-fns";
@@ -65,7 +64,7 @@ export async function sendEmailVerification(req: Request, res: Response) {
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
-      subject: "Memories account Verification Link",
+      subject: "NO-REPLY Memories account Verification Link",
       text: `Hello, ${resendEmailUser.firstName} ${
         resendEmailUser.lastName
       } Please verify your email by clicking this link : ${
@@ -142,7 +141,7 @@ export async function registerUserByEmail(req: Request, res: Response) {
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
-      subject: "Memories account Verification Link",
+      subject: "NO-REPLY Memories account Verification Link",
       text: `Hello, ${firstName} ${
         lastName ? lastName : ""
       } Please verify your email by clicking this link : ${
@@ -484,7 +483,7 @@ export async function forgetPassword(req: Request, res: Response) {
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
-      subject: "Memories account Reset Password Link",
+      subject: "NO-REPLY Memories account Reset Password Link",
       text: `Hello, ${forgetPasswordUser.firstName} ${forgetPasswordUser.lastName} To reset your account password, follow this link: http://localhost:3000/auth/reset-password?resetToken=${resetToken}&userId=${forgetPasswordUser._id}`,
     };
 

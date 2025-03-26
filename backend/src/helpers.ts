@@ -26,8 +26,8 @@ export function errorHandlers(error: any) {
 
 export function sendEmail(mailOptions: MailOptions) {
   const transporter = createTransport({
-    service: "Gmail",
-    host: "smtp.gmail.com",
+    service: process.env.EMAIL_SERVICE,
+    host: process.env.EMAIL_HOST,
     port: 465,
     secure: true,
     auth: {
