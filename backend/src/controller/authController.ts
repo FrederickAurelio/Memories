@@ -7,18 +7,23 @@ import * as crypto from "crypto";
 import { add, isPast } from "date-fns";
 
 // Authentication middleware
-export async function isAuthenticatedTest(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function isAuthenticated(req: Request, res: Response) {
   if (req.session.userId) {
-    const currentUser = await User.findById(req.session.userId);
+    const currentUser = await User.findById(req.session.userId).select(
+      "firstName lastName email avatar"
+    );
     return void res.status(200).json({
+      success: true,
       message: `Authenticated: ${currentUser?.firstName}`,
+      data: currentUser,
+      errors: {},
     });
   }
-  res.status(401).send({ msg: "Not Authenticated" });
+  return void res.status(401).json({
+    success: false,
+    message: `Not Authenticated`,
+    errors: {},
+  });
 }
 
 const sendEmailVerificationSchema = z.object({

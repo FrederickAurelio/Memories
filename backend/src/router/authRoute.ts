@@ -3,7 +3,7 @@ import {
   forgetPassword,
   getUserProfile,
   githubOauthAuthentication,
-  isAuthenticatedTest,
+  isAuthenticated,
   loginUserByEmail,
   logoutUser,
   registerUserByEmail,
@@ -21,7 +21,7 @@ authRouter.post("/forget-password", forgetPassword);
 authRouter.post("/resend-verification", sendEmailVerification);
 authRouter.post("/sign-github", githubOauthAuthentication);
 authRouter.put("/reset-password", resetPassowrd);
-authRouter.get("/auth-status", isAuthenticatedTest);
+authRouter.get("/auth-status", isAuthenticated);
 authRouter.get("/verify-email/:verificationToken/:userId", verifyEmailCallback);
 authRouter.get("/users-profile", getUserProfile);
 

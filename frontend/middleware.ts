@@ -1,10 +1,16 @@
 // import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { BACKEND_BASE_URL } from "./app/_lib/const";
 
-// ON RESET PASSWORD ROUTE, GUARDING/CHECKING WETHER IT CONTAINS THE RESETTOKEN AND THE USERID, IF NOT JUST DRIVE BACK TO LOGIN/ANYWEHERE (KINDA SOLVED)
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  const url = request.nextUrl.clone();
   const sessionCookie = request.cookies.get("connect.sid");
+  if (pathname === "/" || (!sessionCookie && pathname.startsWith("/app"))) {
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
   const response = await fetch(`${BACKEND_BASE_URL}/api/auth/auth-status`, {
     method: "GET",
     credentials: "include",
@@ -13,19 +19,16 @@ export async function middleware(request: NextRequest) {
     },
   });
   const data = await response.json();
-  console.log(data);
+  if (data.success && pathname.startsWith("/login")) {
+    url.pathname = "/app";
+    return NextResponse.redirect(url);
+  } else if (!data.success && pathname.startsWith("/app")) {
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    // "/app",
-    "/login",
-  ],
+  matcher: ["/", "/login", "/app/:path*"],
 };

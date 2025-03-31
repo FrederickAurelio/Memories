@@ -74,6 +74,7 @@ function RecentLogin({ users }: { users: UserProfile[] }) {
                 <Image
                   fill
                   quality={80}
+                  sizes="128px"
                   src={selectedUser?.avatar}
                   alt={selectedUser?.firstName}
                   className="rounded-full border border-neutral-300 object-cover"

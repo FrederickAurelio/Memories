@@ -32,7 +32,7 @@ export async function GET(request: Request) {
         setCookieRecentLogin(cookieStore, data.data.email);
       }
       return NextResponse.redirect(
-        `${origin}/login?verify=${data.success}&message=${data.message}`,
+        `${origin}/app`,
       );
     } catch (error) {
       throw new Error(`Something's wrong: ${error}`);

@@ -6,6 +6,7 @@ function UserLogin({ image, firstName }: { image: string; firstName: string }) {
       <div className="relative h-[138px] w-[160px]">
         <Image
           fill
+          sizes="128px"
           quality={80}
           src={image}
           alt={firstName}

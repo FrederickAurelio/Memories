@@ -55,16 +55,14 @@ export async function loginUserByEmail(
       errors: {},
     };
   }
+  let data;
+  const { password, email } = Object.fromEntries(formData);
+  if (!password || !email) {
+    return null;
+  }
+  const cookieStore = await cookies();
+  const cookiesidValue = cookieStore.get("connect.sid");
   try {
-    const { password, email } = Object.fromEntries(formData);
-
-    if (!password || !email) {
-      return null;
-    }
-
-    const cookieStore = await cookies();
-    const cookiesidValue = cookieStore.get("connect.sid");
-
     const response = await fetch(`${BACKEND_BASE_URL}/api/auth/login-email`, {
       method: "POST",
       headers: {
@@ -77,14 +75,16 @@ export async function loginUserByEmail(
 
     setCookieSid(response, cookieStore);
 
-    const data = (await response.json()) as FetchResponse;
-    if (data.success) {
-      setCookieRecentLogin(cookieStore, email.toString());
-    }
-    return data;
+    data = (await response.json()) as FetchResponse;
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);
   }
+
+  if (data.success) {
+    setCookieRecentLogin(cookieStore, email.toString());
+    redirect(`/app`);
+  }
+  return data;
 }
 
 export async function sendEmailVerification(email: string) {

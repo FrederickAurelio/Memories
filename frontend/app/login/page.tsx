@@ -13,8 +13,9 @@ async function Login() {
         <Image
           className="pb-2"
           quality={80}
-          height={100}
-          width={100}
+          height={0}
+          width={0}
+          style={{ width: "100px", height: "auto" }}
           src={Logo}
           alt="logo"
         />

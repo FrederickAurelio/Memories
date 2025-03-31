@@ -9,6 +9,9 @@ function SignUp() {
         <Image
           className="animate-wiggle animate-duration-[3000ms] animate-infinite animate-ease-in"
           quality={80}
+          height={0}
+          style={{ width: "100%", height: "auto" }}
+          width={0}
           src={Logo}
           alt="logo"
         />
