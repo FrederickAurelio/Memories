@@ -6,7 +6,6 @@ function SidebarLink({
   pathname,
 }: {
   bar: {
-    type: string;
     name: string;
     href: string;
     icon: IconType;
