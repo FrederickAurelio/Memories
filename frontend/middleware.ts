@@ -4,6 +4,8 @@ import { BACKEND_BASE_URL } from "./app/_lib/const";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const headers = new Headers(request.headers);
+  headers.set("x-current-path", pathname);
   const url = request.nextUrl.clone();
   const sessionCookie = request.cookies.get("connect.sid");
   if (pathname === "/" || (!sessionCookie && pathname.startsWith("/app"))) {
@@ -26,7 +28,7 @@ export async function middleware(request: NextRequest) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
-  return NextResponse.next();
+  return NextResponse.next({ headers });
 }
 
 export const config = {
