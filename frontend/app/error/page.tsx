@@ -18,7 +18,7 @@ export default function ErrorPage() {
             href={"/app"}
             className={`w-full rounded-full bg-neutral-800 p-3 text-center text-lg text-neutral-200 duration-100 hover:scale-105 disabled:cursor-not-allowed disabled:bg-neutral-600 disabled:hover:scale-100`}
           >
-            Try again
+            Back to App
           </Link>
         </div>
         <Link
