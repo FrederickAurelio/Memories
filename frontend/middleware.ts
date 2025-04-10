@@ -13,22 +13,28 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  const response = await fetch(`${BACKEND_BASE_URL}/api/auth/auth-status`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
-    },
-  });
-  const data = await response.json();
-  if (data.success && pathname.startsWith("/login")) {
-    url.pathname = "/app";
-    return NextResponse.redirect(url);
-  } else if (!data.success && pathname.startsWith("/app")) {
-    url.pathname = "/login";
+  try {
+    const response = await fetch(`${BACKEND_BASE_URL}/api/auth/auth-status`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
+      },
+    });
+    const data = await response.json();
+    if (data.success && pathname.startsWith("/login")) {
+      url.pathname = "/app";
+      return NextResponse.redirect(url);
+    } else if (!data.success && pathname.startsWith("/app")) {
+      url.pathname = "/login";
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next({ headers });
+  } catch (error) {
+    console.log(error);
+    url.pathname = "/error";
     return NextResponse.redirect(url);
   }
-  return NextResponse.next({ headers });
 }
 
 export const config = {

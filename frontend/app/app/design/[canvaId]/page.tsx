@@ -1,5 +1,6 @@
 async function Design({ params }: { params: Promise<{ canvaId: string }> }) {
   const { canvaId } = await params;
+  console.log(canvaId)
   return (
     <div className="grid h-full w-full grid-cols-[repeat(14,minmax(0,1fr))]">
       <div className="col-span-1 bg-red-100">TOOLBOX</div>
