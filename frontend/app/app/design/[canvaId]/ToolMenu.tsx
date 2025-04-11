@@ -24,14 +24,18 @@ function ToolMenu({
   selectedTool: string;
 }) {
   const [open, setOpen] = useState(false);
+  const Icon = selectedTool.startsWith(toolbox.id)
+    ? toolbox.content.find((tb) => tb.id === selectedTool)?.icon || toolbox.icon
+    : toolbox.icon;
+    
   return (
     <Popover open={open} onOpenChange={(o) => setOpen(o)}>
       <Tooltip>
         <PopoverTrigger>
           <TooltipTrigger asChild>
-            <toolbox.icon
+            <Icon
               size={40}
-              className={`cursor-pointer rounded-lg p-[6px] hover:bg-neutral-300/50 ${open ? "bg-neutral-300/50" : ""}`}
+              className={`cursor-pointer rounded-lg p-[6px] hover:bg-neutral-300/50 ${open || selectedTool.startsWith(toolbox.id) ? "bg-neutral-300/50" : ""}`}
             />
           </TooltipTrigger>
         </PopoverTrigger>
