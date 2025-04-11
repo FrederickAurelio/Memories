@@ -3,6 +3,7 @@ import {
   EraserIcon,
   Heart,
   Hexagon,
+  ImagePlus,
   MousePointer2,
   PenIcon,
   PenLine,
@@ -18,8 +19,10 @@ import { BsChatQuote, BsFillChatQuoteFill } from "react-icons/bs";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import { IoMail, IoMailOutline } from "react-icons/io5";
 import { PiLineSegmentBold } from "react-icons/pi";
+import { SiElement } from "react-icons/si";
 import { SidebarOptionType, ToolBoxOptionType } from "../_lib/types";
 import Notifications from "../app/Notifications";
+import AIElement from "../app/design/[canvaId]/AIElement";
 
 export const BACKEND_BASE_URL = "http://localhost:2000";
 export const FRONTEND_BASE_URL = "http://localhost:3000";
@@ -91,6 +94,15 @@ export const toolboxOptions: ToolBoxOptionType[] = [
       },
     ],
   },
+  { id: "photo", type: "tool", name: "Photo", icon: ImagePlus },
+  {
+    id: "element",
+    type: "custom",
+    name: "AI Element",
+    icon: SiElement,
+    content: AIElement,
+  },
+  // element and AIElement-{data}
   {
     id: "line",
     type: "menu",

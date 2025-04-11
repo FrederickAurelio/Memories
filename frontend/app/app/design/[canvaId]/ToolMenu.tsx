@@ -27,7 +27,7 @@ function ToolMenu({
   const Icon = selectedTool.startsWith(toolbox.id)
     ? toolbox.content.find((tb) => tb.id === selectedTool)?.icon || toolbox.icon
     : toolbox.icon;
-    
+
   return (
     <Popover open={open} onOpenChange={(o) => setOpen(o)}>
       <Tooltip>

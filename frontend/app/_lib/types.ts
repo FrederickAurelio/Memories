@@ -41,6 +41,14 @@ export type ToolType = {
   icon: IconType;
 };
 
+export type ToolCustomType = {
+  id: string;
+  type: "custom";
+  name: string;
+  icon: IconType;
+  content({ onSelect }: { onSelect(s: string): void }): JSX.Element;
+};
+
 export type ToolMenuType = {
   id: string;
   type: "menu";
@@ -49,4 +57,4 @@ export type ToolMenuType = {
   content: ToolType[];
 };
 
-export type ToolBoxOptionType = ToolType | ToolMenuType;
+export type ToolBoxOptionType = ToolType | ToolMenuType | ToolCustomType;
