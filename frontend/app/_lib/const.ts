@@ -1,17 +1,25 @@
+import {
+  Circle,
+  EraserIcon,
+  Heart,
+  Hexagon,
+  MousePointer2,
+  PenIcon,
+  PenLine,
+  ShapesIcon,
+  Spline,
+  SquareIcon,
+  Star,
+  Triangle,
+  Type,
+} from "lucide-react";
 import { AiFillPlusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { BsChatQuote, BsFillChatQuoteFill } from "react-icons/bs";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import { IoMail, IoMailOutline } from "react-icons/io5";
+import { PiLineSegmentBold } from "react-icons/pi";
 import { SidebarOptionType, ToolBoxOptionType } from "../_lib/types";
 import Notifications from "../app/Notifications";
-import {
-  MousePointer2,
-  PenLine,
-  ShapesIcon,
-  SquareIcon,
-  Type,
-} from "lucide-react";
-import { PiLineSegment } from "react-icons/pi";
 
 export const BACKEND_BASE_URL = "http://localhost:2000";
 export const FRONTEND_BASE_URL = "http://localhost:3000";
@@ -26,38 +34,80 @@ export const toolboxOptions: ToolBoxOptionType[] = [
     icon: PenLine,
     content: [
       {
-        id: "shapes-rect",
+        id: "draw-pen",
         type: "tool",
-        name: "Rectangle",
-        icon: SquareIcon,
+        name: "Pen",
+        icon: PenIcon,
+      },
+      {
+        id: "draw-eraser",
+        type: "tool",
+        name: "Eraser",
+        icon: EraserIcon,
       },
     ],
   },
   {
-    id: "shapes",
+    id: "shape",
     type: "menu",
     name: "Shapes",
     icon: ShapesIcon,
     content: [
       {
-        id: "shapes-rect",
+        id: "shape-rect",
         type: "tool",
         name: "Rectangle",
         icon: SquareIcon,
       },
+      {
+        id: "shape-circle",
+        type: "tool",
+        name: "Circle",
+        icon: Circle,
+      },
+      {
+        id: "shape-triangle",
+        type: "tool",
+        name: "Triangle",
+        icon: Triangle,
+      },
+      {
+        id: "shape-star",
+        type: "tool",
+        name: "Star",
+        icon: Star,
+      },
+      {
+        id: "shape-hexagon",
+        type: "tool",
+        name: "Hexagon",
+        icon: Hexagon,
+      },
+      {
+        id: "shape-heart",
+        type: "tool",
+        name: "Heart",
+        icon: Heart,
+      },
     ],
   },
   {
-    id: "lines",
+    id: "line",
     type: "menu",
     name: "Lines",
-    icon: PiLineSegment,
+    icon: PiLineSegmentBold,
     content: [
       {
-        id: "shapes-rect",
+        id: "line-line",
         type: "tool",
-        name: "Rectangle",
-        icon: SquareIcon,
+        name: "Line",
+        icon: PiLineSegmentBold,
+      },
+      {
+        id: "line-spline",
+        type: "tool",
+        name: "Spline",
+        icon: Spline,
       },
     ],
   },

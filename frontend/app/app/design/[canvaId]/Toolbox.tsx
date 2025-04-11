@@ -12,7 +12,7 @@ function Toolbox({
   selectedTool: string;
 }) {
   return (
-    <div className="flex flex-col gap-2 rounded-md bg-white p-2 shadow-[0_1px_15px_rgba(38,38,38,0.25)]">
+    <div className="flex flex-col gap-2 rounded-lg bg-white p-2 shadow-[0_1px_15px_rgba(38,38,38,0.25)]">
       {toolboxOptions.map((toolbox) =>
         toolbox.type === "menu" && toolbox.content ? (
           <ToolMenu

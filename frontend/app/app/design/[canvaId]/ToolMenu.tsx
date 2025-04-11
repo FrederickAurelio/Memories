@@ -24,16 +24,13 @@ function ToolMenu({
   selectedTool: string;
 }) {
   const [open, setOpen] = useState(false);
-  function closePop() {
-    setOpen(false);
-  }
   return (
     <Popover open={open} onOpenChange={(o) => setOpen(o)}>
       <Tooltip>
         <PopoverTrigger>
           <TooltipTrigger asChild>
             <toolbox.icon
-              size={38}
+              size={40}
               className={`cursor-pointer rounded-lg p-[6px] hover:bg-neutral-300/50 ${open ? "bg-neutral-300/50" : ""}`}
             />
           </TooltipTrigger>
@@ -42,12 +39,11 @@ function ToolMenu({
           <p>{toolbox.name}</p>
         </TooltipContent>
         <PopoverContent
-          className="flex w-fit flex-col gap-2 rounded-md bg-white p-2 shadow-[0_1px_15px_rgba(38,38,38,0.25)]"
+          className="ml-1 flex w-fit flex-col gap-2 rounded-lg bg-white p-2 shadow-[0_1px_15px_rgba(38,38,38,0.25)]"
           side="right"
         >
           {toolbox.content.map((tb) => (
             <Tool
-              closePop={closePop}
               selectedTool={selectedTool}
               onSelect={onSelect}
               toolbox={tb}
