@@ -1,0 +1,25 @@
+"use client";
+
+import { useState } from "react";
+import Toolbox from "./Toolbox";
+
+function ToolContent() {
+  const [selectedTool, isSelectedTool] = useState("select");
+  function handleSelect(s: string) {
+    isSelectedTool(s);
+  }
+  return (
+    <>
+      <div className="col-span-1 flex items-center justify-end">
+        <Toolbox selectedTool={selectedTool} onSelect={handleSelect} />
+      </div>
+      <div className="col-start-2 col-end-[15] flex w-full items-center justify-center p-1">
+        <div className="aspect-video h-full bg-white shadow-[0_1px_20px_rgba(38,38,38,0.20)]">
+          CANVA
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default ToolContent;

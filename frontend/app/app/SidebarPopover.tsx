@@ -22,7 +22,7 @@ function SidebarPopover({
   const [open, setOpen] = useState(false);
   const Icon = open ? bar.iconFill : bar.icon;
   return (
-    <Popover onOpenChange={(o) => setOpen(o)}>
+    <Popover open={open} onOpenChange={(o) => setOpen(o)}>
       <PopoverTrigger>
         <div className="group flex cursor-pointer flex-col items-center">
           <Icon

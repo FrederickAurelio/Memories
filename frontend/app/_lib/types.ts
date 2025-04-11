@@ -33,3 +33,20 @@ export type SidebarPopoverOptionType = {
 export type SidebarOptionType =
   | SidebarLinkOptionType
   | SidebarPopoverOptionType;
+
+export type ToolType = {
+  id: string;
+  type: "tool";
+  name: string;
+  icon: IconType;
+};
+
+export type ToolMenuType = {
+  id: string;
+  type: "menu";
+  name: string;
+  icon: IconType;
+  content: ToolType[];
+};
+
+export type ToolBoxOptionType = ToolType | ToolMenuType;
