@@ -83,7 +83,6 @@ export async function loginUserByEmail(
     setCookieRecentLogin(cookieStore, email.toString());
     redirect(`/app`);
   }
-  console.log(data);
   return data;
 }
 
