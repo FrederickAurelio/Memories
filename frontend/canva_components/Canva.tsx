@@ -80,7 +80,7 @@ const Canva = memo(function Canva({
       if (inputRef.current) inputRef.current.click();
       handleSelect("select");
     }
-  }, [selectedTool]);
+  }, [handleSelect, selectedTool]);
 
   useEffect(() => {
     function updateSize() {
@@ -94,7 +94,6 @@ const Canva = memo(function Canva({
     window.addEventListener("resize", updateSize);
   }, []);
 
-  console.log("CANVA RE RENDER");
   return (
     <div ref={containerRef} className="flex h-full w-full bg-red-100">
       <input
@@ -110,7 +109,6 @@ const Canva = memo(function Canva({
         width={stageSize.width}
         height={stageSize.height}
         ref={stageRef}
-        className="w-full border-4 border-stone-700 will-change-transform"
       >
         <Layer>
           {elements.map((e) => {

@@ -81,7 +81,6 @@ function PhotoImage({
     }
   }, [isSelected]);
 
-  console.log(element.id);
   return (
     <>
       <Group
