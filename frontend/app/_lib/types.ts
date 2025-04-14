@@ -58,3 +58,16 @@ export type ToolMenuType = {
 };
 
 export type ToolBoxOptionType = ToolType | ToolMenuType | ToolCustomType;
+
+export type PhotoElementType = {
+  type: "photo";
+  id: string;
+  x: number;
+  y: number;
+  src: string;
+  rotation: number;
+  width: number;
+  height: number;
+};
+
+export type ElementType = PhotoElementType;

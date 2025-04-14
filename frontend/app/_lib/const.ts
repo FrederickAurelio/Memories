@@ -27,6 +27,9 @@ import AIElement from "../app/design/[canvaId]/AIElement";
 export const BACKEND_BASE_URL = "http://localhost:2000";
 export const FRONTEND_BASE_URL = "http://localhost:3000";
 
+export const imageMargin = 10;
+export const imageMarginBot = 15 + imageMargin;
+
 // TOOLBOX //////////////////////////////////////////////////////////
 export const toolboxOptions: ToolBoxOptionType[] = [
   { id: "select", type: "tool", name: "Select", icon: MousePointer2 },
@@ -104,19 +107,19 @@ export const toolboxOptions: ToolBoxOptionType[] = [
   },
   // element and AIElement-{data}
   {
-    id: "line",
+    id: "rope",
     type: "menu",
-    name: "Lines",
+    name: "Ropes",
     icon: PiLineSegmentBold,
     content: [
       {
-        id: "line-line",
+        id: "rope-line",
         type: "tool",
         name: "Line",
         icon: PiLineSegmentBold,
       },
       {
-        id: "line-spline",
+        id: "rope-spline",
         type: "tool",
         name: "Spline",
         icon: Spline,
