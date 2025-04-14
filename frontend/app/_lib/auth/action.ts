@@ -15,9 +15,9 @@ export async function registerUserByEmail(
     const { firstName, lastName, password, email } =
       Object.fromEntries(formData);
 
-    if (!firstName || !password || !email) {
-      return null;
-    }
+    // if (!firstName || !password || !email) {
+    //   return null;
+    // }
 
     const cookieStore = await cookies();
     const cookiesidValue = cookieStore.get("connect.sid");
@@ -38,6 +38,7 @@ export async function registerUserByEmail(
     const data = (await response.json()) as FetchResponse & {
       data: { email: string };
     };
+    console.log(data);
     return data;
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);
@@ -55,7 +56,7 @@ export async function loginUserByEmail(
       errors: {},
     };
   }
-  let data;
+  let data: FetchResponse;
   const { password, email } = Object.fromEntries(formData);
   if (!password || !email) {
     return null;
@@ -73,17 +74,16 @@ export async function loginUserByEmail(
       body: JSON.stringify({ email, password }),
     });
 
-    setCookieSid(response, cookieStore);
-
     data = (await response.json()) as FetchResponse;
+    if (data.success) setCookieSid(response, cookieStore);
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);
   }
-
   if (data.success) {
     setCookieRecentLogin(cookieStore, email.toString());
     redirect(`/app`);
   }
+  console.log(data);
   return data;
 }
 

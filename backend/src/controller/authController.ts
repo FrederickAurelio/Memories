@@ -246,14 +246,6 @@ export async function loginUserByEmail(req: Request, res: Response) {
         errors: { email: "Email does not exist." },
       });
     }
-    if (!loginUser.isEmailVerified) {
-      return void res.status(401).json({
-        success: false,
-        message:
-          "Your email is not verified. Please check your inbox for the verification link.",
-        errors: { emailLink: email },
-      });
-    }
 
     if (!compareSync(password, loginUser.password)) {
       return void res.status(401).json({
@@ -262,6 +254,15 @@ export async function loginUserByEmail(req: Request, res: Response) {
         errors: { password: "Invalid password." },
       });
     } else {
+      if (!loginUser.isEmailVerified) {
+        return void res.status(401).json({
+          success: false,
+          message:
+            "Your email is not verified. Please check your inbox for the verification link.",
+          errors: { emailLink: email },
+        });
+      }
+
       req.session.regenerate(function (err) {
         if (err) {
           return res.status(500).json({

@@ -1,10 +1,10 @@
 "use client";
+import { ElementType } from "@/app/_lib/types";
 import { useLocalStorage } from "@uidotdev/usehooks";
+import Konva from "konva";
+import dynamic from "next/dynamic";
 import { memo, useEffect, useRef, useState } from "react";
 import { Layer, Stage } from "react-konva";
-import dynamic from "next/dynamic";
-import { ElementType } from "@/app/_lib/types";
-import Konva from "konva";
 const PhotoImage = dynamic(() => import("@/canva_components/PhotoImage"), {
   ssr: false,
 });
@@ -23,7 +23,7 @@ const Canva = memo(function Canva({
     [],
   );
   const [isSelected, setIsSelected] = useState<string | null>(null);
-  const stageRef = useRef(null);
+  const stageRef = useRef<Konva.Stage>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function updateElementState(updatedEl: ElementType) {

@@ -1,14 +1,14 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { loginUserByEmail } from "../_lib/auth/action";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import Form from "next/form";
-import Input from "../_components/Input";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useActionState, useEffect, useState } from "react";
 import Button from "../_components/Button";
-import ResendEmailVerif from "../signup/ResendEmailVerif";
+import Input from "../_components/Input";
+import { loginUserByEmail } from "../_lib/auth/action";
 import GitHubSignInButton from "../signup/GitHubSignInButton";
+import ResendEmailVerif from "../signup/ResendEmailVerif";
 
 const initialState = {
   email: "",
