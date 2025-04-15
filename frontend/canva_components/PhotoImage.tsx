@@ -84,6 +84,7 @@ function PhotoImage({
   return (
     <>
       <Group
+        name="object"
         width={element.width}
         height={element.height}
         x={element.x}
@@ -102,7 +103,7 @@ function PhotoImage({
           height={element.height}
           fill="white"
           shadowBlur={10}
-          shadowColor="rgba(0, 0, 0, 0.3)"
+          shadowColor="rgba(0, 0, 0, 0.4)"
           shadowOffsetX={7}
           shadowOffsetY={7}
         />
