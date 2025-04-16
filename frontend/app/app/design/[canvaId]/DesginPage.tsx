@@ -19,7 +19,10 @@ function ToolContent() {
       </div>
       <div className="col-start-2 col-end-[15] flex w-full items-center justify-center p-4">
         <div className="aspect-video h-full bg-white shadow-[0_1px_20px_rgba(38,38,38,0.20)]">
-          <Canva handleSelectTool={handleSelectTool} selectedTool={selectedTool} />
+          <Canva
+            handleSelectTool={handleSelectTool}
+            selectedTool={selectedTool}
+          />
         </div>
       </div>
     </>

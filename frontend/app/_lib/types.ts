@@ -1,5 +1,6 @@
+import Konva from "konva";
+import { JSX, RefObject } from "react";
 import { IconType } from "react-icons";
-import { JSX } from "react";
 
 export type FetchResponse = {
   success: boolean;
@@ -73,8 +74,29 @@ export type PhotoElementType = {
   src: string;
 } & BaseElementType;
 
+export type elRefType = RefObject<Konva.Group | null> &
+  RefObject<Konva.Shape | null> &
+  RefObject<Konva.Rect | null> &
+  RefObject<Konva.Circle | null> &
+  RefObject<Konva.Star | null> &
+  RefObject<Konva.RegularPolygon | null>;
+
 export type ShapeElementType = {
-  type: "shape";
+  type:
+    | "shape-rect"
+    | "shape-circle"
+    | "shape-triangle"
+    | "shape-star"
+    | "shape-hexagon"
+    | "shape-heart";
+  strokeWidth: number;
+  stroke: string;
+  fill: string;
+  sides?: number;
+  radius?: number;
+  numPoints?: number;
+  innerRadius?: number;
+  outerRadius?: number;
 } & BaseElementType;
 
 export type ElementType = PhotoElementType | ShapeElementType;

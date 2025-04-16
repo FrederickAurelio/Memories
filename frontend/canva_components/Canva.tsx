@@ -1,9 +1,16 @@
 "use client";
-import { ElementType } from "@/app/_lib/types";
+const PhotoImage = dynamic(() => import("@/canva_components/PhotoImage"), {
+  ssr: false,
+});
+const Shapes = dynamic(() => import("@/canva_components/Shapes"), {
+  ssr: false,
+});
+import { ElementType, elRefType, ShapeElementType } from "@/app/_lib/types";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import Konva from "konva";
+import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node.js";
 import dynamic from "next/dynamic";
-import { memo, RefObject, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Layer, Stage } from "react-konva";
 import {
   drawGuides,
@@ -11,10 +18,6 @@ import {
   getLineGuideStops,
   getObjectSnappingEdges,
 } from "./guideline.js";
-import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node.js";
-const PhotoImage = dynamic(() => import("@/canva_components/PhotoImage"), {
-  ssr: false,
-});
 
 const Canva = memo(function Canva({
   selectedTool,
@@ -50,12 +53,18 @@ const Canva = memo(function Canva({
     setElements((elements) => elements.filter((el) => el.id !== id));
   }
 
+  function addElement(el: ElementType) {
+    setElements((els) => {
+      return [...els, el];
+    });
+  }
+
   function handleTransformEndElement(
     e:
       | Konva.KonvaEventObject<DragEvent>
       | KonvaEventObject<Event, Node<NodeConfig>>,
     element: ElementType,
-    elRef: RefObject<Konva.Shape | null> | RefObject<Konva.Group | null>,
+    elRef: elRefType,
   ) {
     const { x, y, rotation, scaleX, scaleY } = e.target.attrs;
 
@@ -83,36 +92,6 @@ const Canva = memo(function Canva({
     }
   }
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      setElements((e) => {
-        return [
-          ...e,
-          {
-            type: "photo",
-            id: new Date().toISOString(),
-            x: 300,
-            y: 50,
-            src: base64,
-            rotation: 0,
-            width: 0,
-            height: 0,
-          },
-        ];
-      });
-
-      if (inputRef.current) {
-        inputRef.current.value = "";
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-
   function handleClickStage(
     e: Konva.KonvaEventObject<TouchEvent> | Konva.KonvaEventObject<MouseEvent>,
   ) {
@@ -120,13 +99,54 @@ const Canva = memo(function Canva({
     if (clickedOnEmpty) setIsSelected(null);
   }
 
+  // Handle INPUT Photo
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      addElement({
+        type: "photo",
+        id: new Date().toISOString(),
+        x: stageSize.width / 2,
+        y: stageSize.height / 2,
+        src: base64,
+        rotation: 0,
+        width: 0,
+        height: 0,
+      });
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
   // Handle INPUT from Toolbox
   useEffect(() => {
     if (selectedTool === "photo") {
       if (inputRef.current) inputRef.current.click();
       handleSelectTool("select");
+    } else if (selectedTool.startsWith("shape")) {
+      addElement({
+        type: selectedTool as ShapeElementType["type"],
+        id: new Date().toISOString(),
+        x: stageSize.width / 2,
+        y: stageSize.height / 2,
+        rotation: 0,
+        width: 100,
+        height: 100,
+        sides: selectedTool === "shape-triangle" ? 3 : 6,
+        stroke: "#262626",
+        fill: "#ffff",
+        strokeWidth: 2,
+      });
+      handleSelectTool("select");
     }
-  }, [handleSelectTool, selectedTool]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTool]);
 
   // Update size of canvas
   useEffect(() => {
@@ -160,12 +180,10 @@ const Canva = memo(function Canva({
         <Layer
           ref={layerRef}
           onDragEnd={() => {
-            console.log("HERE");
             if (!layerRef.current) return;
             layerRef.current.find(".guid-line").forEach((l) => l.destroy());
           }}
           onDragMove={(e) => {
-            console.log("HEHE");
             if (!layerRef.current) return;
             // clear all previous lines on the screen
             layerRef.current.find(".guid-line").forEach((l) => l.destroy());
@@ -218,7 +236,16 @@ const Canva = memo(function Canva({
                 />
               );
             else if (e.type.startsWith("shape")) {
-              return;
+              return (
+                <Shapes
+                  handleSelectElement={handleSelectElement}
+                  isSelected={isSelected === e.id}
+                  // updateElementState={updateElementState}
+                  handleTransformEnd={handleTransformEndElement}
+                  key={e.id}
+                  element={e}
+                />
+              );
             }
           })}
         </Layer>
