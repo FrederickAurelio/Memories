@@ -77,8 +77,9 @@ export type PhotoElementType = {
 export type elRefType = RefObject<Konva.Group | null> &
   RefObject<Konva.Shape | null> &
   RefObject<Konva.Rect | null> &
-  RefObject<Konva.Circle | null> &
+  RefObject<Konva.Ellipse | null> &
   RefObject<Konva.Star | null> &
+  RefObject<Konva.Arrow | null> &
   RefObject<Konva.RegularPolygon | null>;
 
 export type ShapeElementType = {
@@ -88,6 +89,7 @@ export type ShapeElementType = {
     | "shape-triangle"
     | "shape-star"
     | "shape-hexagon"
+    | "shape-arrow"
     | "shape-heart";
   strokeWidth: number;
   stroke: string;

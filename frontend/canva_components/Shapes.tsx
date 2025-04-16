@@ -2,7 +2,15 @@ import { elRefType, ShapeElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import { RefObject, useEffect, useRef } from "react";
-import { Circle, Rect, RegularPolygon, Star, Transformer } from "react-konva";
+import {
+  Arrow,
+  Ellipse,
+  Rect,
+  RegularPolygon,
+  Star,
+  Transformer,
+} from "react-konva";
+import Heart from "./Heart";
 
 type Props = {
   element: ShapeElementType;
@@ -29,12 +37,14 @@ function Shapes({
     element.type === "shape-rect"
       ? Rect
       : element.type === "shape-circle"
-        ? Circle
+        ? Ellipse
         : element.type === "shape-hexagon" || element.type === "shape-triangle"
           ? RegularPolygon
           : element.type === "shape-star"
             ? Star
-            : Rect;
+            : element.type === "shape-arrow"
+              ? Arrow
+              : Heart;
 
   const shapeRef = useRef<Konva.Shape>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
@@ -53,6 +63,9 @@ function Shapes({
   return (
     <>
       <Shapes
+        points={[0, 0, element.width, 0]}
+        pointerLength={element.height / 5}
+        pointerWidth={element.height / 5}
         name="object"
         strokeWidth={element.strokeWidth || 2}
         stroke={element.stroke || "#262626"}
@@ -69,12 +82,14 @@ function Shapes({
         onTransformEnd={(e) => handleTransformEnd(e, element, shapeRef)}
         draggable
         ref={shapeRef as elRefType}
+        radiusX={element.width / 2}
+        radiusY={element.height / 2}
         sides={element?.sides || 6}
-        radius={element?.radius || 70}
+        radius={element.width / 1.8}
         numPoints={element?.numPoints || 5}
-        innerRadius={element?.innerRadius || 30}
-        outerRadius={element?.outerRadius || 70}
-      ></Shapes>
+        innerRadius={element.width / 3.8}
+        outerRadius={element.width / 1.5}
+      />
       <Transformer
         ref={transformerRef}
         flipEnabled={false}

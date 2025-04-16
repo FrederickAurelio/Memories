@@ -1,4 +1,5 @@
 import {
+  ArrowUp,
   Circle,
   EraserIcon,
   Heart,
@@ -12,7 +13,7 @@ import {
   SquareIcon,
   Star,
   Triangle,
-  Type,
+  Type
 } from "lucide-react";
 import { AiFillPlusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { BsChatQuote, BsFillChatQuoteFill } from "react-icons/bs";
@@ -82,6 +83,12 @@ export const toolboxOptions: ToolBoxOptionType[] = [
         type: "tool",
         name: "Star",
         icon: Star,
+      },
+      {
+        id: "shape-arrow",
+        type: "tool",
+        name: "Arrow",
+        icon: ArrowUp,
       },
       {
         id: "shape-hexagon",
