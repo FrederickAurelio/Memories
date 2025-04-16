@@ -1,7 +1,7 @@
 import { elRefType, ShapeElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import { RefObject, useEffect, useRef } from "react";
+import { memo, RefObject, useEffect, useRef } from "react";
 import {
   Arrow,
   Ellipse,
@@ -104,4 +104,20 @@ function Shapes({
   );
 }
 
-export default Shapes;
+const areEqual = (prev: Props, next: Props) => {
+  return (
+    prev.element.id === next.element.id &&
+    prev.element.x === next.element.x &&
+    prev.element.y === next.element.y &&
+    prev.element.width === next.element.width &&
+    prev.element.height === next.element.height &&
+    prev.element.rotation === next.element.rotation &&
+    prev.element.sides === next.element.sides &&
+    prev.element.stroke === next.element.stroke &&
+    prev.element.fill === next.element.fill &&
+    prev.element.strokeWidth === next.element.strokeWidth &&
+    prev.isSelected === next.isSelected
+  );
+};
+
+export default memo(Shapes, areEqual);
