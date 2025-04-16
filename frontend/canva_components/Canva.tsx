@@ -3,7 +3,7 @@ import { ElementType } from "@/app/_lib/types";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import Konva from "konva";
 import dynamic from "next/dynamic";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, RefObject, useEffect, useRef, useState } from "react";
 import { Layer, Stage } from "react-konva";
 import {
   drawGuides,
@@ -11,16 +11,17 @@ import {
   getLineGuideStops,
   getObjectSnappingEdges,
 } from "./guideline.js";
+import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node.js";
 const PhotoImage = dynamic(() => import("@/canva_components/PhotoImage"), {
   ssr: false,
 });
 
 const Canva = memo(function Canva({
   selectedTool,
-  handleSelect,
+  handleSelectTool,
 }: {
   selectedTool: string;
-  handleSelect(s: string): void;
+  handleSelectTool(s: string): void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
@@ -41,8 +42,45 @@ const Canva = memo(function Canva({
     );
   }
 
+  function handleSelectElement(elementId: string) {
+    setIsSelected(elementId);
+  }
+
   function removeElement(id: string) {
     setElements((elements) => elements.filter((el) => el.id !== id));
+  }
+
+  function handleTransformEndElement(
+    e:
+      | Konva.KonvaEventObject<DragEvent>
+      | KonvaEventObject<Event, Node<NodeConfig>>,
+    element: ElementType,
+    elRef: RefObject<Konva.Shape | null> | RefObject<Konva.Group | null>,
+  ) {
+    const { x, y, rotation, scaleX, scaleY } = e.target.attrs;
+
+    if (
+      x + element.width > 0 &&
+      x < stageSize.width &&
+      y + element.height > 0 &&
+      y < stageSize.height
+    ) {
+      updateElementState({
+        ...element,
+        x,
+        y,
+        rotation,
+        width: Math.max(5, element.width * scaleX),
+        height: Math.max(element.height * scaleY),
+      });
+
+      if (elRef.current) {
+        elRef.current.scaleX(1);
+        elRef.current.scaleY(1);
+      }
+    } else {
+      removeElement(element.id);
+    }
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -86,9 +124,9 @@ const Canva = memo(function Canva({
   useEffect(() => {
     if (selectedTool === "photo") {
       if (inputRef.current) inputRef.current.click();
-      handleSelect("select");
+      handleSelectTool("select");
     }
-  }, [handleSelect, selectedTool]);
+  }, [handleSelectTool, selectedTool]);
 
   // Update size of canvas
   useEffect(() => {
@@ -171,15 +209,17 @@ const Canva = memo(function Canva({
             if (e.type === "photo")
               return (
                 <PhotoImage
-                  stageSize={stageSize}
                   isSelected={isSelected === e.id}
-                  setIsSelected={setIsSelected}
+                  handleSelectElement={handleSelectElement}
                   updateElementState={updateElementState}
-                  removeElement={removeElement}
+                  handleTransformEnd={handleTransformEndElement}
                   key={e.id}
                   element={e}
                 />
               );
+            else if (e.type.startsWith("shape")) {
+              return;
+            }
           })}
         </Layer>
       </Stage>

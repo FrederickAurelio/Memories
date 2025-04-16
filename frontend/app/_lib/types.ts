@@ -59,15 +59,22 @@ export type ToolMenuType = {
 
 export type ToolBoxOptionType = ToolType | ToolMenuType | ToolCustomType;
 
-export type PhotoElementType = {
-  type: "photo";
+export type BaseElementType = {
   id: string;
   x: number;
   y: number;
-  src: string;
   rotation: number;
   width: number;
   height: number;
 };
 
-export type ElementType = PhotoElementType;
+export type PhotoElementType = {
+  type: "photo";
+  src: string;
+} & BaseElementType;
+
+export type ShapeElementType = {
+  type: "shape";
+} & BaseElementType;
+
+export type ElementType = PhotoElementType | ShapeElementType;

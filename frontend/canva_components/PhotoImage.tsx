@@ -1,61 +1,35 @@
 import { imageMargin, imageMarginBot } from "@/app/_lib/const";
 import { ElementType, PhotoElementType } from "@/app/_lib/types";
-import { Dispatch, memo, SetStateAction, useEffect, useRef } from "react";
-import { Group, Image, Rect, Transformer } from "react-konva";
 import Konva from "konva";
+import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
+import { memo, RefObject, useEffect, useRef } from "react";
+import { Group, Image, Rect, Transformer } from "react-konva";
 import useImage from "use-image";
 
 type Props = {
   element: PhotoElementType;
   isSelected: boolean;
-  setIsSelected: Dispatch<SetStateAction<string | null>>;
+  handleSelectElement(elementId: string): void;
   updateElementState(updatedEl: ElementType): void;
-  stageSize: { width: number; height: number };
-  removeElement(id: string): void;
+  handleTransformEnd(
+    e:
+      | Konva.KonvaEventObject<DragEvent>
+      | KonvaEventObject<Event, Node<NodeConfig>>,
+    element: ElementType,
+    elRef: RefObject<Konva.Group | null>,
+  ): void;
 };
 
 function PhotoImage({
   element,
   isSelected,
-  setIsSelected,
+  handleSelectElement,
   updateElementState,
-  stageSize,
-  removeElement,
+  handleTransformEnd,
 }: Props) {
   const [imageDOM] = useImage(element.src);
   const groupRef = useRef<Konva.Group>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
-
-  function handleClick() {
-    setIsSelected(element.id);
-  }
-
-  function handleTransformEnd(e: Konva.KonvaEventObject<DragEvent>) {
-    const { x, y, rotation, scaleX, scaleY } = e.target.attrs;
-
-    if (
-      x + element.width > 0 &&
-      x < stageSize.width &&
-      y + element.height > 0 &&
-      y < stageSize.height
-    ) {
-      updateElementState({
-        ...element,
-        x,
-        y,
-        rotation,
-        width: Math.max(5, element.width * scaleX),
-        height: Math.max(element.height * scaleY),
-      });
-
-      if (groupRef.current) {
-        groupRef.current.scaleX(1);
-        groupRef.current.scaleY(1);
-      }
-    } else {
-      removeElement(element.id);
-    }
-  }
 
   useEffect(() => {
     if (!imageDOM) return;
@@ -90,11 +64,11 @@ function PhotoImage({
         x={element.x}
         y={element.y}
         rotation={element.rotation}
-        onClick={handleClick}
-        onTap={handleClick}
-        onDragStart={handleClick}
-        onDragEnd={handleTransformEnd}
-        onTransformEnd={handleTransformEnd}
+        onClick={() => handleSelectElement(element.id)}
+        onTap={() => handleSelectElement(element.id)}
+        onDragStart={() => handleSelectElement(element.id)}
+        onDragEnd={(e) => handleTransformEnd(e, element, groupRef)}
+        onTransformEnd={(e) => handleTransformEnd(e, element, groupRef)}
         draggable
         ref={groupRef}
       >

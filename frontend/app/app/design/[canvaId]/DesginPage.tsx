@@ -9,17 +9,17 @@ const Canva = dynamic(() => import("@/canva_components/Canva"), {
 
 function ToolContent() {
   const [selectedTool, isSelectedTool] = useState("select");
-  function handleSelect(s: string) {
+  function handleSelectTool(s: string) {
     isSelectedTool(s);
   }
   return (
     <>
       <div className="col-span-1 flex items-center justify-end">
-        <Toolbox selectedTool={selectedTool} onSelect={handleSelect} />
+        <Toolbox selectedTool={selectedTool} onSelect={handleSelectTool} />
       </div>
       <div className="col-start-2 col-end-[15] flex w-full items-center justify-center p-4">
         <div className="aspect-video h-full bg-white shadow-[0_1px_20px_rgba(38,38,38,0.20)]">
-          <Canva handleSelect={handleSelect} selectedTool={selectedTool} />
+          <Canva handleSelectTool={handleSelectTool} selectedTool={selectedTool} />
         </div>
       </div>
     </>
