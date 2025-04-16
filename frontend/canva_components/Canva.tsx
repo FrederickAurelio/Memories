@@ -59,6 +59,18 @@ const Canva = memo(function Canva({
     });
   }
 
+  function isOutsideStage(node: Konva.Node) {
+    const stage = node.getStage();
+    if (!stage) return false;
+    const nodeBox = node.getClientRect({ relativeTo: stage });
+    return (
+      nodeBox.x + nodeBox.width < 0 ||
+      nodeBox.y + nodeBox.height < 0 ||
+      nodeBox.x > stageSize.width ||
+      nodeBox.y > stageSize.height
+    );
+  }
+
   function handleTransformEndElement(
     e:
       | Konva.KonvaEventObject<DragEvent>
@@ -66,45 +78,22 @@ const Canva = memo(function Canva({
     element: ElementType,
     elRef: elRefType,
   ) {
+    if (!elRef.current) return;
+
     const { x, y, rotation, scaleX, scaleY } = e.target.attrs;
-    const newX =
-      element.type === "shape-hexagon" || element.type === "shape-triangle"
-        ? x - element.width / 1.8
-        : x;
-    const newY =
-      element.type === "shape-hexagon" || element.type === "shape-triangle"
-        ? y - element.height / 1.8
-        : y;
-    if (
-      newX + element.width > 0 &&
-      newX < stageSize.width &&
-      (element.type === "shape-triangle" ? (newY * 1.8) / 1.4 : newY) +
-        element.height >
-        0 &&
-      newY < stageSize.height
-    ) {
+    if (!isOutsideStage(elRef.current)) {
       const newWidth = Math.max(5, element.width * scaleX);
       const newHeight = Math.max(element.height * scaleY);
-      const maxLength = newWidth > newHeight ? newWidth : newHeight;
       updateElementState({
         ...element,
         x,
         y,
         rotation,
-        width:
-          element.type === "shape-hexagon" || element.type === "shape-triangle"
-            ? maxLength
-            : newWidth,
-        height:
-          element.type === "shape-hexagon" || element.type === "shape-triangle"
-            ? maxLength
-            : newHeight,
+        width: newWidth,
+        height: newHeight,
       });
-
-      if (elRef.current) {
-        elRef.current.scaleX(1);
-        elRef.current.scaleY(1);
-      }
+      elRef.current.scaleX(1);
+      elRef.current.scaleY(1);
     } else {
       removeElement(element.id);
     }
