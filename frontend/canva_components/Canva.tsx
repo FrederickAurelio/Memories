@@ -67,20 +67,38 @@ const Canva = memo(function Canva({
     elRef: elRefType,
   ) {
     const { x, y, rotation, scaleX, scaleY } = e.target.attrs;
-
+    const newX =
+      element.type === "shape-hexagon" || element.type === "shape-triangle"
+        ? x - element.width / 1.8
+        : x;
+    const newY =
+      element.type === "shape-hexagon" || element.type === "shape-triangle"
+        ? y - element.height / 1.8
+        : y;
     if (
-      x + element.width > 0 &&
-      x < stageSize.width &&
-      y + element.height > 0 &&
-      y < stageSize.height
+      newX + element.width > 0 &&
+      newX < stageSize.width &&
+      (element.type === "shape-triangle" ? (newY * 1.8) / 1.4 : newY) +
+        element.height >
+        0 &&
+      newY < stageSize.height
     ) {
+      const newWidth = Math.max(5, element.width * scaleX);
+      const newHeight = Math.max(element.height * scaleY);
+      const maxLength = newWidth > newHeight ? newWidth : newHeight;
       updateElementState({
         ...element,
         x,
         y,
         rotation,
-        width: Math.max(5, element.width * scaleX),
-        height: Math.max(element.height * scaleY),
+        width:
+          element.type === "shape-hexagon" || element.type === "shape-triangle"
+            ? maxLength
+            : newWidth,
+        height:
+          element.type === "shape-hexagon" || element.type === "shape-triangle"
+            ? maxLength
+            : newHeight,
       });
 
       if (elRef.current) {
@@ -136,8 +154,8 @@ const Canva = memo(function Canva({
         x: stageSize.width / 2,
         y: stageSize.height / 2,
         rotation: 0,
-        width: 100,
-        height: 100,
+        width: selectedTool === "shape-circle" ? 50 : 100,
+        height: selectedTool === "shape-circle" ? 50 : 100,
         sides: selectedTool === "shape-triangle" ? 3 : 6,
         stroke: "#262626",
         fill: "#ffff",

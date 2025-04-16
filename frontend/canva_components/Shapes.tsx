@@ -63,10 +63,10 @@ function Shapes({
   return (
     <>
       <Shapes
+        name="object"
         points={[0, 0, element.width, 0]}
         pointerLength={element.height / 5}
         pointerWidth={element.height / 5}
-        name="object"
         strokeWidth={element.strokeWidth || 2}
         stroke={element.stroke || "#262626"}
         fill={element.fill || "#262626"}
@@ -82,8 +82,8 @@ function Shapes({
         onTransformEnd={(e) => handleTransformEnd(e, element, shapeRef)}
         draggable
         ref={shapeRef as elRefType}
-        radiusX={element.width / 2}
-        radiusY={element.height / 2}
+        radiusX={element.width}
+        radiusY={element.height}
         sides={element?.sides || 6}
         radius={element.width / 1.8}
         numPoints={element?.numPoints || 5}
