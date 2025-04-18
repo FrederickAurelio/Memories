@@ -247,7 +247,6 @@ const Canva = memo(function Canva({
                 <Shapes
                   handleSelectElement={handleSelectElement}
                   isSelected={isSelected === e.id}
-                  // updateElementState={updateElementState}
                   handleTransformEnd={handleTransformEndElement}
                   key={e.id}
                   element={e}

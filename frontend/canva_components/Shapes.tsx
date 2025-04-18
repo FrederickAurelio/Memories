@@ -16,7 +16,6 @@ type Props = {
   element: ShapeElementType;
   isSelected: boolean;
   handleSelectElement(elementId: string): void;
-  // updateElementState(updatedEl: ShapeElementType): void;
   handleTransformEnd(
     e:
       | Konva.KonvaEventObject<DragEvent>
@@ -30,7 +29,6 @@ function Shapes({
   element,
   isSelected,
   handleSelectElement,
-  // updateElementState,
   handleTransformEnd,
 }: Props) {
   const Shapes =
