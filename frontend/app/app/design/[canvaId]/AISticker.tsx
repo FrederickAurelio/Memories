@@ -10,10 +10,10 @@ function AIElement({ onSelect }: { onSelect(s: string): void }) {
     <div className="flex w-80 flex-col gap-1 p-1">
       <div className="flex items-center gap-1 text-2xl font-semibold">
         <SiElement size={30} />
-        <h1>AI Element Generator</h1>
+        <h1>AI Sticker Generator</h1>
       </div>
       <p className="text-sm text-neutral-500">
-        Describe the element you want to generate. Be as specific as possible,
+        Describe the sticker you want to generate. Be as specific as possible,
         e.g.
         <span className="italic">
           {" "}
@@ -30,13 +30,13 @@ function AIElement({ onSelect }: { onSelect(s: string): void }) {
         placeholder="Type your prompt here..."
       />
       <Button
-        onClick={() => onSelect(`AIElement-${inputValue}`)}
+        onClick={() => onSelect(`AISticker-${inputValue}`)}
         disabled={inputValue === ""}
         size="small"
         className="rounded-lg py-2 text-sm font-semibold hover:scale-x-100 hover:scale-y-100 hover:opacity-90 disabled:hover:opacity-100"
         variant="primary"
       >
-        Generate Element
+        Generate Sticker
       </Button>
       <div className="grid w-full grid-cols-9 justify-between pt-2">
         <span className="col-span-4 mt-2 border-t-2 border-neutral-400"></span>
@@ -46,12 +46,12 @@ function AIElement({ onSelect }: { onSelect(s: string): void }) {
         <span className="col-span-4 mt-2 border-t-2 border-neutral-400"></span>
       </div>
       <Button
-        onClick={() => onSelect("element")}
+        onClick={() => onSelect("sticker")}
         size="small"
         className="rounded-lg py-2 text-sm font-semibold hover:scale-x-100 hover:scale-y-100 hover:opacity-70"
         variant="secondary"
       >
-        Upload own Image/Element
+        Upload own Sticker/Image
       </Button>
     </div>
   );

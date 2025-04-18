@@ -5,7 +5,16 @@ const PhotoImage = dynamic(() => import("@/canva_components/PhotoImage"), {
 const Shapes = dynamic(() => import("@/canva_components/Shapes"), {
   ssr: false,
 });
-import { ElementType, elRefType, ShapeElementType } from "@/app/_lib/types";
+const Sticker = dynamic(() => import("@/canva_components/Sticker"), {
+  ssr: false,
+});
+import {
+  ElementType,
+  elRefType,
+  PhotoElementType,
+  ShapeElementType,
+  StickerElementType,
+} from "@/app/_lib/types";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node.js";
@@ -36,6 +45,9 @@ const Canva = memo(function Canva({
   const stageRef = useRef<Konva.Stage>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const layerRef = useRef<Konva.Layer>(null);
+  const [inputImageType, setInputImageType] = useState<"photo" | "sticker">(
+    "photo",
+  );
 
   function updateElementState(updatedEl: ElementType) {
     setElements((elements) =>
@@ -110,12 +122,11 @@ const Canva = memo(function Canva({
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = reader.result as string;
       addElement({
-        type: "photo",
+        type: inputImageType as "photo" | "sticker",
         id: new Date().toISOString(),
         x: stageSize.width / 2,
         y: stageSize.height / 2,
@@ -124,6 +135,7 @@ const Canva = memo(function Canva({
         width: 0,
         height: 0,
       });
+
       if (inputRef.current) {
         inputRef.current.value = "";
       }
@@ -133,8 +145,9 @@ const Canva = memo(function Canva({
 
   // Handle INPUT from Toolbox
   useEffect(() => {
-    if (selectedTool === "photo") {
+    if (selectedTool === "photo" || selectedTool === "sticker") {
       if (inputRef.current) inputRef.current.click();
+      setInputImageType(selectedTool);
       handleSelectTool("select");
     } else if (selectedTool.startsWith("shape")) {
       addElement({
@@ -239,20 +252,30 @@ const Canva = memo(function Canva({
                   updateElementState={updateElementState}
                   handleTransformEnd={handleTransformEndElement}
                   key={e.id}
-                  element={e}
+                  element={e as PhotoElementType}
                 />
               );
-            else if (e.type.startsWith("shape")) {
+            else if (e.type.startsWith("shape"))
               return (
                 <Shapes
                   handleSelectElement={handleSelectElement}
                   isSelected={isSelected === e.id}
                   handleTransformEnd={handleTransformEndElement}
                   key={e.id}
-                  element={e}
+                  element={e as ShapeElementType}
                 />
               );
-            }
+            else if (e.type.startsWith("sticker"))
+              return (
+                <Sticker
+                  isSelected={isSelected === e.id}
+                  handleSelectElement={handleSelectElement}
+                  updateElementState={updateElementState}
+                  handleTransformEnd={handleTransformEndElement}
+                  key={e.id}
+                  element={e as StickerElementType}
+                />
+              );
           })}
         </Layer>
       </Stage>

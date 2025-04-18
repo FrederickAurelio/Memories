@@ -101,4 +101,12 @@ export type ShapeElementType = {
   outerRadius?: number;
 } & BaseElementType;
 
-export type ElementType = PhotoElementType | ShapeElementType;
+export type StickerElementType = {
+  type: "sticker";
+  src: string;
+} & BaseElementType;
+
+export type ElementType =
+  | PhotoElementType
+  | ShapeElementType
+  | StickerElementType;
