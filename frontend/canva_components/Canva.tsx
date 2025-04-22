@@ -250,6 +250,9 @@ const Canva = memo(function Canva({
         className="hidden"
       />
       <Stage
+        style={{
+          cursor: `${selectedTool.startsWith("draw") ? "crosshair" : "default"}`,
+        }}
         onMouseDown={handleMouseDown}
         onMousemove={handleMouseMove}
         onMouseup={handleMouseUp}
