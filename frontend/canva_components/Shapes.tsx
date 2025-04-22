@@ -15,6 +15,7 @@ import {
 import Heart from "./Heart";
 
 type Props = {
+  draggable: boolean;
   element: ShapeElementType;
   isSelected: boolean;
   handleSelectElement(elementId: string): void;
@@ -28,6 +29,7 @@ type Props = {
 };
 
 function Shapes({
+  draggable,
   element,
   isSelected,
   handleSelectElement,
@@ -81,7 +83,7 @@ function Shapes({
         onDragStart={() => handleSelectElement(element.id)}
         onDragEnd={(e) => handleTransformEnd(e, element, shapeRef)}
         onTransformEnd={(e) => handleTransformEnd(e, element, shapeRef)}
-        draggable
+        draggable={draggable}
         ref={shapeRef as elRefType}
         radiusX={element.width}
         radiusY={element.height}
@@ -107,6 +109,7 @@ function Shapes({
 
 const areEqual = (prev: Props, next: Props) => {
   return (
+    prev.draggable === next.draggable &&
     prev.element.id === next.element.id &&
     prev.element.x === next.element.x &&
     prev.element.y === next.element.y &&

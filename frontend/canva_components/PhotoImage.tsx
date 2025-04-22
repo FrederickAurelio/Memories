@@ -9,6 +9,7 @@ import { Group, Image, Rect, Transformer } from "react-konva";
 import useImage from "use-image";
 
 type Props = {
+  draggable: boolean;
   element: PhotoElementType;
   isSelected: boolean;
   handleSelectElement(elementId: string): void;
@@ -23,6 +24,7 @@ type Props = {
 };
 
 function PhotoImage({
+  draggable,
   element,
   isSelected,
   handleSelectElement,
@@ -72,7 +74,7 @@ function PhotoImage({
         onDragStart={() => handleSelectElement(element.id)}
         onDragEnd={(e) => handleTransformEnd(e, element, groupRef)}
         onTransformEnd={(e) => handleTransformEnd(e, element, groupRef)}
-        draggable
+        draggable={draggable}
         ref={groupRef}
       >
         <Rect
@@ -113,6 +115,7 @@ function PhotoImage({
 
 const areEqual = (prev: Props, next: Props) => {
   return (
+    prev.draggable === next.draggable &&
     prev.element.id === next.element.id &&
     prev.element.x === next.element.x &&
     prev.element.y === next.element.y &&

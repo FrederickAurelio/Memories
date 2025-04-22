@@ -64,7 +64,8 @@ const Canva = memo(function Canva({
   }
 
   function handleSelectElement(elementId: string) {
-    setIsSelected(elementId);
+    if (!selectedTool.startsWith("draw") && isDrawing.current === "none")
+      setIsSelected(elementId);
   }
 
   function removeElement(id: string) {
@@ -223,6 +224,8 @@ const Canva = memo(function Canva({
         strokeWidth: 2,
       });
       handleSelectTool("select");
+    } else if (selectedTool.startsWith("draw")) {
+      setIsSelected(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTool]);
@@ -313,6 +316,10 @@ const Canva = memo(function Canva({
             if (e.type === "photo")
               return (
                 <PhotoImage
+                  draggable={
+                    !selectedTool.startsWith("draw") &&
+                    isDrawing.current === "none"
+                  }
                   isSelected={isSelected === e.id}
                   handleSelectElement={handleSelectElement}
                   updateElementState={updateElementState}
@@ -324,6 +331,10 @@ const Canva = memo(function Canva({
             else if (e.type.startsWith("shape"))
               return (
                 <Shapes
+                  draggable={
+                    !selectedTool.startsWith("draw") &&
+                    isDrawing.current === "none"
+                  }
                   handleSelectElement={handleSelectElement}
                   isSelected={isSelected === e.id}
                   handleTransformEnd={handleTransformEndElement}
@@ -334,6 +345,10 @@ const Canva = memo(function Canva({
             else if (e.type.startsWith("sticker"))
               return (
                 <Sticker
+                  draggable={
+                    !selectedTool.startsWith("draw") &&
+                    isDrawing.current === "none"
+                  }
                   isSelected={isSelected === e.id}
                   handleSelectElement={handleSelectElement}
                   updateElementState={updateElementState}
@@ -345,6 +360,10 @@ const Canva = memo(function Canva({
             else if (e.type.startsWith("draw"))
               return (
                 <Draw
+                  draggable={
+                    !selectedTool.startsWith("draw") &&
+                    isDrawing.current === "none"
+                  }
                   isOutsideStage={isOutsideStage}
                   updateElementState={updateElementState}
                   removeElement={removeElement}

@@ -3,11 +3,12 @@
 import { ElementType, StickerElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import { RefObject, useEffect, useRef } from "react";
+import { memo, RefObject, useEffect, useRef } from "react";
 import { Image, Transformer } from "react-konva";
 import useImage from "use-image";
 
 type Props = {
+  draggable: boolean;
   element: StickerElementType;
   isSelected: boolean;
   handleSelectElement(elementId: string): void;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 function Sticker({
+  draggable,
   element,
   isSelected,
   handleSelectElement,
@@ -74,7 +76,7 @@ function Sticker({
         onDragStart={() => handleSelectElement(element.id)}
         onDragEnd={(e) => handleTransformEnd(e, element, imageRef)}
         onTransformEnd={(e) => handleTransformEnd(e, element, imageRef)}
-        draggable
+        draggable={draggable}
         ref={imageRef}
       />
       <Transformer
@@ -91,4 +93,20 @@ function Sticker({
   );
 }
 
-export default Sticker;
+const areEqual = (prev: Props, next: Props) => {
+  return (
+    prev.draggable === next.draggable &&
+    prev.element.id === next.element.id &&
+    prev.element.src === next.element.src &&
+    prev.element.x === next.element.x &&
+    prev.element.y === next.element.y &&
+    prev.element.width === next.element.width &&
+    prev.element.height === next.element.height &&
+    prev.element.rotation === next.element.rotation &&
+    prev.element.stroke === next.element.stroke &&
+    prev.element.strokeWidth === next.element.strokeWidth &&
+    prev.isSelected === next.isSelected
+  );
+};
+
+export default memo(Sticker, areEqual);

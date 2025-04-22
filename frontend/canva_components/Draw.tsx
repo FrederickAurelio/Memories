@@ -3,10 +3,11 @@
 import { DrawElementType, ElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Line, Transformer } from "react-konva";
 
 type Props = {
+  draggable: boolean;
   element: DrawElementType;
   isSelected: boolean;
   handleSelectElement(elementId: string): void;
@@ -16,6 +17,7 @@ type Props = {
 };
 
 function Draw({
+  draggable,
   element,
   isSelected,
   handleSelectElement,
@@ -79,7 +81,7 @@ function Draw({
         onClick={() => handleSelectElement(element.id)}
         onTap={() => handleSelectElement(element.id)}
         onDragStart={() => handleSelectElement(element.id)}
-        draggable
+        draggable={draggable}
         onDragEnd={handleTransformEndElement}
         onTransformEnd={handleTransformEndElement}
         ref={drawRef}
@@ -98,4 +100,18 @@ function Draw({
   );
 }
 
-export default Draw;
+const areEqual = (prev: Props, next: Props) => {
+  return (
+    prev.draggable === next.draggable &&
+    prev.element.id === next.element.id &&
+    prev.element.x === next.element.x &&
+    prev.element.y === next.element.y &&
+    prev.element.rotation === next.element.rotation &&
+    prev.element.stroke === next.element.stroke &&
+    prev.element.strokeWidth === next.element.strokeWidth &&
+    prev.isSelected === next.isSelected &&
+    prev.element.points === next.element.points
+  );
+};
+
+export default memo(Draw, areEqual);
