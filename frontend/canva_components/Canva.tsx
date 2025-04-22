@@ -8,7 +8,11 @@ const Shapes = dynamic(() => import("@/canva_components/Shapes"), {
 const Sticker = dynamic(() => import("@/canva_components/Sticker"), {
   ssr: false,
 });
+const Draw = dynamic(() => import("@/canva_components/Draw"), {
+  ssr: false,
+});
 import {
+  DrawElementType,
   ElementType,
   elRefType,
   PhotoElementType,
@@ -27,6 +31,7 @@ import {
   getLineGuideStops,
   getObjectSnappingEdges,
 } from "./guideline.js";
+import imageCompression from "browser-image-compression";
 
 const Canva = memo(function Canva({
   selectedTool,
@@ -35,6 +40,7 @@ const Canva = memo(function Canva({
   selectedTool: string;
   handleSelectTool(s: string): void;
 }) {
+  const isDrawing = useRef<"none" | "drawing" | "erasing">("none");
   const containerRef = useRef<HTMLDivElement>(null);
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
   const [elements, setElements] = useLocalStorage<ElementType[]>(
@@ -87,7 +93,7 @@ const Canva = memo(function Canva({
     e:
       | Konva.KonvaEventObject<DragEvent>
       | KonvaEventObject<Event, Node<NodeConfig>>,
-    element: ElementType,
+    element: PhotoElementType | ShapeElementType | StickerElementType,
     elRef: elRefType,
   ) {
     if (!elRef.current) return;
@@ -111,17 +117,68 @@ const Canva = memo(function Canva({
     }
   }
 
-  function handleClickStage(
+  function handleMouseDown(
     e: Konva.KonvaEventObject<TouchEvent> | Konva.KonvaEventObject<MouseEvent>,
   ) {
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) setIsSelected(null);
+
+    if (selectedTool.startsWith("draw-pen")) {
+      isDrawing.current = "drawing";
+      const pos = e.target.getStage()?.getPointerPosition();
+      addElement({
+        type: "draw",
+        id: new Date().toISOString(),
+        points: [pos?.x as number, pos?.y as number],
+        x: 0,
+        y: 0,
+        rotation: 0,
+        stroke: "#000",
+        strokeWidth: 3,
+      });
+    } else if (selectedTool.startsWith("draw-eraser")) {
+      isDrawing.current = "erasing";
+    }
+  }
+
+  function handleMouseMove(
+    e: Konva.KonvaEventObject<MouseEvent> | Konva.KonvaEventObject<TouchEvent>,
+  ) {
+    if (isDrawing.current === "drawing") {
+      const stage = e.target.getStage();
+      if (!stage) return;
+      const point = stage.getPointerPosition();
+      setElements((e) => {
+        return e.map((el, i) =>
+          e.length - 1 === i && el.type === "draw"
+            ? {
+                ...el,
+                points: el.points.concat([
+                  point?.x as number,
+                  point?.y as number,
+                ]),
+              }
+            : el,
+        );
+      });
+    } else if (isDrawing.current === "erasing") {
+      const isObject = e.target.attrs.name === "object";
+      if (isObject) removeElement(e.target.attrs.id);
+    }
+  }
+
+  function handleMouseUp() {
+    isDrawing.current = "none";
   }
 
   // Handle INPUT Photo
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const compressedFile = await imageCompression(file, {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 768,
+    });
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = reader.result as string;
@@ -134,13 +191,15 @@ const Canva = memo(function Canva({
         rotation: 0,
         width: 0,
         height: 0,
+        stroke: "#000",
+        strokeWidth: 0,
       });
 
       if (inputRef.current) {
         inputRef.current.value = "";
       }
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(compressedFile);
   }
 
   // Handle INPUT from Toolbox
@@ -191,8 +250,12 @@ const Canva = memo(function Canva({
         className="hidden"
       />
       <Stage
-        onMouseDown={handleClickStage}
-        onTouchStart={handleClickStage}
+        onMouseDown={handleMouseDown}
+        onMousemove={handleMouseMove}
+        onMouseup={handleMouseUp}
+        onTouchStart={handleMouseDown}
+        onTouchMove={handleMouseMove}
+        onTouchEnd={handleMouseUp}
         width={stageSize.width}
         height={stageSize.height}
         ref={stageRef}
@@ -274,6 +337,18 @@ const Canva = memo(function Canva({
                   handleTransformEnd={handleTransformEndElement}
                   key={e.id}
                   element={e as StickerElementType}
+                />
+              );
+            else if (e.type.startsWith("draw"))
+              return (
+                <Draw
+                  isOutsideStage={isOutsideStage}
+                  updateElementState={updateElementState}
+                  removeElement={removeElement}
+                  isSelected={isSelected === e.id}
+                  handleSelectElement={handleSelectElement}
+                  key={e.id}
+                  element={e as DrawElementType}
                 />
               );
           })}

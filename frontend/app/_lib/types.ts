@@ -60,6 +60,15 @@ export type ToolMenuType = {
 
 export type ToolBoxOptionType = ToolType | ToolMenuType | ToolCustomType;
 
+export type elRefType = RefObject<Konva.Group | null> &
+  RefObject<Konva.Shape | null> &
+  RefObject<Konva.Rect | null> &
+  RefObject<Konva.Ellipse | null> &
+  RefObject<Konva.Star | null> &
+  RefObject<Konva.Arrow | null> &
+  RefObject<Konva.Image | null> &
+  RefObject<Konva.RegularPolygon | null>;
+
 export type BaseElementType = {
   id: string;
   x: number;
@@ -73,14 +82,6 @@ export type PhotoElementType = {
   type: "photo";
   src: string;
 } & BaseElementType;
-
-export type elRefType = RefObject<Konva.Group | null> &
-  RefObject<Konva.Shape | null> &
-  RefObject<Konva.Rect | null> &
-  RefObject<Konva.Ellipse | null> &
-  RefObject<Konva.Star | null> &
-  RefObject<Konva.Arrow | null> &
-  RefObject<Konva.RegularPolygon | null>;
 
 export type ShapeElementType = {
   type:
@@ -104,9 +105,23 @@ export type ShapeElementType = {
 export type StickerElementType = {
   type: "sticker";
   src: string;
+  strokeWidth: number;
+  stroke: string;
 } & BaseElementType;
+
+export type DrawElementType = {
+  type: "draw";
+  id: string;
+  points: number[];
+  x: number;
+  y: number;
+  rotation: number;
+  strokeWidth: number;
+  stroke: string;
+};
 
 export type ElementType =
   | PhotoElementType
   | ShapeElementType
-  | StickerElementType;
+  | StickerElementType
+  | DrawElementType;

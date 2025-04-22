@@ -6,14 +6,13 @@ import {
   Hexagon,
   ImagePlus,
   MousePointer2,
-  PenIcon,
   PenLine,
   ShapesIcon,
   Spline,
   SquareIcon,
   Star,
   Triangle,
-  Type
+  Type,
 } from "lucide-react";
 import { AiFillPlusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { BsChatQuote, BsFillChatQuoteFill } from "react-icons/bs";
@@ -35,24 +34,16 @@ export const imageMarginBot = 15 + imageMargin;
 export const toolboxOptions: ToolBoxOptionType[] = [
   { id: "select", type: "tool", name: "Select", icon: MousePointer2 },
   {
-    id: "draw",
-    type: "menu",
-    name: "Draw",
+    id: "draw-pen",
+    type: "tool",
+    name: "Pen",
     icon: PenLine,
-    content: [
-      {
-        id: "draw-pen",
-        type: "tool",
-        name: "Pen",
-        icon: PenIcon,
-      },
-      {
-        id: "draw-eraser",
-        type: "tool",
-        name: "Eraser",
-        icon: EraserIcon,
-      },
-    ],
+  },
+  {
+    id: "draw-eraser",
+    type: "tool",
+    name: "Eraser",
+    icon: EraserIcon,
   },
   {
     id: "shape",

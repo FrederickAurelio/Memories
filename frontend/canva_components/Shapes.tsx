@@ -1,3 +1,5 @@
+"use client";
+
 import { elRefType, ShapeElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
@@ -61,6 +63,7 @@ function Shapes({
   return (
     <>
       <Shapes
+        id={element.id}
         name="object"
         points={[0, 0, element.width, 0]}
         pointerLength={element.height / 5}

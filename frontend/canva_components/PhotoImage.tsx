@@ -1,3 +1,5 @@
+"use client";
+
 import { imageMargin, imageMarginBot } from "@/app/_lib/const";
 import { ElementType, PhotoElementType } from "@/app/_lib/types";
 import Konva from "konva";
@@ -58,6 +60,7 @@ function PhotoImage({
   return (
     <>
       <Group
+        id={element.id}
         name="object"
         width={element.width}
         height={element.height}
@@ -73,6 +76,8 @@ function PhotoImage({
         ref={groupRef}
       >
         <Rect
+          id={element.id}
+          name="object"
           width={element.width}
           height={element.height}
           fill="white"
@@ -82,6 +87,8 @@ function PhotoImage({
           shadowOffsetY={7}
         />
         <Image
+          id={element.id}
+          name="object"
           alt="image element"
           x={imageMargin}
           y={imageMargin}
