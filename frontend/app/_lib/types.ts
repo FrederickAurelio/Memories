@@ -62,6 +62,7 @@ export type ToolBoxOptionType = ToolType | ToolMenuType | ToolCustomType;
 
 export type elRefType = RefObject<Konva.Group | null> &
   RefObject<Konva.Shape | null> &
+  RefObject<Konva.Text | null> &
   RefObject<Konva.Rect | null> &
   RefObject<Konva.Ellipse | null> &
   RefObject<Konva.Star | null> &
@@ -144,10 +145,27 @@ export type LineRopeElementType = {
   points: [{ x: number; y: number }, { x: number; y: number }];
 };
 
+export type TextElementType = {
+  type: "text";
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  text: string;
+  fontSize: number;
+  fontFamily: string;
+  fill: string;
+  strokeWidth: number;
+  rotation: number;
+  stroke: string;
+};
+
 export type ElementType =
   | PhotoElementType
   | ShapeElementType
   | StickerElementType
   | DrawElementType
   | SplineRopeElementType
-  | LineRopeElementType;
+  | LineRopeElementType
+  | TextElementType;

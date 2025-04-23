@@ -96,6 +96,20 @@ function Shapes({
       <Transformer
         ref={transformerRef}
         flipEnabled={false}
+        enabledAnchors={
+          element.type === "shape-hexagon" ||
+          element.type === "shape-star" ||
+          element.type === "shape-triangle"
+            ? ["top-left", "top-right", "bottom-left", "bottom-right"]
+            : [
+                "top-left",
+                "top-right",
+                "bottom-left",
+                "bottom-right",
+                "middle-right",
+                "middle-left",
+              ]
+        }
         boundBoxFunc={(oldBox, newBox) => {
           if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
             return oldBox;

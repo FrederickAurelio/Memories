@@ -17,6 +17,9 @@ const SplineRope = dynamic(() => import("@/canva_components/SplineRope"), {
 const LineRope = dynamic(() => import("@/canva_components/LineRope"), {
   ssr: false,
 });
+const Text = dynamic(() => import("@/canva_components/Text"), {
+  ssr: false,
+});
 import {
   DrawElementType,
   ElementType,
@@ -26,6 +29,7 @@ import {
   ShapeElementType,
   SplineRopeElementType,
   StickerElementType,
+  TextElementType,
 } from "@/app/_lib/types";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import Konva from "konva";
@@ -40,6 +44,7 @@ import {
   getObjectSnappingEdges,
 } from "./guideline.js";
 import imageCompression from "browser-image-compression";
+import { GeistSans } from "geist/font/sans";
 
 const Canva = memo(function Canva({
   selectedTool,
@@ -102,7 +107,11 @@ const Canva = memo(function Canva({
     e:
       | Konva.KonvaEventObject<DragEvent>
       | KonvaEventObject<Event, Node<NodeConfig>>,
-    element: PhotoElementType | ShapeElementType | StickerElementType,
+    element:
+      | PhotoElementType
+      | ShapeElementType
+      | StickerElementType
+      | TextElementType,
     elRef: elRefType,
   ) {
     if (!elRef.current) return;
@@ -257,6 +266,24 @@ const Canva = memo(function Canva({
         y: stageSize.height / 2,
         points: points,
       } as ElementType);
+      handleSelectTool("select");
+      handleSelectElement(new Date().toISOString());
+    } else if (selectedTool.startsWith("text")) {
+      addElement({
+        type: "text",
+        id: new Date().toISOString(),
+        stroke: "#262626",
+        rotation: 0,
+        strokeWidth: 0,
+        width: 150,
+        height: 30,
+        fill: "#262626",
+        text: "Simple Text",
+        fontSize: 30,
+        fontFamily: GeistSans.className,
+        x: stageSize.width / 2,
+        y: stageSize.height / 2,
+      });
       handleSelectTool("select");
       handleSelectElement(new Date().toISOString());
     }
@@ -436,6 +463,20 @@ const Canva = memo(function Canva({
                   handleSelectElement={handleSelectElement}
                   key={e.id}
                   element={e as LineRopeElementType}
+                />
+              );
+            else if (e.type.startsWith("text"))
+              return (
+                <Text
+                  draggable={
+                    !selectedTool.startsWith("draw") &&
+                    isDrawing.current === "none"
+                  }
+                  handleTransformEnd={handleTransformEndElement}
+                  isSelected={isSelected === e.id}
+                  handleSelectElement={handleSelectElement}
+                  key={e.id}
+                  element={e as TextElementType}
                 />
               );
           })}
