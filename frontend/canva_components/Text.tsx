@@ -1,9 +1,13 @@
 "use client";
+const TextEditor = dynamic(() => import("@/canva_components/TextEditor"), {
+  ssr: false,
+});
 
 import { ElementType, TextElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import { memo, RefObject, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+import { memo, RefObject, useEffect, useRef, useState } from "react";
 import { Text as KonvaText, Transformer } from "react-konva";
 
 type Props = {
@@ -11,6 +15,7 @@ type Props = {
   element: TextElementType;
   isSelected: boolean;
   handleSelectElement(elementId: string): void;
+  updateElementState(updatedEl: ElementType): void;
   handleTransformEnd(
     e:
       | Konva.KonvaEventObject<DragEvent>
@@ -26,9 +31,22 @@ function Text({
   isSelected,
   handleSelectElement,
   handleTransformEnd,
+  updateElementState,
 }: Props) {
   const textRef = useRef<Konva.Text>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  function handleTextDblClick() {
+    if (!draggable) return;
+    handleSelectElement(element.id);
+    setIsEditing(true);
+  }
+
+  function handleTextChange(newText: string) {
+    updateElementState({ ...element, text: newText });
+    setIsEditing(false);
+  }
 
   useEffect(() => {
     if (!transformerRef.current || !textRef.current) return;
@@ -39,10 +57,13 @@ function Text({
     } else {
       transformerRef.current.nodes([]);
     }
-  }, [isSelected]);
+  }, [isSelected, isEditing]);
+
   return (
     <>
       <KonvaText
+        onDblClick={handleTextDblClick}
+        opacity={isEditing ? 0 : 1}
         width={element.width}
         id={element.id}
         name="object"
@@ -63,17 +84,26 @@ function Text({
         draggable={draggable}
         ref={textRef}
       />
-      <Transformer
-        ref={transformerRef}
-        flipEnabled={false}
-        enabledAnchors={["middle-left", "middle-right"]}
-        boundBoxFunc={(oldBox, newBox) => {
-          if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-            return oldBox;
-          }
-          return newBox;
-        }}
-      />
+      {isEditing && (
+        <TextEditor
+          textRef={textRef}
+          onChange={handleTextChange}
+          onClose={() => setIsEditing(false)}
+        />
+      )}
+      {!isEditing && (
+        <Transformer
+          ref={transformerRef}
+          flipEnabled={false}
+          enabledAnchors={["middle-left", "middle-right"]}
+          boundBoxFunc={(oldBox, newBox) => {
+            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+              return oldBox;
+            }
+            return newBox;
+          }}
+        />
+      )}
     </>
   );
 }

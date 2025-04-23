@@ -241,7 +241,6 @@ const Canva = memo(function Canva({
         strokeWidth: 2,
       });
       handleSelectTool("select");
-      handleSelectElement(new Date().toISOString());
     } else if (selectedTool.startsWith("draw")) {
       setIsSelected(null);
     } else if (selectedTool.startsWith("rope")) {
@@ -267,7 +266,6 @@ const Canva = memo(function Canva({
         points: points,
       } as ElementType);
       handleSelectTool("select");
-      handleSelectElement(new Date().toISOString());
     } else if (selectedTool.startsWith("text")) {
       addElement({
         type: "text",
@@ -285,8 +283,8 @@ const Canva = memo(function Canva({
         y: stageSize.height / 2,
       });
       handleSelectTool("select");
-      handleSelectElement(new Date().toISOString());
     }
+    handleSelectElement(elements[elements.length - 1]?.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTool]);
 
@@ -472,6 +470,7 @@ const Canva = memo(function Canva({
                     !selectedTool.startsWith("draw") &&
                     isDrawing.current === "none"
                   }
+                  updateElementState={updateElementState}
                   handleTransformEnd={handleTransformEndElement}
                   isSelected={isSelected === e.id}
                   handleSelectElement={handleSelectElement}
