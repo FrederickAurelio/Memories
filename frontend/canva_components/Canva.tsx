@@ -11,12 +11,16 @@ const Sticker = dynamic(() => import("@/canva_components/Sticker"), {
 const Draw = dynamic(() => import("@/canva_components/Draw"), {
   ssr: false,
 });
+const SplineRope = dynamic(() => import("@/canva_components/SplineRope"), {
+  ssr: false,
+});
 import {
   DrawElementType,
   ElementType,
   elRefType,
   PhotoElementType,
   ShapeElementType,
+  SplineRopeElementType,
   StickerElementType,
 } from "@/app/_lib/types";
 import { useLocalStorage } from "@uidotdev/usehooks";
@@ -134,7 +138,7 @@ const Canva = memo(function Canva({
         x: 0,
         y: 0,
         rotation: 0,
-        stroke: "#000",
+        stroke: "#262626",
         strokeWidth: 3,
       });
     } else if (selectedTool.startsWith("draw-eraser")) {
@@ -192,7 +196,7 @@ const Canva = memo(function Canva({
         rotation: 0,
         width: 0,
         height: 0,
-        stroke: "#000",
+        stroke: "#262626",
         strokeWidth: 0,
       });
 
@@ -224,8 +228,25 @@ const Canva = memo(function Canva({
         strokeWidth: 2,
       });
       handleSelectTool("select");
+      handleSelectElement(new Date().toISOString());
     } else if (selectedTool.startsWith("draw")) {
       setIsSelected(null);
+    } else if (selectedTool.startsWith("rope-spline")) {
+      addElement({
+        type: "rope-spline",
+        id: new Date().toISOString(),
+        stroke: "#262626",
+        strokeWidth: 2,
+        x: stageSize.width / 2,
+        y: stageSize.height / 2,
+        points: [
+          { x: -100, y: 0 },
+          { x: 0, y: 0 },
+          { x: 100, y: 0 },
+        ],
+      });
+      handleSelectTool("select");
+      handleSelectElement(new Date().toISOString());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTool]);
@@ -371,6 +392,22 @@ const Canva = memo(function Canva({
                   handleSelectElement={handleSelectElement}
                   key={e.id}
                   element={e as DrawElementType}
+                />
+              );
+            else if (e.type.startsWith("rope-spline"))
+              return (
+                <SplineRope
+                  draggable={
+                    !selectedTool.startsWith("draw") &&
+                    isDrawing.current === "none"
+                  }
+                  isOutsideStage={isOutsideStage}
+                  updateElementState={updateElementState}
+                  removeElement={removeElement}
+                  isSelected={isSelected === e.id}
+                  handleSelectElement={handleSelectElement}
+                  key={e.id}
+                  element={e as SplineRopeElementType}
                 />
               );
           })}

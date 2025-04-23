@@ -120,8 +120,23 @@ export type DrawElementType = {
   stroke: string;
 };
 
+export type SplineRopeElementType = {
+  type: "rope-spline";
+  id: string;
+  strokeWidth: number;
+  stroke: string;
+  x: number;
+  y: number;
+  points: [
+    { x: number; y: number },
+    { x: number; y: number },
+    { x: number; y: number },
+  ];
+};
+
 export type ElementType =
   | PhotoElementType
   | ShapeElementType
   | StickerElementType
-  | DrawElementType;
+  | DrawElementType
+  | SplineRopeElementType;
