@@ -134,9 +134,20 @@ export type SplineRopeElementType = {
   ];
 };
 
+export type LineRopeElementType = {
+  type: "rope-line";
+  id: string;
+  strokeWidth: number;
+  stroke: string;
+  x: number;
+  y: number;
+  points: [{ x: number; y: number }, { x: number; y: number }];
+};
+
 export type ElementType =
   | PhotoElementType
   | ShapeElementType
   | StickerElementType
   | DrawElementType
-  | SplineRopeElementType;
+  | SplineRopeElementType
+  | LineRopeElementType;

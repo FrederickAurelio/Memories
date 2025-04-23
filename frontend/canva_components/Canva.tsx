@@ -14,10 +14,14 @@ const Draw = dynamic(() => import("@/canva_components/Draw"), {
 const SplineRope = dynamic(() => import("@/canva_components/SplineRope"), {
   ssr: false,
 });
+const LineRope = dynamic(() => import("@/canva_components/LineRope"), {
+  ssr: false,
+});
 import {
   DrawElementType,
   ElementType,
   elRefType,
+  LineRopeElementType,
   PhotoElementType,
   ShapeElementType,
   SplineRopeElementType,
@@ -231,20 +235,28 @@ const Canva = memo(function Canva({
       handleSelectElement(new Date().toISOString());
     } else if (selectedTool.startsWith("draw")) {
       setIsSelected(null);
-    } else if (selectedTool.startsWith("rope-spline")) {
+    } else if (selectedTool.startsWith("rope")) {
+      const type = selectedTool as "rope-line" | "rope-spline";
+      const points =
+        type === "rope-line"
+          ? [
+              { x: -100, y: 0 },
+              { x: 100, y: 0 },
+            ]
+          : [
+              { x: -100, y: 0 },
+              { x: 0, y: 0 },
+              { x: 100, y: 0 },
+            ];
       addElement({
-        type: "rope-spline",
+        type: type,
         id: new Date().toISOString(),
         stroke: "#262626",
         strokeWidth: 2,
         x: stageSize.width / 2,
         y: stageSize.height / 2,
-        points: [
-          { x: -100, y: 0 },
-          { x: 0, y: 0 },
-          { x: 100, y: 0 },
-        ],
-      });
+        points: points,
+      } as ElementType);
       handleSelectTool("select");
       handleSelectElement(new Date().toISOString());
     }
@@ -408,6 +420,22 @@ const Canva = memo(function Canva({
                   handleSelectElement={handleSelectElement}
                   key={e.id}
                   element={e as SplineRopeElementType}
+                />
+              );
+            else if (e.type.startsWith("rope-line"))
+              return (
+                <LineRope
+                  draggable={
+                    !selectedTool.startsWith("draw") &&
+                    isDrawing.current === "none"
+                  }
+                  isOutsideStage={isOutsideStage}
+                  updateElementState={updateElementState}
+                  removeElement={removeElement}
+                  isSelected={isSelected === e.id}
+                  handleSelectElement={handleSelectElement}
+                  key={e.id}
+                  element={e as LineRopeElementType}
                 />
               );
           })}
