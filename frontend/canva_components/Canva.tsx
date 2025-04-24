@@ -5,8 +5,8 @@ const InputImageCanva = dynamic(
     ssr: false,
   },
 );
-const LayeGuideline = dynamic(
-  () => import("@/canva_components/LayeGuideline"),
+const LayerGuideline = dynamic(
+  () => import("@/canva_components/LayerGuideline"),
   {
     ssr: false,
   },
@@ -152,7 +152,7 @@ const Canva = memo(function Canva() {
         stageRef={stageRef}
         stageSize={stageSize}
       >
-        <LayeGuideline stageRef={stageRef}>
+        <LayerGuideline stageRef={stageRef}>
           {elements.map((e) => {
             if (e.type === "photo")
               return (
@@ -239,7 +239,7 @@ const Canva = memo(function Canva() {
                 />
               );
           })}
-        </LayeGuideline>
+        </LayerGuideline>
       </StageNDraw>
     </div>
   );

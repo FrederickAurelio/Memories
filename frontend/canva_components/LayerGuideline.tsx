@@ -9,7 +9,7 @@ import {
 import { RefObject, useRef } from "react";
 import Konva from "konva";
 import { Stage } from "konva/lib/Stage.js";
-function LayeGuideline({
+function LayerGuideline({
   children,
   stageRef,
 }: {
@@ -66,4 +66,4 @@ function LayeGuideline({
   );
 }
 
-export default LayeGuideline;
+export default LayerGuideline;
