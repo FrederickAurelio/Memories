@@ -101,7 +101,8 @@ function StageNDraw({
 
     updateSize();
     window.addEventListener("resize", updateSize);
-  }, []);
+  }, [containerRef, setStageSize]);
+  
   return (
     <Stage
       style={{
