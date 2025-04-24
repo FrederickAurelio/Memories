@@ -1,9 +1,9 @@
 "use client";
 
-import { ElementType, StickerElementType } from "@/app/_lib/types";
+import { useElements } from "@/app/_context/ElementContext";
+import { StickerElementType } from "@/app/_lib/types";
 import Konva from "konva";
-import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import { memo, RefObject, useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Image, Transformer } from "react-konva";
 import useImage from "use-image";
 
@@ -11,25 +11,11 @@ type Props = {
   draggable: boolean;
   element: StickerElementType;
   isSelected: boolean;
-  handleSelectElement(elementId: string): void;
-  updateElementState(updatedEl: ElementType): void;
-  handleTransformEnd(
-    e:
-      | Konva.KonvaEventObject<DragEvent>
-      | KonvaEventObject<Event, Node<NodeConfig>>,
-    element: ElementType,
-    elRef: RefObject<Konva.Image | null>,
-  ): void;
 };
 
-function Sticker({
-  draggable,
-  element,
-  isSelected,
-  handleSelectElement,
-  updateElementState,
-  handleTransformEnd,
-}: Props) {
+function Sticker({ draggable, element, isSelected }: Props) {
+  const { handleSelectElement, updateElementState, handleTransformEndElement } =
+    useElements();
   const [imageDOM] = useImage(element.src);
   const imageRef = useRef<Konva.Image>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
@@ -74,8 +60,8 @@ function Sticker({
         onClick={() => handleSelectElement(element.id)}
         onTap={() => handleSelectElement(element.id)}
         onDragStart={() => handleSelectElement(element.id)}
-        onDragEnd={(e) => handleTransformEnd(e, element, imageRef)}
-        onTransformEnd={(e) => handleTransformEnd(e, element, imageRef)}
+        onDragEnd={(e) => handleTransformEndElement(e, element, imageRef)}
+        onTransformEnd={(e) => handleTransformEndElement(e, element, imageRef)}
         draggable={draggable}
         ref={imageRef}
       />

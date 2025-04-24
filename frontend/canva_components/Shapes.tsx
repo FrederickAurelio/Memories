@@ -1,9 +1,9 @@
 "use client";
 
-import { elRefType, ShapeElementType } from "@/app/_lib/types";
+import { useElements } from "@/app/_context/ElementContext";
+import { ShapeElementType } from "@/app/_lib/types";
 import Konva from "konva";
-import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import { memo, RefObject, useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import {
   Arrow,
   Ellipse,
@@ -18,23 +18,10 @@ type Props = {
   draggable: boolean;
   element: ShapeElementType;
   isSelected: boolean;
-  handleSelectElement(elementId: string): void;
-  handleTransformEnd(
-    e:
-      | Konva.KonvaEventObject<DragEvent>
-      | KonvaEventObject<Event, Node<NodeConfig>>,
-    element: ShapeElementType,
-    elRef: RefObject<Konva.Shape | null>,
-  ): void;
 };
 
-function Shapes({
-  draggable,
-  element,
-  isSelected,
-  handleSelectElement,
-  handleTransformEnd,
-}: Props) {
+function Shapes({ draggable, element, isSelected }: Props) {
+  const { handleSelectElement, handleTransformEndElement } = useElements();
   const Shapes =
     element.type === "shape-rect"
       ? Rect
@@ -81,10 +68,10 @@ function Shapes({
         onClick={() => handleSelectElement(element.id)}
         onTap={() => handleSelectElement(element.id)}
         onDragStart={() => handleSelectElement(element.id)}
-        onDragEnd={(e) => handleTransformEnd(e, element, shapeRef)}
-        onTransformEnd={(e) => handleTransformEnd(e, element, shapeRef)}
+        onDragEnd={(e) => handleTransformEndElement(e, element, shapeRef)}
+        onTransformEnd={(e) => handleTransformEndElement(e, element, shapeRef)}
         draggable={draggable}
-        ref={shapeRef as elRefType}
+        ref={shapeRef as never}
         radiusX={element.width}
         radiusY={element.height}
         sides={element?.sides || 6}

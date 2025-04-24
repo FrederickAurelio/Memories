@@ -3,40 +3,25 @@ const TextEditor = dynamic(() => import("@/canva_components/TextEditor"), {
   ssr: false,
 });
 
-import { ElementType, TextElementType } from "@/app/_lib/types";
+import { useElements } from "@/app/_context/ElementContext";
+import { TextElementType } from "@/app/_lib/types";
 import Konva from "konva";
-import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import dynamic from "next/dynamic";
-import { memo, RefObject, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Text as KonvaText, Transformer } from "react-konva";
 
 type Props = {
   draggable: boolean;
   element: TextElementType;
   isSelected: boolean;
-  handleSelectElement(elementId: string): void;
-  updateElementState(updatedEl: ElementType): void;
-  handleTransformEnd(
-    e:
-      | Konva.KonvaEventObject<DragEvent>
-      | KonvaEventObject<Event, Node<NodeConfig>>,
-    element: ElementType,
-    elRef: RefObject<Konva.Text | null>,
-  ): void;
 };
 
-function Text({
-  draggable,
-  element,
-  isSelected,
-  handleSelectElement,
-  handleTransformEnd,
-  updateElementState,
-}: Props) {
+function Text({ draggable, element, isSelected }: Props) {
   const textRef = useRef<Konva.Text>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
   const [isEditing, setIsEditing] = useState(false);
-
+  const { updateElementState, handleSelectElement, handleTransformEndElement } =
+    useElements();
   function handleTextDblClick() {
     if (!draggable) return;
     handleSelectElement(element.id);
@@ -79,8 +64,8 @@ function Text({
         onClick={() => handleSelectElement(element.id)}
         onTap={() => handleSelectElement(element.id)}
         onDragStart={() => handleSelectElement(element.id)}
-        onDragEnd={(e) => handleTransformEnd(e, element, textRef)}
-        onTransform={(e) => handleTransformEnd(e, element, textRef)}
+        onDragEnd={(e) => handleTransformEndElement(e, element, textRef)}
+        onTransform={(e) => handleTransformEndElement(e, element, textRef)}
         draggable={draggable}
         ref={textRef}
       />

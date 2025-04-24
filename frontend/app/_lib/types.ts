@@ -60,15 +60,16 @@ export type ToolMenuType = {
 
 export type ToolBoxOptionType = ToolType | ToolMenuType | ToolCustomType;
 
-export type elRefType = RefObject<Konva.Group | null> &
-  RefObject<Konva.Shape | null> &
-  RefObject<Konva.Text | null> &
-  RefObject<Konva.Rect | null> &
-  RefObject<Konva.Ellipse | null> &
-  RefObject<Konva.Star | null> &
-  RefObject<Konva.Arrow | null> &
-  RefObject<Konva.Image | null> &
-  RefObject<Konva.RegularPolygon | null>;
+export type elRefType =
+  | RefObject<Konva.Group | null>
+  | RefObject<Konva.Shape | null>
+  | RefObject<Konva.Text | null>
+  | RefObject<Konva.Rect | null>
+  | RefObject<Konva.Ellipse | null>
+  | RefObject<Konva.Star | null>
+  | RefObject<Konva.Arrow | null>
+  | RefObject<Konva.Image | null>
+  | RefObject<Konva.RegularPolygon | null>;
 
 export type BaseElementType = {
   id: string;

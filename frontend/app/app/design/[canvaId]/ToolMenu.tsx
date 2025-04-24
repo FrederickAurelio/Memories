@@ -13,16 +13,10 @@ import {
 } from "@/components/ui/tooltip";
 import { useState } from "react";
 import Tool from "./Tool";
+import { useElements } from "../../../_context/ElementContext";
 
-function ToolMenu({
-  toolbox,
-  onSelect,
-  selectedTool,
-}: {
-  toolbox: ToolMenuType;
-  onSelect(s: string): void;
-  selectedTool: string;
-}) {
+function ToolMenu({ toolbox }: { toolbox: ToolMenuType }) {
+  const { selectedTool } = useElements();
   const [open, setOpen] = useState(false);
   const Icon = selectedTool.startsWith(toolbox.id)
     ? toolbox.content.find((tb) => tb.id === selectedTool)?.icon || toolbox.icon
@@ -47,12 +41,7 @@ function ToolMenu({
           side="right"
         >
           {toolbox.content.map((tb) => (
-            <Tool
-              selectedTool={selectedTool}
-              onSelect={onSelect}
-              toolbox={tb}
-              key={tb.id}
-            />
+            <Tool toolbox={tb} key={tb.id} />
           ))}
         </PopoverContent>
       </Tooltip>

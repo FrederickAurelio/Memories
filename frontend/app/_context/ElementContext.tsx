@@ -1,0 +1,157 @@
+"use client";
+
+import {
+  ElementType,
+  elRefType,
+  PhotoElementType,
+  ShapeElementType,
+  StickerElementType,
+  TextElementType,
+} from "@/app/_lib/types";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import Konva from "konva";
+import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node.js";
+import {
+  createContext,
+  RefObject,
+  SetStateAction,
+  useContext,
+  useRef,
+  useState,
+} from "react";
+export type ElementContextType = {
+  elements: ElementType[];
+  isSelected: string | null;
+  selectedTool: string;
+  isDrawing: RefObject<"none" | "drawing" | "erasing">;
+  setElements: (value: SetStateAction<ElementType[]>) => void;
+  updateElementState(updatedEl: ElementType): void;
+  handleSelectElement(elementId: string | null): void;
+  removeElement(id: string): void;
+  addElement(el: ElementType): void;
+  handleSelectTool(s: string): void;
+  isOutsideStage(node: Konva.Node): boolean;
+  handleTransformEndElement(
+    e:
+      | Konva.KonvaEventObject<DragEvent>
+      | KonvaEventObject<Event, Node<NodeConfig>>,
+    element:
+      | PhotoElementType
+      | ShapeElementType
+      | StickerElementType
+      | TextElementType,
+    elRef: elRefType,
+  ): void;
+};
+
+const ElementContext = createContext<ElementContextType | null>(null);
+
+function ElementProvider({ children }: { children: React.ReactNode }) {
+  const [elements, setElements] = useLocalStorage<ElementType[]>(
+    "elements",
+    [],
+  );
+  const [isSelected, setIsSelected] = useState<string | null>(null);
+  const [selectedTool, isSelectedTool] = useState("select");
+  const isDrawing = useRef<"none" | "drawing" | "erasing">("none");
+
+  function handleSelectTool(s: string) {
+    isSelectedTool(s);
+  }
+
+  function updateElementState(updatedEl: ElementType) {
+    setElements((elements) =>
+      elements.map((element) =>
+        element.id === updatedEl.id ? updatedEl : element,
+      ),
+    );
+  }
+
+  function handleSelectElement(elementId: string | null) {
+    if (elementId === null) setIsSelected(null);
+    if (!selectedTool.startsWith("draw") && isDrawing.current === "none")
+      setIsSelected(elementId);
+  }
+
+  function removeElement(id: string) {
+    setElements((elements) => elements.filter((el) => el.id !== id));
+  }
+
+  function addElement(el: ElementType) {
+    setElements((els) => {
+      return [...els, el];
+    });
+  }
+
+  function isOutsideStage(node: Konva.Node) {
+    const stage = node.getStage();
+    if (!stage) return false;
+    const nodeBox = node.getClientRect({ relativeTo: stage });
+    return (
+      nodeBox.x + nodeBox.width < 0 ||
+      nodeBox.y + nodeBox.height < 0 ||
+      nodeBox.x > stage.width() ||
+      nodeBox.y > stage.height()
+    );
+  }
+
+  function handleTransformEndElement(
+    e:
+      | Konva.KonvaEventObject<DragEvent>
+      | KonvaEventObject<Event, Node<NodeConfig>>,
+    element:
+      | PhotoElementType
+      | ShapeElementType
+      | StickerElementType
+      | TextElementType,
+    elRef: elRefType,
+  ) {
+    if (!elRef.current) return;
+
+    const { x, y, rotation, scaleX, scaleY } = e.target.attrs;
+    if (!isOutsideStage(elRef.current)) {
+      const newWidth = Math.max(5, element.width * scaleX);
+      const newHeight = Math.max(element.height * scaleY);
+      updateElementState({
+        ...element,
+        x,
+        y,
+        rotation,
+        width: newWidth,
+        height: newHeight,
+      });
+      elRef.current.scaleX(1);
+      elRef.current.scaleY(1);
+    } else {
+      removeElement(element.id);
+    }
+  }
+  return (
+    <ElementContext.Provider
+      value={{
+        isSelected,
+        elements,
+        selectedTool,
+        isDrawing,
+        setElements,
+        updateElementState,
+        handleSelectElement,
+        removeElement,
+        addElement,
+        handleSelectTool,
+        isOutsideStage,
+        handleTransformEndElement,
+      }}
+    >
+      {children}
+    </ElementContext.Provider>
+  );
+}
+
+function useElements() {
+  const context = useContext(ElementContext) as ElementContextType;
+  if (!context) console.error("Using context outside the provider");
+  return context;
+}
+
+export { ElementProvider, useElements };

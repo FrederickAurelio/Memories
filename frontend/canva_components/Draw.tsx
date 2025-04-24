@@ -1,6 +1,7 @@
 "use client";
 
-import { DrawElementType, ElementType } from "@/app/_lib/types";
+import { useElements } from "@/app/_context/ElementContext";
+import { DrawElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import { memo, useEffect, useRef } from "react";
@@ -10,21 +11,15 @@ type Props = {
   draggable: boolean;
   element: DrawElementType;
   isSelected: boolean;
-  handleSelectElement(elementId: string): void;
-  isOutsideStage(node: Konva.Node): boolean;
-  updateElementState(updatedEl: ElementType): void;
-  removeElement(id: string): void;
 };
 
-function Draw({
-  draggable,
-  element,
-  isSelected,
-  handleSelectElement,
-  isOutsideStage,
-  updateElementState,
-  removeElement,
-}: Props) {
+function Draw({ draggable, element, isSelected }: Props) {
+  const {
+    updateElementState,
+    removeElement,
+    handleSelectElement,
+    isOutsideStage,
+  } = useElements();
   const drawRef = useRef<Konva.Line>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
 

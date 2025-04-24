@@ -1,29 +1,24 @@
 "use client";
 
-import { ElementType, SplineRopeElementType } from "@/app/_lib/types";
+import { useElements } from "@/app/_context/ElementContext";
+import { SplineRopeElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { memo, useRef } from "react";
-import { Shape, Group, Circle } from "react-konva";
+import { Circle, Group, Shape } from "react-konva";
 
 type Props = {
   draggable: boolean;
   element: SplineRopeElementType;
   isSelected: boolean;
-  handleSelectElement(elementId: string): void;
-  isOutsideStage(node: Konva.Node): boolean;
-  updateElementState(updatedEl: ElementType): void;
-  removeElement(id: string): void;
 };
 
-function SplineRope({
-  draggable,
-  element,
-  isSelected,
-  handleSelectElement,
-  isOutsideStage,
-  updateElementState,
-  removeElement,
-}: Props) {
+function SplineRope({ draggable, element, isSelected }: Props) {
+  const {
+    updateElementState,
+    removeElement,
+    handleSelectElement,
+    isOutsideStage,
+  } = useElements();
   const shapeRef = useRef<Konva.Group>(null);
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
-import { ElementType, LineRopeElementType } from "@/app/_lib/types";
+import { useElements } from "@/app/_context/ElementContext";
+import { LineRopeElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { memo, useRef } from "react";
 import { Circle, Group, Line } from "react-konva";
@@ -9,23 +10,16 @@ type Props = {
   draggable: boolean;
   element: LineRopeElementType;
   isSelected: boolean;
-  handleSelectElement(elementId: string): void;
-  isOutsideStage(node: Konva.Node): boolean;
-  updateElementState(updatedEl: ElementType): void;
-  removeElement(id: string): void;
 };
 
-function LineRope({
-  draggable,
-  element,
-  isSelected,
-  handleSelectElement,
-  isOutsideStage,
-  updateElementState,
-  removeElement,
-}: Props) {
+function LineRope({ draggable, element, isSelected }: Props) {
   const shapeRef = useRef<Konva.Group>(null);
-
+  const {
+    updateElementState,
+    removeElement,
+    handleSelectElement,
+    isOutsideStage,
+  } = useElements();
   return (
     <Group
       isGroup={true}

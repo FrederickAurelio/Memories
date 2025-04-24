@@ -1,10 +1,10 @@
 "use client";
 
+import { useElements } from "@/app/_context/ElementContext";
 import { imageMargin, imageMarginBot } from "@/app/_lib/const";
-import { ElementType, PhotoElementType } from "@/app/_lib/types";
+import { PhotoElementType } from "@/app/_lib/types";
 import Konva from "konva";
-import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import { memo, RefObject, useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Group, Image, Rect, Transformer } from "react-konva";
 import useImage from "use-image";
 
@@ -12,25 +12,12 @@ type Props = {
   draggable: boolean;
   element: PhotoElementType;
   isSelected: boolean;
-  handleSelectElement(elementId: string): void;
-  updateElementState(updatedEl: ElementType): void;
-  handleTransformEnd(
-    e:
-      | Konva.KonvaEventObject<DragEvent>
-      | KonvaEventObject<Event, Node<NodeConfig>>,
-    element: ElementType,
-    elRef: RefObject<Konva.Group | null>,
-  ): void;
 };
 
-function PhotoImage({
-  draggable,
-  element,
-  isSelected,
-  handleSelectElement,
-  updateElementState,
-  handleTransformEnd,
-}: Props) {
+function PhotoImage({ draggable, element, isSelected }: Props) {
+  const { updateElementState, handleSelectElement, handleTransformEndElement } =
+    useElements();
+
   const [imageDOM] = useImage(element.src);
   const groupRef = useRef<Konva.Group>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
@@ -72,8 +59,8 @@ function PhotoImage({
         onClick={() => handleSelectElement(element.id)}
         onTap={() => handleSelectElement(element.id)}
         onDragStart={() => handleSelectElement(element.id)}
-        onDragEnd={(e) => handleTransformEnd(e, element, groupRef)}
-        onTransformEnd={(e) => handleTransformEnd(e, element, groupRef)}
+        onDragEnd={(e) => handleTransformEndElement(e, element, groupRef)}
+        onTransformEnd={(e) => handleTransformEndElement(e, element, groupRef)}
         draggable={draggable}
         ref={groupRef}
       >

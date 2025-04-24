@@ -4,22 +4,16 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useElements } from "../../../_context/ElementContext";
 
-function Tool({
-  toolbox,
-  onSelect,
-  selectedTool,
-}: {
-  toolbox: ToolType;
-  onSelect(s: string): void;
-  selectedTool: string;
-}) {
+function Tool({ toolbox }: { toolbox: ToolType }) {
+  const { selectedTool, handleSelectTool } = useElements();
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <toolbox.icon
           onClick={() => {
-            onSelect(toolbox.id);
+            handleSelectTool(toolbox.id);
           }}
           size={40}
           className={`cursor-pointer rounded-lg p-[6px] hover:bg-neutral-300/50 ${selectedTool === toolbox.id ? "bg-neutral-300/50" : ""}`}

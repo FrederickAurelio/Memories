@@ -12,14 +12,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useState } from "react";
+import { useElements } from "../../../_context/ElementContext";
 
-function ToolCustom({
-  toolbox,
-  onSelect,
-}: {
-  toolbox: ToolCustomType;
-  onSelect(s: string): void;
-}) {
+function ToolCustom({ toolbox }: { toolbox: ToolCustomType }) {
+  const { handleSelectTool } = useElements();
   const [open, setOpen] = useState(false);
   const Content = toolbox.content as React.ComponentType<{
     onSelect(s: string): void;
@@ -42,7 +38,7 @@ function ToolCustom({
           className="ml-1 w-full rounded-lg bg-white p-2 shadow-[0_1px_15px_rgba(38,38,38,0.25)]"
           side="right"
         >
-          <Content onSelect={onSelect} />
+          <Content onSelect={handleSelectTool} />
         </PopoverContent>
       </Tooltip>
     </Popover>

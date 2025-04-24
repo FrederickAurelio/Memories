@@ -27,8 +27,8 @@ import AISticker from "../app/design/[canvaId]/AISticker";
 export const BACKEND_BASE_URL = "http://localhost:2000";
 export const FRONTEND_BASE_URL = "http://localhost:3000";
 
-export const imageMargin = 10;
-export const imageMarginBot = 15 + imageMargin;
+export const imageMargin = 7;
+export const imageMarginBot = 10 + imageMargin;
 
 // TOOLBOX //////////////////////////////////////////////////////////
 export const toolboxOptions: ToolBoxOptionType[] = [
