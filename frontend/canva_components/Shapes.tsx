@@ -88,14 +88,7 @@ function Shapes({ draggable, element, isSelected }: Props) {
           element.type === "shape-star" ||
           element.type === "shape-triangle"
             ? ["top-left", "top-right", "bottom-left", "bottom-right"]
-            : [
-                "top-left",
-                "top-right",
-                "bottom-left",
-                "bottom-right",
-                "middle-right",
-                "middle-left",
-              ]
+            : undefined
         }
         boundBoxFunc={(oldBox, newBox) => {
           if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
