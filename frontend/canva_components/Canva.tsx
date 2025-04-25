@@ -60,6 +60,9 @@ const Canva = memo(function Canva() {
     handleSelectElement,
     addElement,
     handleSelectTool,
+    zoomIn,
+    zoomOut,
+    setCurStateStack,
   } = useElements();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -133,6 +136,18 @@ const Canva = memo(function Canva() {
         x: stageSize.width / 2,
         y: stageSize.height / 2,
       });
+      handleSelectTool("select");
+    } else if (selectedTool.startsWith("zoom-in")) {
+      zoomIn();
+      handleSelectTool("select");
+    } else if (selectedTool.startsWith("zoom-out")) {
+      zoomOut();
+      handleSelectTool("select");
+    } else if (selectedTool.startsWith("redo")) {
+      setCurStateStack((s) => s - 1);
+      handleSelectTool("select");
+    } else if (selectedTool.startsWith("undo")) {
+      setCurStateStack((s) => s + 1);
       handleSelectTool("select");
     }
     handleSelectElement(elements[elements.length - 1]?.id);

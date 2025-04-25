@@ -12,19 +12,25 @@ import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node.js";
 import {
   createContext,
+  Dispatch,
   RefObject,
   SetStateAction,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
-import { useLocalStorage } from "../_hooks/useLocalStorage";
 import { toast } from "sonner";
+import { useLocalStorage } from "../_hooks/useLocalStorage";
+import { undoRedoStack } from "../_lib/const";
 export type ElementContextType = {
   elements: ElementType[];
   isSelected: string | null;
   selectedTool: string;
   isDrawing: RefObject<"none" | "drawing" | "erasing">;
+  zoom: number;
+  stateStack: ElementType[][];
+  curStateStack: number;
   setElements: (value: SetStateAction<ElementType[]>) => void;
   updateElementState(updatedEl: ElementType): void;
   handleSelectElement(elementId: string | null): void;
@@ -43,6 +49,10 @@ export type ElementContextType = {
       | TextElementType,
     elRef: elRefType,
   ): void;
+  zoomIn(): void;
+  zoomOut(): void;
+  updateStack(newEls: ElementType[]): void;
+  setCurStateStack: Dispatch<SetStateAction<number>>;
 };
 
 const ElementContext = createContext<ElementContextType | null>(null);
@@ -52,21 +62,49 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
     "elements",
     [],
   );
+  const [stateStack, setStateStack] = useState<ElementType[][]>([elements]);
+  const [curStateStack, setCurStateStack] = useState(0);
+
   const [isSelected, setIsSelected] = useState<string | null>(null);
   const [selectedTool, isSelectedTool] = useState("select");
   const isDrawing = useRef<"none" | "drawing" | "erasing">("none");
+
+  const [zoom, setZoom] = useState(100);
+  function zoomIn() {
+    if (zoom < 200) setZoom((z) => z + 10);
+  }
+  function zoomOut() {
+    if (zoom > 10) setZoom((z) => z - 10);
+  }
+
+  function updateStack(newEls: ElementType[]) {
+    if (curStateStack !== 0) {
+      const newStack = stateStack.filter((_, i) => i >= curStateStack);
+      setStateStack([newEls, ...newStack]);
+      setCurStateStack(0);
+    }
+    if (curStateStack === 0)
+      setStateStack((stacks) =>
+        [newEls, ...stacks].slice(0, undoRedoStack + 1),
+      );
+  }
 
   function handleSelectTool(s: string) {
     isSelectedTool(s);
   }
 
+  useEffect(() => {
+    setElements(stateStack[curStateStack]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [curStateStack]);
+
   function updateElementState(updatedEl: ElementType) {
     try {
-      setElements((elements) =>
-        elements.map((element) =>
-          element.id === updatedEl.id ? updatedEl : element,
-        ),
+      const newEls = elements.map((element) =>
+        element.id === updatedEl.id ? updatedEl : element,
       );
+      setElements(newEls);
+      updateStack(newEls);
     } catch (e) {
       console.log(e);
       toast.error(
@@ -82,14 +120,16 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
   }
 
   function removeElement(id: string) {
-    setElements((elements) => elements.filter((el) => el.id !== id));
+    const newEls = elements.filter((el) => el.id !== id);
+    setElements(newEls);
+    updateStack(newEls);
   }
 
   function addElement(el: ElementType) {
     try {
-      setElements((els) => {
-        return [...els, el];
-      });
+      const newEls = [...elements, el];
+      setElements(newEls);
+      updateStack(newEls);
     } catch (e) {
       console.log(e);
       toast.error(
@@ -148,6 +188,9 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
         elements,
         selectedTool,
         isDrawing,
+        zoom,
+        stateStack,
+        curStateStack,
         setElements,
         updateElementState,
         handleSelectElement,
@@ -156,6 +199,10 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
         handleSelectTool,
         isOutsideStage,
         handleTransformEndElement,
+        zoomIn,
+        zoomOut,
+        updateStack,
+        setCurStateStack,
       }}
     >
       {children}

@@ -27,11 +27,12 @@ import AISticker from "../app/design/[canvaId]/AISticker";
 export const BACKEND_BASE_URL = "http://localhost:2000";
 export const FRONTEND_BASE_URL = "http://localhost:3000";
 
+export const undoRedoStack = 8;
 export const imageMargin = 7;
 export const imageMarginBot = 10 + imageMargin;
 
 // TOOLBOX //////////////////////////////////////////////////////////
-export const toolboxOptions: ToolBoxOptionType[] = [
+export const mainToolboxOptions: ToolBoxOptionType[] = [
   { id: "select", type: "tool", name: "Select", icon: MousePointer2 },
   {
     id: "draw-pen",

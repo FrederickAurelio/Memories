@@ -13,10 +13,10 @@ function Tool({ toolbox }: { toolbox: ToolType }) {
       <TooltipTrigger asChild>
         <toolbox.icon
           onClick={() => {
-            handleSelectTool(toolbox.id);
+            if (!toolbox.disabled) handleSelectTool(toolbox.id);
           }}
           size={40}
-          className={`cursor-pointer rounded-lg p-[6px] hover:bg-neutral-300/50 ${selectedTool === toolbox.id ? "bg-neutral-300/50" : ""}`}
+          className={`cursor-pointer rounded-lg p-[6px] hover:bg-neutral-300/50 ${selectedTool === toolbox.id ? "bg-neutral-300/50" : ""} ${toolbox.disabled ? "opacity-50 hover:bg-white" : ""}`}
         />
       </TooltipTrigger>
       <TooltipContent side="right">

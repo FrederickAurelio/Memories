@@ -29,10 +29,11 @@ function StageNDraw({
   setStageSize,
 }: Props) {
   const {
+    elements,
     selectedTool,
     isDrawing,
     handleSelectElement,
-    addElement,
+    updateStack,
     setElements,
     removeElement,
   } = useElements();
@@ -45,16 +46,19 @@ function StageNDraw({
     if (selectedTool.startsWith("draw-pen")) {
       isDrawing.current = "drawing";
       const pos = e.target.getStage()?.getPointerPosition();
-      addElement({
-        type: "draw",
-        id: new Date().toISOString(),
-        points: [pos?.x as number, pos?.y as number],
-        x: 0,
-        y: 0,
-        rotation: 0,
-        stroke: "#262626",
-        strokeWidth: 3,
-      });
+      setElements((els) => [
+        ...els,
+        {
+          type: "draw",
+          id: new Date().toISOString(),
+          points: [pos?.x as number, pos?.y as number],
+          x: 0,
+          y: 0,
+          rotation: 0,
+          stroke: "#262626",
+          strokeWidth: 3,
+        },
+      ]);
     } else if (selectedTool.startsWith("draw-eraser")) {
       isDrawing.current = "erasing";
     }
@@ -91,6 +95,7 @@ function StageNDraw({
 
   function handleMouseUp() {
     isDrawing.current = "none";
+    updateStack(elements);
   }
 
   // Update size of canvas

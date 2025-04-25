@@ -40,6 +40,7 @@ export type ToolType = {
   type: "tool";
   name: string;
   icon: IconType;
+  disabled?: boolean;
 };
 
 export type ToolCustomType = {
