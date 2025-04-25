@@ -68,6 +68,9 @@ function LineRope({ draggable, element, isSelected }: Props) {
               x={point.x}
               y={point.y}
               draggable
+              onDragEnd={() => {
+                updateElementState(element);
+              }}
               onDragMove={(e) => {
                 const { x, y } = e.target.attrs;
                 if (!shapeRef.current) return;
@@ -76,7 +79,7 @@ function LineRope({ draggable, element, isSelected }: Props) {
                   const newEl = element;
                   newEl.points[i].x = x;
                   newEl.points[i].y = y;
-                  updateElementState(newEl);
+                  updateElementState(newEl, true);
                 } else {
                   removeElement(element.id);
                 }

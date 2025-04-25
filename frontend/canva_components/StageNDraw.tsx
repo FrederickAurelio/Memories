@@ -34,6 +34,7 @@ function StageNDraw({
     isDrawing,
     handleSelectElement,
     updateStack,
+    addElement,
     setElements,
     removeElement,
   } = useElements();
@@ -46,8 +47,7 @@ function StageNDraw({
     if (selectedTool.startsWith("draw-pen")) {
       isDrawing.current = "drawing";
       const pos = e.target.getStage()?.getPointerPosition();
-      setElements((els) => [
-        ...els,
+      addElement(
         {
           type: "draw",
           id: new Date().toISOString(),
@@ -58,7 +58,8 @@ function StageNDraw({
           stroke: "#262626",
           strokeWidth: 3,
         },
-      ]);
+        true,
+      );
     } else if (selectedTool.startsWith("draw-eraser")) {
       isDrawing.current = "erasing";
     }
@@ -94,10 +95,10 @@ function StageNDraw({
   }
 
   function handleMouseUp() {
-    if (isDrawing.current !== "none") {
-      isDrawing.current = "none";
+    if (isDrawing.current == "drawing") {
       updateStack(elements);
     }
+    isDrawing.current = "none";
   }
 
   // Update size of canvas

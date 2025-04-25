@@ -23,7 +23,7 @@ async function Login() {
         <p>Welcome back! Click your account below to log in quickly.</p>
         <RecentLogin users={recentLoginUser} />
       </div>
-      <LoginFForm />
+      <LoginForm />
     </div>
   );
 }

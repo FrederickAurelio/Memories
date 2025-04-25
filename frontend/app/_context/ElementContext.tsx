@@ -33,10 +33,10 @@ export type ElementContextType = {
   stateStack: ElementType[][];
   curStateStack: number;
   setElements: (value: SetStateAction<ElementType[]>) => void;
-  updateElementState(updatedEl: ElementType): void;
+  updateElementState(updatedEl: ElementType, skipUpdateStack?: boolean): void;
   handleSelectElement(elementId: string | null): void;
   removeElement(id: string): void;
-  addElement(el: ElementType): void;
+  addElement(el: ElementType, skipUpdateStack?: boolean): void;
   handleSelectTool(s: string): void;
   isOutsideStage(node: Konva.Node): boolean;
   handleTransformEndElement(
@@ -91,13 +91,13 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curStateStack]);
 
-  function updateElementState(updatedEl: ElementType) {
+  function updateElementState(updatedEl: ElementType, skipUpdateStack = false) {
     try {
       const newEls = elements.map((element) =>
         element.id === updatedEl.id ? updatedEl : element,
       );
       setElements(newEls);
-      updateStack(newEls);
+      if (!skipUpdateStack) updateStack(newEls);
     } catch (e) {
       console.log(e);
       toast.error(
@@ -118,11 +118,11 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
     updateStack(newEls);
   }
 
-  function addElement(el: ElementType) {
+  function addElement(el: ElementType, skipUpdateStack = false) {
     try {
       const newEls = [...elements, el];
       setElements(newEls);
-      updateStack(newEls);
+      if (!skipUpdateStack) updateStack(newEls);
       handleSelectElement(el.id);
     } catch (e) {
       console.log(e);
