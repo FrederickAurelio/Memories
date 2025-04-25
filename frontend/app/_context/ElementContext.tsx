@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import { useLocalStorage } from "../_hooks/useLocalStorage";
 import { undoRedoStack } from "../_lib/const";
+
 export type ElementContextType = {
   elements: ElementType[];
   isSelected: string | null;
@@ -122,6 +123,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
       const newEls = [...elements, el];
       setElements(newEls);
       updateStack(newEls);
+      handleSelectElement(el.id);
     } catch (e) {
       console.log(e);
       toast.error(
@@ -217,4 +219,3 @@ function useElements() {
 }
 
 export { ElementProvider, useElements };
-

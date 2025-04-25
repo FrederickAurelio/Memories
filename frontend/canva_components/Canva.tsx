@@ -79,7 +79,6 @@ const Canva = memo(function Canva() {
     if (selectedTool === "photo" || selectedTool === "sticker") {
       if (inputRef.current) inputRef.current.click();
       setInputImageType(selectedTool);
-      handleSelectTool("select");
     } else if (selectedTool.startsWith("shape")) {
       addElement({
         type: selectedTool as ShapeElementType["type"],
@@ -94,9 +93,9 @@ const Canva = memo(function Canva() {
         fill: "#ffff",
         strokeWidth: 2,
       });
-      handleSelectTool("select");
     } else if (selectedTool.startsWith("draw")) {
       handleSelectElement(null);
+      return;
     } else if (selectedTool.startsWith("rope")) {
       const type = selectedTool as "rope-line" | "rope-spline";
       const points =
@@ -119,7 +118,6 @@ const Canva = memo(function Canva() {
         y: stageSize.height / 2,
         points: points,
       } as ElementType);
-      handleSelectTool("select");
     } else if (selectedTool.startsWith("text")) {
       addElement({
         type: "text",
@@ -136,21 +134,16 @@ const Canva = memo(function Canva() {
         x: stageSize.width / 2,
         y: stageSize.height / 2,
       });
-      handleSelectTool("select");
     } else if (selectedTool.startsWith("zoom-in")) {
       zoomIn();
-      handleSelectTool("select");
     } else if (selectedTool.startsWith("zoom-out")) {
       zoomOut();
-      handleSelectTool("select");
     } else if (selectedTool.startsWith("redo")) {
       setCurStateStack((s) => s - 1);
-      handleSelectTool("select");
     } else if (selectedTool.startsWith("undo")) {
       setCurStateStack((s) => s + 1);
-      handleSelectTool("select");
     }
-    handleSelectElement(elements[elements.length - 1]?.id);
+    handleSelectTool("select");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTool]);
 
