@@ -94,8 +94,10 @@ function StageNDraw({
   }
 
   function handleMouseUp() {
-    isDrawing.current = "none";
-    updateStack(elements);
+    if (isDrawing.current !== "none") {
+      isDrawing.current = "none";
+      updateStack(elements);
+    }
   }
 
   // Update size of canvas

@@ -62,20 +62,12 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
     "elements",
     [],
   );
-  const [stateStack, setStateStack] = useState<ElementType[][]>([elements]);
-  const [curStateStack, setCurStateStack] = useState(0);
-
   const [isSelected, setIsSelected] = useState<string | null>(null);
   const [selectedTool, isSelectedTool] = useState("select");
   const isDrawing = useRef<"none" | "drawing" | "erasing">("none");
 
-  const [zoom, setZoom] = useState(100);
-  function zoomIn() {
-    if (zoom < 200) setZoom((z) => z + 10);
-  }
-  function zoomOut() {
-    if (zoom > 10) setZoom((z) => z - 10);
-  }
+  const [stateStack, setStateStack] = useState<ElementType[][]>([elements]);
+  const [curStateStack, setCurStateStack] = useState(0);
 
   function updateStack(newEls: ElementType[]) {
     if (curStateStack !== 0) {
@@ -162,7 +154,6 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
     elRef: elRefType,
   ) {
     if (!elRef.current) return;
-
     const { x, y, rotation, scaleX, scaleY } = e.target.attrs;
     if (!isOutsideStage(elRef.current)) {
       const newWidth = Math.max(5, element.width * scaleX);
@@ -181,6 +172,15 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
       removeElement(element.id);
     }
   }
+
+  const [zoom, setZoom] = useState(100);
+  function zoomIn() {
+    if (zoom < 200) setZoom((z) => z + 10);
+  }
+  function zoomOut() {
+    if (zoom > 10) setZoom((z) => z - 10);
+  }
+
   return (
     <ElementContext.Provider
       value={{
@@ -217,3 +217,4 @@ function useElements() {
 }
 
 export { ElementProvider, useElements };
+

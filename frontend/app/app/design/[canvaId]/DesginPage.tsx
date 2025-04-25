@@ -12,7 +12,6 @@ const Canva = dynamic(() => import("@/canva_components/Canva"), {
 
 function DesignPage() {
   const { zoom, curStateStack, stateStack } = useElements();
-  console.log(stateStack);
   return (
     <>
       <div className="relative col-start-1 col-end-2 flex flex-col items-end justify-around">
