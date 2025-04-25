@@ -81,7 +81,7 @@ function StageNDraw({
               : el,
           );
         });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {}
     } else if (isDrawing.current === "erasing") {
       const isObject = e.target.attrs.name === "object";
@@ -97,8 +97,8 @@ function StageNDraw({
   useEffect(() => {
     function updateSize() {
       if (containerRef.current) {
-        const { offsetWidth, offsetHeight } = containerRef.current;
-        setStageSize({ width: offsetWidth, height: offsetHeight });
+        const { clientWidth, clientHeight } = containerRef.current;
+        setStageSize({ width: clientWidth, height: clientHeight });
       }
     }
 

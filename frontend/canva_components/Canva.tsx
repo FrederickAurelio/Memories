@@ -140,7 +140,7 @@ const Canva = memo(function Canva() {
   }, [selectedTool]);
 
   return (
-    <div ref={containerRef} className="flex h-full w-full bg-red-100">
+    <div ref={containerRef} className="flex h-full w-full">
       <InputImageCanva
         stageSize={stageSize}
         inputImageType={inputImageType}
