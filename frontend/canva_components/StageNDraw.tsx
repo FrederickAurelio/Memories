@@ -67,19 +67,22 @@ function StageNDraw({
       const stage = e.target.getStage();
       if (!stage) return;
       const point = stage.getPointerPosition();
-      setElements((e) => {
-        return e.map((el, i) =>
-          e.length - 1 === i && el.type === "draw"
-            ? {
-                ...el,
-                points: el.points.concat([
-                  point?.x as number,
-                  point?.y as number,
-                ]),
-              }
-            : el,
-        );
-      });
+      try {
+        setElements((e) => {
+          return e.map((el, i) =>
+            e.length - 1 === i && el.type === "draw"
+              ? {
+                  ...el,
+                  points: el.points.concat([
+                    point?.x as number,
+                    point?.y as number,
+                  ]),
+                }
+              : el,
+          );
+        });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {}
     } else if (isDrawing.current === "erasing") {
       const isObject = e.target.attrs.name === "object";
       if (isObject) removeElement(e.target.attrs.id);
@@ -102,7 +105,7 @@ function StageNDraw({
     updateSize();
     window.addEventListener("resize", updateSize);
   }, [containerRef, setStageSize]);
-  
+
   return (
     <Stage
       style={{

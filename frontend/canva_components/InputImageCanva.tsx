@@ -1,8 +1,8 @@
 "use client";
 
-import { RefObject } from "react";
-import imageCompression from "browser-image-compression";
 import { useElements } from "@/app/_context/ElementContext";
+import imageCompression from "browser-image-compression";
+import { RefObject } from "react";
 
 type Props = {
   inputRef: RefObject<HTMLInputElement | null>;
@@ -19,8 +19,8 @@ function InputImageCanva({ inputRef, inputImageType, stageSize }: Props) {
     const file = e.target.files?.[0];
     if (!file) return;
     const compressedFile = await imageCompression(file, {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 400,
+      maxSizeMB: 0.4,
+      maxWidthOrHeight: 540,
     });
     const reader = new FileReader();
     reader.onload = () => {

@@ -8,7 +8,6 @@ import {
   StickerElementType,
   TextElementType,
 } from "@/app/_lib/types";
-import { useLocalStorage } from "@uidotdev/usehooks";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node.js";
 import {
@@ -19,6 +18,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { useLocalStorage } from "../_hooks/useLocalStorage";
+import { toast } from "sonner";
 export type ElementContextType = {
   elements: ElementType[];
   isSelected: string | null;
@@ -60,11 +61,18 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
   }
 
   function updateElementState(updatedEl: ElementType) {
-    setElements((elements) =>
-      elements.map((element) =>
-        element.id === updatedEl.id ? updatedEl : element,
-      ),
-    );
+    try {
+      setElements((elements) =>
+        elements.map((element) =>
+          element.id === updatedEl.id ? updatedEl : element,
+        ),
+      );
+    } catch (e) {
+      console.log(e);
+      toast.error(
+        "Oops! Your canvas is full. Remove some items to continue editing or export your design.",
+      );
+    }
   }
 
   function handleSelectElement(elementId: string | null) {
@@ -78,9 +86,16 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
   }
 
   function addElement(el: ElementType) {
-    setElements((els) => {
-      return [...els, el];
-    });
+    try {
+      setElements((els) => {
+        return [...els, el];
+      });
+    } catch (e) {
+      console.log(e);
+      toast.error(
+        "Oops! Your canvas is full. Remove some items to continue editing or export your design.",
+      );
+    }
   }
 
   function isOutsideStage(node: Konva.Node) {
