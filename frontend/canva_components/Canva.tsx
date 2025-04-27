@@ -53,7 +53,7 @@ import { useElements } from "@/app/_context/ElementContext";
 
 const Canva = memo(function Canva() {
   const {
-    isSelected,
+    isSelectedId,
     elements,
     selectedTool,
     isDrawing,
@@ -169,7 +169,7 @@ const Canva = memo(function Canva() {
                     !selectedTool.startsWith("draw") &&
                     isDrawing.current === "none"
                   }
-                  isSelected={isSelected === e.id}
+                  isSelected={isSelectedId === e.id}
                   key={e.id}
                   element={e as PhotoElementType}
                 />
@@ -181,7 +181,7 @@ const Canva = memo(function Canva() {
                     !selectedTool.startsWith("draw") &&
                     isDrawing.current === "none"
                   }
-                  isSelected={isSelected === e.id}
+                  isSelected={isSelectedId === e.id}
                   key={e.id}
                   element={e as ShapeElementType}
                 />
@@ -193,7 +193,7 @@ const Canva = memo(function Canva() {
                     !selectedTool.startsWith("draw") &&
                     isDrawing.current === "none"
                   }
-                  isSelected={isSelected === e.id}
+                  isSelected={isSelectedId === e.id}
                   key={e.id}
                   element={e as StickerElementType}
                 />
@@ -205,7 +205,7 @@ const Canva = memo(function Canva() {
                     !selectedTool.startsWith("draw") &&
                     isDrawing.current === "none"
                   }
-                  isSelected={isSelected === e.id}
+                  isSelected={isSelectedId === e.id}
                   key={e.id}
                   element={e as DrawElementType}
                 />
@@ -217,7 +217,7 @@ const Canva = memo(function Canva() {
                     !selectedTool.startsWith("draw") &&
                     isDrawing.current === "none"
                   }
-                  isSelected={isSelected === e.id}
+                  isSelected={isSelectedId === e.id}
                   key={e.id}
                   element={e as SplineRopeElementType}
                 />
@@ -229,7 +229,7 @@ const Canva = memo(function Canva() {
                     !selectedTool.startsWith("draw") &&
                     isDrawing.current === "none"
                   }
-                  isSelected={isSelected === e.id}
+                  isSelected={isSelectedId === e.id}
                   key={e.id}
                   element={e as LineRopeElementType}
                 />
@@ -241,7 +241,7 @@ const Canva = memo(function Canva() {
                     !selectedTool.startsWith("draw") &&
                     isDrawing.current === "none"
                   }
-                  isSelected={isSelected === e.id}
+                  isSelected={isSelectedId === e.id}
                   key={e.id}
                   element={e as TextElementType}
                 />

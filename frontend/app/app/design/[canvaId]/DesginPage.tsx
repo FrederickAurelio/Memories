@@ -11,7 +11,7 @@ const Canva = dynamic(() => import("@/canva_components/Canva"), {
 });
 
 function DesignPage() {
-  const { zoom, curStateStack, stateStack } = useElements();
+  const { zoom, curStateStack, stateStack, isSelectedId } = useElements();
   return (
     <>
       <div className="relative col-start-1 col-end-2 flex flex-col items-end justify-around">
@@ -55,7 +55,7 @@ function DesignPage() {
       </div>
 
       <div className="relative col-start-2 col-end-[15] flex w-full flex-col items-center justify-center p-3">
-        <EditToolBar />
+        {isSelectedId && <EditToolBar />}
         <div
           className={`aspect-video w-[1200] scale-[${zoom}%] bg-white shadow-[0_1px_20px_rgba(38,38,38,0.20)]`}
         >

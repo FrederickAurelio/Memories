@@ -26,7 +26,7 @@ import { undoRedoStack } from "../_lib/const";
 
 export type ElementContextType = {
   elements: ElementType[];
-  isSelected: string | null;
+  isSelectedId: string | null;
   selectedTool: string;
   isDrawing: RefObject<"none" | "drawing" | "erasing">;
   zoom: number;
@@ -63,7 +63,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
     "elements",
     [],
   );
-  const [isSelected, setIsSelected] = useState<string | null>(null);
+  const [isSelectedId, setIsSelected] = useState<string | null>(null);
   const [selectedTool, isSelectedTool] = useState("select");
   const isDrawing = useRef<"none" | "drawing" | "erasing">("none");
 
@@ -186,7 +186,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
   return (
     <ElementContext.Provider
       value={{
-        isSelected,
+        isSelectedId,
         elements,
         selectedTool,
         isDrawing,
