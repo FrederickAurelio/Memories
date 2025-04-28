@@ -1,6 +1,7 @@
 "use client";
 
 import { useElements } from "@/app/_context/ElementContext";
+import { strokeDashGap } from "@/app/_lib/const";
 import { StickerElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { memo, useEffect, useRef } from "react";
@@ -48,6 +49,7 @@ function Sticker({ draggable, element, isSelected }: Props) {
       <Image
         stroke={element.stroke}
         strokeWidth={element.strokeWidth}
+        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : []}
         id={element.id}
         alt="image element"
         name="object"
@@ -91,6 +93,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.rotation === next.element.rotation &&
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
+    prev.element.strokeDash === next.element.strokeDash &&
     prev.isSelected === next.isSelected
   );
 };

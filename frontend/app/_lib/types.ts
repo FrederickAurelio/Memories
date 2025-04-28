@@ -97,6 +97,7 @@ export type ShapeElementType = {
     | "shape-heart";
   strokeWidth: number;
   stroke: string;
+  strokeDash?: boolean;
   fill: string;
   sides?: number;
   radius?: number;
@@ -110,6 +111,7 @@ export type StickerElementType = {
   src: string;
   strokeWidth: number;
   stroke: string;
+  strokeDash?: boolean;
 } & BaseElementType;
 
 export type DrawElementType = {
@@ -121,6 +123,7 @@ export type DrawElementType = {
   rotation: number;
   strokeWidth: number;
   stroke: string;
+  strokeDash?: boolean;
 };
 
 export type SplineRopeElementType = {
@@ -128,6 +131,7 @@ export type SplineRopeElementType = {
   id: string;
   strokeWidth: number;
   stroke: string;
+  strokeDash?: boolean;
   x: number;
   y: number;
   points: [
@@ -142,6 +146,7 @@ export type LineRopeElementType = {
   id: string;
   strokeWidth: number;
   stroke: string;
+  strokeDash?: boolean;
   x: number;
   y: number;
   points: [{ x: number; y: number }, { x: number; y: number }];
@@ -159,6 +164,7 @@ export type TextElementType = {
   fontFamily: string;
   fill: string;
   strokeWidth: number;
+  strokeDash?: boolean;
   rotation: number;
   stroke: string;
 };

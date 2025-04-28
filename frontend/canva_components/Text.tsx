@@ -4,6 +4,7 @@ const TextEditor = dynamic(() => import("@/canva_components/TextEditor"), {
 });
 
 import { useElements } from "@/app/_context/ElementContext";
+import { strokeDashGap } from "@/app/_lib/const";
 import { TextElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import dynamic from "next/dynamic";
@@ -52,6 +53,7 @@ function Text({ draggable, element, isSelected }: Props) {
         width={element.width}
         id={element.id}
         name="object"
+        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : []}
         strokeWidth={element.strokeWidth}
         stroke={element.stroke}
         fill={element.fill}
@@ -107,6 +109,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.rotation === next.element.rotation &&
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
+    prev.element.strokeDash === next.element.strokeDash &&
     prev.element.fill === next.element.fill &&
     prev.isSelected === next.isSelected
   );

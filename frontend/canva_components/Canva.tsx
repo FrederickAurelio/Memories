@@ -92,6 +92,8 @@ const Canva = memo(function Canva() {
         stroke: "#262626",
         fill: "#ffff",
         strokeWidth: 2,
+        numPoints: selectedTool === "shape-star" ? 5 : 0,
+        strokeDash: false,
       });
     } else if (selectedTool.startsWith("draw")) {
       handleSelectElement(null);
@@ -114,6 +116,7 @@ const Canva = memo(function Canva() {
         id: new Date().toISOString(),
         stroke: "#262626",
         strokeWidth: 2,
+        strokeDash: false,
         x: stageSize.width / 2,
         y: stageSize.height / 2,
         points: points,
@@ -128,6 +131,7 @@ const Canva = memo(function Canva() {
         width: 150,
         height: 30,
         fill: "#262626",
+        strokeDash: false,
         text: "Simple Text",
         fontSize: 30,
         fontFamily: GeistSans.className,

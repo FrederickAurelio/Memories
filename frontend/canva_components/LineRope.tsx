@@ -1,6 +1,7 @@
 "use client";
 
 import { useElements } from "@/app/_context/ElementContext";
+import { strokeDashGap } from "@/app/_lib/const";
 import { LineRopeElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { memo, useRef } from "react";
@@ -47,6 +48,7 @@ function LineRope({ draggable, element, isSelected }: Props) {
       id={element.id}
     >
       <Line
+        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : []}
         name="object"
         lineCap="round"
         lineJoin="round"
@@ -102,6 +104,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.x === next.element.x &&
     prev.element.y === next.element.y &&
     prev.element.id === next.element.id &&
+    prev.element.strokeDash === next.element.strokeDash &&
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
     prev.element.points === next.element.points

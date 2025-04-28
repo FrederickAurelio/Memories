@@ -1,6 +1,7 @@
 "use client";
 
 import { useElements } from "@/app/_context/ElementContext";
+import { strokeDashGap } from "@/app/_lib/const";
 import { DrawElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
@@ -63,6 +64,7 @@ function Draw({ draggable, element, isSelected }: Props) {
   return (
     <>
       <Line
+        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : []}
         id={element.id}
         x={element.x}
         y={element.y}
@@ -104,6 +106,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.rotation === next.element.rotation &&
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
+    prev.element.strokeDash === next.element.strokeDash &&
     prev.isSelected === next.isSelected &&
     prev.element.points === next.element.points
   );

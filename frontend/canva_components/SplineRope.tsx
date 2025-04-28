@@ -1,6 +1,7 @@
 "use client";
 
 import { useElements } from "@/app/_context/ElementContext";
+import { strokeDashGap } from "@/app/_lib/const";
 import { SplineRopeElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { memo, useRef } from "react";
@@ -51,6 +52,7 @@ function SplineRope({ draggable, element, isSelected }: Props) {
         name="object"
         lineCap="round"
         lineJoin="round"
+        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : []}
         id={element.id}
         stroke={element.stroke}
         strokeWidth={element.strokeWidth}
@@ -118,6 +120,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.id === next.element.id &&
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
+    prev.element.strokeDash === next.element.strokeDash &&
     prev.element.points === next.element.points
   );
 };

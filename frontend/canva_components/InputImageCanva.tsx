@@ -25,18 +25,31 @@ function InputImageCanva({ inputRef, inputImageType, stageSize }: Props) {
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = reader.result as string;
-      addElement({
-        type: inputImageType as "photo" | "sticker",
-        id: new Date().toISOString(),
-        x: stageSize.width / 2,
-        y: stageSize.height / 2,
-        src: base64,
-        rotation: 0,
-        width: 0,
-        height: 0,
-        stroke: "#262626",
-        strokeWidth: 0,
-      });
+      if (inputImageType === "sticker")
+        addElement({
+          type: inputImageType,
+          id: new Date().toISOString(),
+          x: stageSize.width / 2,
+          y: stageSize.height / 2,
+          src: base64,
+          rotation: 0,
+          width: 0,
+          height: 0,
+          stroke: "#262626",
+          strokeWidth: 0,
+          strokeDash: false,
+        });
+      else
+        addElement({
+          type: inputImageType,
+          id: new Date().toISOString(),
+          x: stageSize.width / 2,
+          y: stageSize.height / 2,
+          src: base64,
+          rotation: 0,
+          width: 0,
+          height: 0,
+        });
 
       if (inputRef.current) {
         inputRef.current.value = "";

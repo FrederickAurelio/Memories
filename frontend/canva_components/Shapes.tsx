@@ -13,6 +13,7 @@ import {
   Transformer,
 } from "react-konva";
 import Heart from "./Heart";
+import { strokeDashGap } from "@/app/_lib/const";
 
 type Props = {
   draggable: boolean;
@@ -54,14 +55,15 @@ function Shapes({ draggable, element, isSelected }: Props) {
       <Shapes
         id={element.id}
         name="object"
+        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : undefined}
         points={[0, 0, element.width, 0]}
         pointerLength={element.height / 5}
         pointerWidth={element.height / 5}
-        strokeWidth={element.strokeWidth || 2}
+        strokeWidth={element.strokeWidth}
         stroke={element.stroke || "#262626"}
         fill={element.fill || "#262626"}
-        width={element.width || 100}
-        height={element.height || 100}
+        width={element.width}
+        height={element.height}
         x={element.x}
         y={element.y}
         rotation={element.rotation}
@@ -74,9 +76,9 @@ function Shapes({ draggable, element, isSelected }: Props) {
         ref={shapeRef as never}
         radiusX={element.width}
         radiusY={element.height}
-        sides={element?.sides || 6}
+        sides={element?.sides || 0}
         radius={element.width / 1.8}
-        numPoints={element?.numPoints || 5}
+        numPoints={element?.numPoints || 0}
         innerRadius={element.width / 3.8}
         outerRadius={element.width / 1.5}
       />
@@ -114,6 +116,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.stroke === next.element.stroke &&
     prev.element.fill === next.element.fill &&
     prev.element.strokeWidth === next.element.strokeWidth &&
+    prev.element.strokeDash === next.element.strokeDash &&
     prev.isSelected === next.isSelected
   );
 };

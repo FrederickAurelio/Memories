@@ -28,6 +28,7 @@ export const BACKEND_BASE_URL = "http://localhost:2000";
 export const FRONTEND_BASE_URL = "http://localhost:3000";
 
 export const undoRedoStack = 12;
+export const strokeDashGap = 4;
 export const imageMargin = 7;
 export const imageMarginBot = 10 + imageMargin;
 
