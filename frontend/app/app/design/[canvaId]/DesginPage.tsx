@@ -57,7 +57,10 @@ function DesignPage() {
       <div className="relative col-start-2 col-end-[15] flex w-full flex-col items-center justify-center p-3">
         {isSelectedId && <EditToolBar />}
         <div
-          className={`aspect-video w-[1200] scale-[${zoom}%] bg-white shadow-[0_1px_20px_rgba(38,38,38,0.20)]`}
+          style={{
+            transform: `scaleX(${zoom}%) scaleY(${zoom}%)`,
+          }}
+          className={`aspect-video w-[1200] bg-white shadow-[0_1px_20px_rgba(38,38,38,0.20)]`}
         >
           <Canva />
         </div>

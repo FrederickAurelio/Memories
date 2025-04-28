@@ -72,16 +72,22 @@ function StrokeWidthToolBar() {
                   }}
                   className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 text-center text-sm"
                 />
-                <Ellipsis
-                  onClick={() => {
-                    strokeChanged.current = true;
-                    updateElementState(
-                      { ...selectedElements, strokeDash: true },
-                      true,
-                    );
-                  }}
-                  className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 p-1 text-center text-sm"
-                />
+                {selectedElements.type !== "rope-spline" && (
+                  <Ellipsis
+                    onClick={() => {
+                      strokeChanged.current = true;
+                      updateElementState(
+                        {
+                          ...selectedElements,
+                          strokeWidth: selectedElements.strokeWidth || 2,
+                          strokeDash: true,
+                        },
+                        true,
+                      );
+                    }}
+                    className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 p-1 text-center text-sm"
+                  />
+                )}
               </div>
               <h2 className="translate-y-1 text-sm">Stroke Weight</h2>
               <div className="flex items-center justify-center gap-2">

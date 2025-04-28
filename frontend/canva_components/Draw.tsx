@@ -64,7 +64,9 @@ function Draw({ draggable, element, isSelected }: Props) {
   return (
     <>
       <Line
-        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : []}
+        dash={
+          element.strokeDash ? [element.strokeWidth, strokeDashGap * 2] : []
+        }
         id={element.id}
         x={element.x}
         y={element.y}

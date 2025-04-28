@@ -52,7 +52,9 @@ function SplineRope({ draggable, element, isSelected }: Props) {
         name="object"
         lineCap="round"
         lineJoin="round"
-        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : []}
+        dash={
+          element.strokeDash ? [element.strokeWidth, strokeDashGap * 2] : []
+        }
         id={element.id}
         stroke={element.stroke}
         strokeWidth={element.strokeWidth}

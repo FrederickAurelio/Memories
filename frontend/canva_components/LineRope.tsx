@@ -48,7 +48,9 @@ function LineRope({ draggable, element, isSelected }: Props) {
       id={element.id}
     >
       <Line
-        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : []}
+        dash={
+          element.strokeDash ? [element.strokeWidth, strokeDashGap * 2] : []
+        }
         name="object"
         lineCap="round"
         lineJoin="round"

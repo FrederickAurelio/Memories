@@ -57,6 +57,7 @@ function StageNDraw({
           rotation: 0,
           stroke: "#262626",
           strokeWidth: 3,
+          strokeDash: false,
         },
         true,
       );
