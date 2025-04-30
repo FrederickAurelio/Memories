@@ -34,7 +34,6 @@ function SplineRope({ draggable, element, isSelected }: Props) {
       onDragStart={() => handleSelectElement(element.id)}
       draggable={draggable}
       onDragEnd={(e) => {
-        console.log(e.target);
         const { x, y, isGroup } = e.target.attrs;
         if (!shapeRef.current) return;
         if (isOutsideStage(shapeRef.current)) {

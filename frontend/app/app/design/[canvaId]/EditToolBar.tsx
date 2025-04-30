@@ -1,3 +1,4 @@
+import ArrangeToolBar from "./ArrangeToolBar";
 import FillColorToolBar from "./FillColorToolBar";
 import OpacityToolBar from "./OpacityToolBar";
 import StrokeColorToolBar from "./StrokeColorToolBar";
@@ -13,6 +14,7 @@ function EditToolBar() {
         <StrokeColorToolBar />
         <StrokeWidthToolBar />
         <OpacityToolBar />
+        <ArrangeToolBar />
       </div>
     </div>
   );

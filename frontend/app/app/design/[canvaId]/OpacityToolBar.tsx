@@ -15,7 +15,7 @@ import { useRef, useState } from "react";
 import { BsTransparency } from "react-icons/bs";
 
 function OpacityToolBar() {
-  const strokeChanged = useRef(false);
+  const opacityChanged = useRef(false);
   const [open, setOpen] = useState(false);
   const { isSelectedId, elements, updateElementState } = useElements();
   const selectedElements = elements.find((el) => el.id === isSelectedId);
@@ -25,7 +25,7 @@ function OpacityToolBar() {
         <Popover
           open={open}
           onOpenChange={(o) => {
-            if (!o && strokeChanged.current)
+            if (!o && opacityChanged.current)
               updateElementState(selectedElements);
             setOpen(o);
           }}
@@ -50,7 +50,7 @@ function OpacityToolBar() {
               <div className="flex items-center justify-center gap-2">
                 <Slider
                   onValueChange={(e) => {
-                    strokeChanged.current = true;
+                    opacityChanged.current = true;
                     updateElementState(
                       { ...selectedElements, opacity: e[0] / 100 },
                       true,
@@ -66,7 +66,7 @@ function OpacityToolBar() {
                     let value = Number(e.target.value);
                     if (value > 100) value = 100;
                     if (value < 0) value = 0;
-                    strokeChanged.current = true;
+                    opacityChanged.current = true;
                     updateElementState(
                       { ...selectedElements, opacity: value / 100 },
                       true,

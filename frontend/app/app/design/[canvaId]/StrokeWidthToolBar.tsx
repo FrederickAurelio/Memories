@@ -56,7 +56,7 @@ function StrokeWidthToolBar() {
                       true,
                     );
                   }}
-                  className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 p-1 text-center text-sm"
+                  className="h-9 w-12 cursor-pointer rounded-lg border border-neutral-200 p-1 text-center text-sm hover:bg-neutral-200/60"
                 />
                 <Minus
                   onClick={() => {
@@ -70,7 +70,7 @@ function StrokeWidthToolBar() {
                       true,
                     );
                   }}
-                  className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 text-center text-sm"
+                  className="h-9 w-12 cursor-pointer rounded-lg border border-neutral-200 text-center text-sm hover:bg-neutral-200/60"
                 />
                 <Ellipsis
                   onClick={() => {
@@ -84,7 +84,7 @@ function StrokeWidthToolBar() {
                       true,
                     );
                   }}
-                  className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 p-1 text-center text-sm"
+                  className="h-9 w-12 cursor-pointer rounded-lg border border-neutral-200 p-1 text-center text-sm hover:bg-neutral-200/60"
                 />
               </div>
               <h2 className="translate-y-1 text-sm">Stroke Weight</h2>
