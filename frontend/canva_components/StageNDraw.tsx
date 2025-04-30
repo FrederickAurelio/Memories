@@ -58,6 +58,7 @@ function StageNDraw({
           stroke: "#262626",
           strokeWidth: 3,
           strokeDash: false,
+          opacity: 1,
         },
         true,
       );

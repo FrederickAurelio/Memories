@@ -27,6 +27,7 @@ function SplineRope({ draggable, element, isSelected }: Props) {
       isGroup={true}
       x={element.x}
       y={element.y}
+      opacity={element.opacity}
       ref={shapeRef}
       onClick={() => handleSelectElement(element.id)}
       onTap={() => handleSelectElement(element.id)}
@@ -52,9 +53,6 @@ function SplineRope({ draggable, element, isSelected }: Props) {
         name="object"
         lineCap="round"
         lineJoin="round"
-        dash={
-          element.strokeDash ? [element.strokeWidth, strokeDashGap * 2] : []
-        }
         id={element.id}
         stroke={element.stroke}
         strokeWidth={element.strokeWidth}
@@ -71,6 +69,8 @@ function SplineRope({ draggable, element, isSelected }: Props) {
           );
 
           // Stroke the curve with black color
+          if (element.strokeDash)
+            context.setLineDash([element.strokeWidth, strokeDashGap * 2]);
           context.strokeStyle = element.stroke;
           context.lineWidth = element.strokeWidth;
           context.stroke();
@@ -123,6 +123,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
     prev.element.strokeDash === next.element.strokeDash &&
+    prev.element.opacity === next.element.opacity &&
     prev.element.points === next.element.points
   );
 };

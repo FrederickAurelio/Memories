@@ -75,6 +75,7 @@ function Draw({ draggable, element, isSelected }: Props) {
         points={element.points}
         stroke={element.stroke}
         strokeWidth={element.strokeWidth}
+        opacity={element.opacity}
         lineCap="round"
         lineJoin="round"
         onClick={() => handleSelectElement(element.id)}
@@ -109,6 +110,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
     prev.element.strokeDash === next.element.strokeDash &&
+    prev.element.opacity === next.element.opacity &&
     prev.isSelected === next.isSelected &&
     prev.element.points === next.element.points
   );

@@ -94,6 +94,7 @@ const Canva = memo(function Canva() {
         strokeWidth: 2,
         numPoints: selectedTool === "shape-star" ? 5 : 0,
         strokeDash: false,
+        opacity: 1,
       });
     } else if (selectedTool.startsWith("draw")) {
       handleSelectElement(null);
@@ -120,6 +121,7 @@ const Canva = memo(function Canva() {
         x: stageSize.width / 2,
         y: stageSize.height / 2,
         points: points,
+        opacity: 1,
       } as ElementType);
     } else if (selectedTool.startsWith("text")) {
       addElement({
@@ -137,6 +139,7 @@ const Canva = memo(function Canva() {
         fontFamily: GeistSans.className,
         x: stageSize.width / 2,
         y: stageSize.height / 2,
+        opacity: 1,
       });
     } else if (selectedTool.startsWith("zoom-in")) {
       zoomIn();

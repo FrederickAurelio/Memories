@@ -79,6 +79,7 @@ export type BaseElementType = {
   rotation: number;
   width: number;
   height: number;
+  opacity: number;
 };
 
 export type PhotoElementType = {
@@ -124,6 +125,7 @@ export type DrawElementType = {
   strokeWidth: number;
   stroke: string;
   strokeDash?: boolean;
+  opacity: number;
 };
 
 export type SplineRopeElementType = {
@@ -139,6 +141,7 @@ export type SplineRopeElementType = {
     { x: number; y: number },
     { x: number; y: number },
   ];
+  opacity: number;
 };
 
 export type LineRopeElementType = {
@@ -150,24 +153,19 @@ export type LineRopeElementType = {
   x: number;
   y: number;
   points: [{ x: number; y: number }, { x: number; y: number }];
+  opacity: number;
 };
 
 export type TextElementType = {
   type: "text";
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
   text: string;
   fontSize: number;
   fontFamily: string;
   fill: string;
   strokeWidth: number;
   strokeDash?: boolean;
-  rotation: number;
   stroke: string;
-};
+} & BaseElementType;
 
 export type ElementType =
   | PhotoElementType

@@ -11,18 +11,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Ban, Ellipsis, Minus } from "lucide-react";
 import { useRef, useState } from "react";
-import { BsBorderWidth } from "react-icons/bs";
+import { BsTransparency } from "react-icons/bs";
 
-function StrokeWidthToolBar() {
+function OpacityToolBar() {
   const strokeChanged = useRef(false);
   const [open, setOpen] = useState(false);
   const { isSelectedId, elements, updateElementState } = useElements();
   const selectedElements = elements.find((el) => el.id === isSelectedId);
   return (
     <>
-      {selectedElements && "strokeWidth" in selectedElements && (
+      {selectedElements && "opacity" in selectedElements && (
         <Popover
           open={open}
           onOpenChange={(o) => {
@@ -34,71 +33,31 @@ function StrokeWidthToolBar() {
           <Tooltip>
             <PopoverTrigger>
               <TooltipTrigger asChild>
-                <BsBorderWidth
+                <BsTransparency
                   size={40}
                   className={`rotate-180 cursor-pointer rounded-lg border-2 border-neutral-200 p-[6px] hover:bg-neutral-300/50 ${open ? "bg-neutral-300/50" : ""}`}
                 />
               </TooltipTrigger>
             </PopoverTrigger>
             <TooltipContent side="top">
-              <p>Stroke Weight</p>
+              <p>Transparency</p>
             </TooltipContent>
             <PopoverContent
               className="w-72 rounded-lg bg-white p-2 shadow-[0_1px_15px_rgba(38,38,38,0.25)]"
               side="bottom"
             >
-              <div className="flex gap-2">
-                <Ban
-                  onClick={() => {
-                    strokeChanged.current = true;
-                    updateElementState(
-                      { ...selectedElements, strokeWidth: 0 },
-                      true,
-                    );
-                  }}
-                  className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 p-1 text-center text-sm"
-                />
-                <Minus
-                  onClick={() => {
-                    strokeChanged.current = true;
-                    updateElementState(
-                      {
-                        ...selectedElements,
-                        strokeWidth: selectedElements.strokeWidth || 2,
-                        strokeDash: false,
-                      },
-                      true,
-                    );
-                  }}
-                  className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 text-center text-sm"
-                />
-                <Ellipsis
-                  onClick={() => {
-                    strokeChanged.current = true;
-                    updateElementState(
-                      {
-                        ...selectedElements,
-                        strokeWidth: selectedElements.strokeWidth || 2,
-                        strokeDash: true,
-                      },
-                      true,
-                    );
-                  }}
-                  className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 p-1 text-center text-sm"
-                />
-              </div>
-              <h2 className="translate-y-1 text-sm">Stroke Weight</h2>
+              <h2 className="translate-y-1 text-sm">Transparency</h2>
               <div className="flex items-center justify-center gap-2">
                 <Slider
                   onValueChange={(e) => {
                     strokeChanged.current = true;
                     updateElementState(
-                      { ...selectedElements, strokeWidth: e[0] },
+                      { ...selectedElements, opacity: e[0] / 100 },
                       true,
                     );
                   }}
                   className="bg-neutral-100"
-                  value={[selectedElements.strokeWidth]}
+                  value={[Math.round(selectedElements.opacity * 100)]}
                   max={100}
                   step={1}
                 />
@@ -109,11 +68,11 @@ function StrokeWidthToolBar() {
                     if (value < 0) value = 0;
                     strokeChanged.current = true;
                     updateElementState(
-                      { ...selectedElements, strokeWidth: value },
+                      { ...selectedElements, opacity: value / 100 },
                       true,
                     );
                   }}
-                  value={selectedElements.strokeWidth}
+                  value={Math.round(selectedElements.opacity * 100)}
                   type="text"
                   className="flex h-8 w-10 items-center justify-center rounded-lg border border-neutral-200 text-center text-sm focus:outline-none focus:ring-1 focus:ring-neutral-300 active:outline-none"
                 />
@@ -126,4 +85,4 @@ function StrokeWidthToolBar() {
   );
 }
 
-export default StrokeWidthToolBar;
+export default OpacityToolBar;

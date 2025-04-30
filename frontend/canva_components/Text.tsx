@@ -49,7 +49,8 @@ function Text({ draggable, element, isSelected }: Props) {
     <>
       <KonvaText
         onDblClick={handleTextDblClick}
-        opacity={isEditing ? 0 : 1}
+        visible={!isEditing}
+        opacity={element.opacity}
         width={element.width}
         id={element.id}
         name="object"
@@ -110,6 +111,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
     prev.element.strokeDash === next.element.strokeDash &&
+    prev.element.opacity === next.element.opacity &&
     prev.element.fill === next.element.fill &&
     prev.isSelected === next.isSelected
   );

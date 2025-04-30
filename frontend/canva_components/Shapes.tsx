@@ -60,6 +60,7 @@ function Shapes({ draggable, element, isSelected }: Props) {
         pointerLength={element.height / 5}
         pointerWidth={element.height / 5}
         strokeWidth={element.strokeWidth}
+        opacity={element.opacity}
         stroke={element.stroke || "#262626"}
         fill={element.fill || "#262626"}
         width={element.width}
@@ -117,6 +118,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.fill === next.element.fill &&
     prev.element.strokeWidth === next.element.strokeWidth &&
     prev.element.strokeDash === next.element.strokeDash &&
+    prev.element.opacity === next.element.opacity &&
     prev.isSelected === next.isSelected
   );
 };

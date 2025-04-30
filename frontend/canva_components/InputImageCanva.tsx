@@ -38,6 +38,7 @@ function InputImageCanva({ inputRef, inputImageType, stageSize }: Props) {
           stroke: "#262626",
           strokeWidth: 0,
           strokeDash: false,
+          opacity: 1,
         });
       else
         addElement({
@@ -49,6 +50,7 @@ function InputImageCanva({ inputRef, inputImageType, stageSize }: Props) {
           rotation: 0,
           width: 0,
           height: 0,
+          opacity: 1,
         });
 
       if (inputRef.current) {

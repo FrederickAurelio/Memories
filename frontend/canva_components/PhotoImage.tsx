@@ -56,6 +56,7 @@ function PhotoImage({ draggable, element, isSelected }: Props) {
         x={element.x}
         y={element.y}
         rotation={element.rotation}
+        opacity={element.opacity}
         onClick={() => handleSelectElement(element.id)}
         onTap={() => handleSelectElement(element.id)}
         onDragStart={() => handleSelectElement(element.id)}
@@ -109,6 +110,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.width === next.element.width &&
     prev.element.height === next.element.height &&
     prev.element.rotation === next.element.rotation &&
+    prev.element.opacity === next.element.opacity &&
     prev.isSelected === next.isSelected
   );
 };

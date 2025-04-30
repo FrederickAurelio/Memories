@@ -26,6 +26,7 @@ function LineRope({ draggable, element, isSelected }: Props) {
       isGroup={true}
       x={element.x}
       y={element.y}
+      opacity={element.opacity}
       ref={shapeRef}
       onClick={() => handleSelectElement(element.id)}
       onTap={() => handleSelectElement(element.id)}
@@ -109,6 +110,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.strokeDash === next.element.strokeDash &&
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
+    prev.element.opacity === next.element.opacity &&
     prev.element.points === next.element.points
   );
 };

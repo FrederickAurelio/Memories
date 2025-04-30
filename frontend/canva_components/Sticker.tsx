@@ -58,6 +58,7 @@ function Sticker({ draggable, element, isSelected }: Props) {
         x={element.x}
         y={element.y}
         rotation={element.rotation}
+        opacity={element.opacity}
         image={imageDOM}
         onClick={() => handleSelectElement(element.id)}
         onTap={() => handleSelectElement(element.id)}
@@ -94,6 +95,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.stroke === next.element.stroke &&
     prev.element.strokeWidth === next.element.strokeWidth &&
     prev.element.strokeDash === next.element.strokeDash &&
+    prev.element.opacity === next.element.opacity &&
     prev.isSelected === next.isSelected
   );
 };
