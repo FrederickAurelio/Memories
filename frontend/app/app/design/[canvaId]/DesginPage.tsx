@@ -20,14 +20,14 @@ function DesignPage() {
             {
               id: "undo",
               type: "tool",
-              name: "Undo",
+              name: "Undo (Ctrl + Z)",
               icon: Undo2Icon,
               disabled: curStateStack >= stateStack.length - 1,
             },
             {
               id: "redo",
               type: "tool",
-              name: "Redo",
+              name: "Redo (Ctrl + Shift + Z)",
               icon: Redo2Icon,
               disabled: curStateStack <= 0,
             },

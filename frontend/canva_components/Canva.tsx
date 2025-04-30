@@ -59,6 +59,8 @@ const Canva = memo(function Canva() {
     selectedTool,
     isDrawing,
     copiedElement,
+    curStateStack,
+    stateStack,
     handleSelectElement,
     addElement,
     handleSelectTool,
@@ -97,6 +99,13 @@ const Canva = memo(function Canva() {
     }
     if (event.key === "Delete") {
       if (isSelectedId) removeElement(isSelectedId);
+    }
+
+    if (event.ctrlKey && event.key === "Z") {
+      if (!(curStateStack <= 0)) setCurStateStack((s) => s - 1);
+    } else if (event.ctrlKey && event.key === "z") {
+      if (!(curStateStack >= stateStack.length - 1))
+        setCurStateStack((s) => s + 1);
     }
   }
 
@@ -186,9 +195,10 @@ const Canva = memo(function Canva() {
     } else if (selectedTool.startsWith("zoom-out")) {
       zoomOut();
     } else if (selectedTool.startsWith("redo")) {
-      setCurStateStack((s) => s - 1);
+      if (!(curStateStack <= 0)) setCurStateStack((s) => s - 1);
     } else if (selectedTool.startsWith("undo")) {
-      setCurStateStack((s) => s + 1);
+      if (!(curStateStack >= stateStack.length - 1))
+        setCurStateStack((s) => s + 1);
     }
     handleSelectTool("select");
     // eslint-disable-next-line react-hooks/exhaustive-deps

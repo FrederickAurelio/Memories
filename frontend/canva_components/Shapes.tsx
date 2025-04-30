@@ -14,6 +14,7 @@ import {
 } from "react-konva";
 import Heart from "./Heart";
 import { strokeDashGap } from "@/app/_lib/const";
+import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 
 type Props = {
   draggable: boolean;
@@ -23,19 +24,6 @@ type Props = {
 
 function Shapes({ draggable, element, isSelected }: Props) {
   const { handleSelectElement, handleTransformEndElement } = useElements();
-  const Shapes =
-    element.type === "shape-rect"
-      ? Rect
-      : element.type === "shape-circle"
-        ? Ellipse
-        : element.type === "shape-hexagon" || element.type === "shape-triangle"
-          ? RegularPolygon
-          : element.type === "shape-star"
-            ? Star
-            : element.type === "shape-arrow"
-              ? Arrow
-              : Heart;
-
   const shapeRef = useRef<Konva.Shape>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
 
@@ -50,39 +38,70 @@ function Shapes({ draggable, element, isSelected }: Props) {
     }
   }, [isSelected]);
 
+  const commonProps = {
+    id: element.id,
+    name: "object",
+    dash: element.strokeDash ? [element.strokeWidth, strokeDashGap] : undefined,
+    strokeWidth: element.strokeWidth,
+    opacity: element.opacity,
+    stroke: element.stroke || "#262626",
+    fill: element.fill || "#262626",
+    width: element.width,
+    height: element.height,
+    x: element.x,
+    y: element.y,
+    rotation: element.rotation,
+    onClick: () => handleSelectElement(element.id),
+    onTap: () => handleSelectElement(element.id),
+    onDragStart: () => handleSelectElement(element.id),
+    onDragEnd: (e: Konva.KonvaEventObject<DragEvent>) =>
+      handleTransformEndElement(e, element, shapeRef),
+    onTransformEnd: (e: KonvaEventObject<Event, Node<NodeConfig>>) =>
+      handleTransformEndElement(e, element, shapeRef),
+    draggable,
+    ref: shapeRef as never,
+  };
+
   return (
     <>
-      <Shapes
-        id={element.id}
-        name="object"
-        dash={element.strokeDash ? [element.strokeWidth, strokeDashGap] : undefined}
-        points={[0, 0, element.width, 0]}
-        pointerLength={element.height / 5}
-        pointerWidth={element.height / 5}
-        strokeWidth={element.strokeWidth}
-        opacity={element.opacity}
-        stroke={element.stroke || "#262626"}
-        fill={element.fill || "#262626"}
-        width={element.width}
-        height={element.height}
-        x={element.x}
-        y={element.y}
-        rotation={element.rotation}
-        onClick={() => handleSelectElement(element.id)}
-        onTap={() => handleSelectElement(element.id)}
-        onDragStart={() => handleSelectElement(element.id)}
-        onDragEnd={(e) => handleTransformEndElement(e, element, shapeRef)}
-        onTransformEnd={(e) => handleTransformEndElement(e, element, shapeRef)}
-        draggable={draggable}
-        ref={shapeRef as never}
-        radiusX={element.width}
-        radiusY={element.height}
-        sides={element?.sides || 0}
-        radius={element.width / 1.8}
-        numPoints={element?.numPoints || 0}
-        innerRadius={element.width / 3.8}
-        outerRadius={element.width / 1.5}
-      />
+      {element.type === "shape-rect" && <Rect {...commonProps} />}
+
+      {element.type === "shape-circle" && (
+        <Ellipse
+          {...commonProps}
+          radiusX={element.width}
+          radiusY={element.height}
+        />
+      )}
+
+      {(element.type === "shape-hexagon" ||
+        element.type === "shape-triangle") && (
+        <RegularPolygon
+          {...commonProps}
+          radius={element.width / 1.8}
+          sides={element.sides || 0}
+        />
+      )}
+
+      {element.type === "shape-star" && (
+        <Star
+          {...commonProps}
+          numPoints={element.numPoints || 0}
+          innerRadius={element.width / 3.8}
+          outerRadius={element.width / 1.5}
+        />
+      )}
+
+      {element.type === "shape-arrow" && (
+        <Arrow
+          {...commonProps}
+          points={[0, 0, element.width, 0]}
+          pointerLength={element.height / 5}
+          pointerWidth={element.height / 5}
+        />
+      )}
+
+      {element.type === "shape-heart" && <Heart {...commonProps} />}
       <Transformer
         ref={transformerRef}
         flipEnabled={false}
