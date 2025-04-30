@@ -26,6 +26,7 @@ import { undoRedoStack } from "../_lib/const";
 
 export type ElementContextType = {
   elements: ElementType[];
+  copiedElement: ElementType | null;
   isSelectedId: string | null;
   selectedTool: string;
   isDrawing: RefObject<"none" | "drawing" | "erasing">;
@@ -54,6 +55,7 @@ export type ElementContextType = {
   zoomOut(): void;
   updateStack(newEls: ElementType[]): void;
   setCurStateStack: Dispatch<SetStateAction<number>>;
+  setCopiedElement: Dispatch<SetStateAction<ElementType | null>>;
 };
 
 const ElementContext = createContext<ElementContextType | null>(null);
@@ -64,6 +66,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
     [],
   );
   const [isSelectedId, setIsSelected] = useState<string | null>(null);
+  const [copiedElement, setCopiedElement] = useState<ElementType | null>(null);
   const [selectedTool, isSelectedTool] = useState("select");
   const isDrawing = useRef<"none" | "drawing" | "erasing">("none");
 
@@ -186,6 +189,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
   return (
     <ElementContext.Provider
       value={{
+        copiedElement,
         isSelectedId,
         elements,
         selectedTool,
@@ -193,6 +197,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
         zoom,
         stateStack,
         curStateStack,
+        setCopiedElement,
         setElements,
         updateElementState,
         handleSelectElement,

@@ -57,12 +57,15 @@ const Canva = memo(function Canva() {
     elements,
     selectedTool,
     isDrawing,
+    copiedElement,
     handleSelectElement,
     addElement,
     handleSelectTool,
     zoomIn,
     zoomOut,
     setCurStateStack,
+    setCopiedElement,
+    removeElement,
   } = useElements();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -73,6 +76,35 @@ const Canva = memo(function Canva() {
   const [inputImageType, setInputImageType] = useState<"photo" | "sticker">(
     "photo",
   );
+
+  function detectKeydown(event: KeyboardEvent) {
+    if (event.ctrlKey && (event.key === "c" || event.key === "C")) {
+      const selectedElements = elements.find((el) => el.id === isSelectedId);
+      if (selectedElements) setCopiedElement(selectedElements);
+    }
+    if (event.ctrlKey && (event.key === "v" || event.key === "V")) {
+      if (copiedElement) {
+        const newEl = {
+          ...copiedElement,
+          id: new Date().toISOString(),
+          x: copiedElement.x + 10,
+          y: copiedElement.y + 10,
+        };
+        setCopiedElement(newEl);
+        addElement(newEl);
+      }
+    }
+    if (event.key === "Delete" || event.key === "Backspace") {
+      if (isSelectedId) removeElement(isSelectedId);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("keydown", detectKeydown);
+
+    return () => document.removeEventListener("keydown", detectKeydown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSelectedId, elements]);
 
   // Handle INPUT from Toolbox
   useEffect(() => {
