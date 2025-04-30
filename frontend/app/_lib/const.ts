@@ -32,6 +32,26 @@ export const strokeDashGap = 5;
 export const imageMargin = 7;
 export const imageMarginBot = 10 + imageMargin;
 
+export const defaultFontFamily = [
+  "Arial",
+  "Verdana",
+  "Tahoma",
+  "Trebuchet MS",
+  "Times New Roman",
+  "Georgia",
+  "Courier New",
+  "Lucida Console",
+  "Impact",
+  "Comic Sans MS",
+  "Helvetica",
+  "Palatino Linotype",
+  "Segoe UI",
+  "Calibri",
+  "Cambria",
+  "Garamond",
+  "Franklin Gothic Medium",
+];
+
 // TOOLBOX //////////////////////////////////////////////////////////
 export const mainToolboxOptions: ToolBoxOptionType[] = [
   { id: "select", type: "tool", name: "Select", icon: MousePointer2 },

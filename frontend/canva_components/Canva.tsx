@@ -35,6 +35,7 @@ const LineRope = dynamic(() => import("@/canva_components/LineRope"), {
 const Text = dynamic(() => import("@/canva_components/Text"), {
   ssr: false,
 });
+
 import {
   DrawElementType,
   ElementType,
@@ -45,11 +46,11 @@ import {
   StickerElementType,
   TextElementType,
 } from "@/app/_lib/types";
-import { GeistSans } from "geist/font/sans";
 import Konva from "konva";
 import dynamic from "next/dynamic";
 import { memo, useEffect, useRef, useState } from "react";
 import { useElements } from "@/app/_context/ElementContext";
+import { GeistMono } from "geist/font/mono";
 
 const Canva = memo(function Canva() {
   const {
@@ -94,7 +95,7 @@ const Canva = memo(function Canva() {
         addElement(newEl);
       }
     }
-    if (event.key === "Delete" || event.key === "Backspace") {
+    if (event.key === "Delete") {
       if (isSelectedId) removeElement(isSelectedId);
     }
   }
@@ -168,10 +169,17 @@ const Canva = memo(function Canva() {
         strokeDash: false,
         text: "Simple Text",
         fontSize: 30,
-        fontFamily: GeistSans.className,
+        fontFamily: GeistMono.style.fontFamily
+          ? GeistMono.style.fontFamily.split(",")[0].replaceAll("'", "")
+          : "",
         x: stageSize.width / 2,
         y: stageSize.height / 2,
         opacity: 1,
+        align: "left",
+        bold: false,
+        italic: false,
+        lineThrough: false,
+        underline: false,
       });
     } else if (selectedTool.startsWith("zoom-in")) {
       zoomIn();

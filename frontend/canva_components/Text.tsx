@@ -48,6 +48,11 @@ function Text({ draggable, element, isSelected }: Props) {
   return (
     <>
       <KonvaText
+        fontStyle={`${element.bold ? "bold" : ""} 
+        ${element.italic ? "italic" : ""}`}
+        textDecoration={`${element.underline ? "underline" : ""} 
+        ${element.lineThrough ? "line-through" : ""}`}
+        align={element.align}
         onDblClick={handleTextDblClick}
         visible={!isEditing}
         opacity={element.opacity}
@@ -113,6 +118,11 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.strokeDash === next.element.strokeDash &&
     prev.element.opacity === next.element.opacity &&
     prev.element.fill === next.element.fill &&
+    prev.element.align === next.element.align &&
+    prev.element.bold === next.element.bold &&
+    prev.element.italic === next.element.italic &&
+    prev.element.underline === next.element.underline &&
+    prev.element.lineThrough === next.element.lineThrough &&
     prev.isSelected === next.isSelected
   );
 };

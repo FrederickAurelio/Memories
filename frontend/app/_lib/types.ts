@@ -165,6 +165,11 @@ export type TextElementType = {
   strokeWidth: number;
   strokeDash?: boolean;
   stroke: string;
+  align: "center" | "right" | "left" | "justify";
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  lineThrough: boolean;
 } & BaseElementType;
 
 export type ElementType =
