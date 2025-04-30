@@ -67,7 +67,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
   );
   const [isSelectedId, setIsSelected] = useState<string | null>(null);
   const [copiedElement, setCopiedElement] = useState<ElementType | null>(null);
-  const [selectedTool, isSelectedTool] = useState("select");
+  const [selectedTool, setSelectedTool] = useState("select");
   const isDrawing = useRef<"none" | "drawing" | "erasing">("none");
 
   const [stateStack, setStateStack] = useState<ElementType[][]>([elements]);
@@ -86,7 +86,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
   }
 
   function handleSelectTool(s: string) {
-    isSelectedTool(s);
+    setSelectedTool(s);
   }
 
   useEffect(() => {
@@ -119,6 +119,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
     const newEls = elements.filter((el) => el.id !== id);
     setElements(newEls);
     updateStack(newEls);
+    setIsSelected(null);
   }
 
   function addElement(el: ElementType, skipUpdateStack = false) {
