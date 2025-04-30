@@ -101,9 +101,13 @@ const Canva = memo(function Canva() {
       if (isSelectedId) removeElement(isSelectedId);
     }
 
-    if (event.ctrlKey && event.key === "Z") {
+    if (
+      event.ctrlKey &&
+      event.shiftKey &&
+      (event.key === "z" || event.key === "Z")
+    ) {
       if (!(curStateStack <= 0)) setCurStateStack((s) => s - 1);
-    } else if (event.ctrlKey && event.key === "z") {
+    } else if (event.ctrlKey && (event.key === "z" || event.key === "Z")) {
       if (!(curStateStack >= stateStack.length - 1))
         setCurStateStack((s) => s + 1);
     }
