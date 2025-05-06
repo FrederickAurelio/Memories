@@ -56,6 +56,7 @@ export type ElementContextType = {
   updateStack(newEls: ElementType[]): void;
   setCurStateStack: Dispatch<SetStateAction<number>>;
   setCopiedElement: Dispatch<SetStateAction<ElementType | null>>;
+  setStateStack: Dispatch<SetStateAction<ElementType[][]>>;
 };
 
 const ElementContext = createContext<ElementContextType | null>(null);
@@ -211,6 +212,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
         zoomOut,
         updateStack,
         setCurStateStack,
+        setStateStack,
       }}
     >
       {children}

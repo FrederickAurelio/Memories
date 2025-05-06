@@ -39,3 +39,19 @@ export function setCookieRecentLogin(
     maxAge: 60 * 60 * 24 * 30 * 2,
   });
 }
+
+export function base64ToFileWithName(
+  base64: string,
+  filenameBase: string,
+): { file: File; filename: string } {
+  const arr = base64.split(",");
+  const mime = arr[0].match(/:(.*?);/)?.[1] || "image/png";
+  const ext = mime.split("/")[1];
+  const bstr = atob(arr[1]);
+  const u8arr = new Uint8Array(bstr.length);
+  for (let i = 0; i < bstr.length; i++) u8arr[i] = bstr.charCodeAt(i);
+
+  const filename = `${filenameBase}.${ext}`;
+  const file = new File([u8arr], filename, { type: mime });
+  return { file, filename };
+}

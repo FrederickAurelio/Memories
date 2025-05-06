@@ -1,17 +1,43 @@
 import { z } from "zod";
-import { errorHandlers } from "../helpers";
+import { errorHandlers, parseElementsFromBody } from "../helpers";
 import { Request, Response } from "express";
+import { elementSchema } from "../types";
+import Canva from "../model/Canva";
 
-// const saveCanvaSchema = z.object({
-//   email: z.string().email("Invalid email format"),
-// });
+const saveCanvaSchema = z.object({
+  title: z
+    .string()
+    .min(3, "Title must be at least 3 characters long.")
+    .max(60, "Title cannot exceed 60 characters."),
+  elements: z.array(elementSchema),
+});
 export async function saveCanva(req: Request, res: Response) {
+  const userId = req.session.userId;
+  if (!userId)
+    return void res.status(401).json({
+      success: false,
+      message: `Not authorized!`,
+      errors: {},
+    });
   const data = req.body;
-  console.log(data)
   try {
-    // const { email } = saveCanvaSchema.parse(data);
-   
-    return res.status(200).json({
+    const { title, elements } = saveCanvaSchema.parse(data);
+    const photoDescriptions = elements
+      .filter((el) => el.type === "photo" || el.type === "sticker")
+      .map((el) => {
+        return { imageId: el.id, title: "", date: null, description: "" };
+      });
+
+    const newCanva = new Canva({
+      userId: userId,
+      title: title,
+      elements: elements,
+      photoDescriptions: photoDescriptions,
+    });
+
+    await newCanva.save();
+
+    return void res.status(200).json({
       success: true,
       message: "Canva saved successfully!",
       errors: {},

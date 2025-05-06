@@ -12,22 +12,35 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SaveIcon } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { TbLoader2 } from "react-icons/tb";
+import { toast } from "sonner";
 
 function SaveCanvaButton() {
-  const { elements } = useElements();
+  const [open, setOpen] = useState(false);
+  const { elements, setElements, setCurStateStack, setStateStack } =
+    useElements();
   const [title, setTitle] = useState("");
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
 
-  function handleSave() {
-    if (elements.length <= 0 || title === "") return;
-    startTransition(() => {
-      saveCanvaDesign(title, elements);
-    });
+  async function handleSave() {
+    if (elements.length <= 0 || title.length <= 2) return;
+    setIsPending(true);
+    const result = await saveCanvaDesign(title, elements);
+    if (result?.success) {
+      setTitle("");
+      setElements([]);
+      setCurStateStack(0);
+      setStateStack([]);
+      setOpen(false);
+      toast.success(result.message);
+    } else {
+      toast.error(result?.message);
+    }
+    setIsPending(false);
   }
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div className="w-fit">
           <Button
@@ -63,7 +76,7 @@ function SaveCanvaButton() {
         />
         <DialogFooter>
           <Button
-            disabled={isPending || elements.length <= 0}
+            disabled={isPending || elements.length <= 0 || title.length <= 2}
             onClick={handleSave}
             className="rounded-lg py-1 transition-none hover:scale-100 hover:border-neutral-700 hover:bg-neutral-700"
             size="small"

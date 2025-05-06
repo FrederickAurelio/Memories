@@ -44,3 +44,19 @@ export function sendEmail(mailOptions: MailOptions) {
     }
   });
 }
+
+export function parseElementsFromBody(body: Record<string, unknown>) {
+  const elements: Record<string, unknown>[] = [];
+
+  for (const key in body) {
+    const match = key.match(/^elements\[(\d+)]\[(.+)]$/);
+    if (match) {
+      const index = Number(match[1]);
+      const prop = match[2];
+      elements[index] ||= {};
+      elements[index][prop] = body[key];
+    }
+  }
+
+  return elements;
+}

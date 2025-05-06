@@ -1,8 +1,9 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { ElementType, FetchResponse } from "../types";
 import { BACKEND_BASE_URL } from "../const";
+import { base64ToFileWithName } from "../helpers";
+import { ElementType, FetchResponse } from "../types";
 
 export async function saveCanvaDesign(
   canvaTitle: string,
@@ -11,26 +12,72 @@ export async function saveCanvaDesign(
   try {
     if (!canvaTitle || elements.length <= 0) return null;
 
-    console.log(canvaTitle);
-    console.log(elements);
-
     const cookieStore = await cookies();
     const cookiesidValue = cookieStore.get("connect.sid");
 
-    return;
-    // json -> formData, body jg
-    const response = await fetch(`${BACKEND_BASE_URL}/canva`, {
+    const responseUser = await fetch(
+      `${BACKEND_BASE_URL}/api/auth/auth-status`,
+      {
+        method: "GET",
+        headers: {
+          Cookie: `connect.sid=${cookiesidValue?.value}`,
+        },
+        credentials: "include",
+      },
+    );
+
+    const userData = (await responseUser.json()) as FetchResponse & {
+      data: { _id: string };
+    };
+    if (!userData.success) return userData;
+    const userId = userData.data._id;
+
+    const image: File[] = [];
+    const newElements = elements.map((el) => {
+      if (el.type === "photo" || el.type === "sticker") {
+        const { file, filename } = base64ToFileWithName(
+          el.src,
+          `${userId}-${el.id}`,
+        );
+        image.push(file);
+        return { ...el, src: `uploads/${filename}` };
+      } else return el;
+    });
+
+    const formData = new FormData();
+
+    image.forEach((img) => {
+      formData.append("images", img);
+    });
+
+    const responseImage = await fetch(
+      `${BACKEND_BASE_URL}/api/canva/save-image`,
+      {
+        method: "POST",
+        headers: {
+          Cookie: `connect.sid=${cookiesidValue?.value}`,
+        },
+        credentials: "include",
+        body: formData,
+      },
+    );
+
+    const dataImage = (await responseImage.json()) as FetchResponse;
+    if (!dataImage.success) return dataImage;
+
+    const response = await fetch(`${BACKEND_BASE_URL}/api/canva/save`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Cookie: `connect.sid=${cookiesidValue?.value}`,
       },
       credentials: "include",
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        title: canvaTitle,
+        elements: newElements,
+      }),
     });
-
     const data = (await response.json()) as FetchResponse;
-    console.log(data);
     return data;
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);

@@ -32,19 +32,9 @@ const CanvaSchema = new Schema<Canva>(
       type: [
         {
           imageId: { type: String, required: true },
-          title: {
-            type: String,
-            required: true,
-            minlength: [3, "Title must be at least 3 characters long."],
-            maxlength: [60, "Title cannot exceed 60 characters."],
-          },
-          date: { type: Date, required: true },
-          description: {
-            type: String,
-            required: true,
-            minlength: [5, "Description must be at least 5 characters long."],
-            maxlength: [300, "Description cannot exceed 300 characters."],
-          },
+          title: String,
+          date: Date,
+          description: String,
         },
       ],
       default: [],

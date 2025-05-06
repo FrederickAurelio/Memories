@@ -69,6 +69,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use("/api/auth", authRouter);
-app.use("/canva", canvaRouter);
+app.use("/api/canva", canvaRouter);
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
