@@ -36,6 +36,7 @@ const Text = dynamic(() => import("@/canva_components/Text"), {
   ssr: false,
 });
 
+import { v4 as uuidv4 } from "uuid";
 import {
   DrawElementType,
   ElementType,
@@ -89,7 +90,7 @@ const Canva = memo(function Canva() {
       if (copiedElement) {
         const newEl = {
           ...copiedElement,
-          id: new Date().toISOString(),
+          id: uuidv4(),
           x: copiedElement.x + 10,
           y: copiedElement.y + 10,
         };
@@ -128,7 +129,7 @@ const Canva = memo(function Canva() {
     } else if (selectedTool.startsWith("shape")) {
       addElement({
         type: selectedTool as ShapeElementType["type"],
-        id: new Date().toISOString(),
+        id: uuidv4(),
         x: stageSize.width / 2,
         y: stageSize.height / 2,
         rotation: 0,
@@ -160,7 +161,7 @@ const Canva = memo(function Canva() {
             ];
       addElement({
         type: type,
-        id: new Date().toISOString(),
+        id: uuidv4(),
         stroke: "#262626",
         strokeWidth: 2,
         strokeDash: false,
@@ -172,7 +173,7 @@ const Canva = memo(function Canva() {
     } else if (selectedTool.startsWith("text")) {
       addElement({
         type: "text",
-        id: new Date().toISOString(),
+        id: uuidv4(),
         stroke: "#262626",
         rotation: 0,
         strokeWidth: 0,

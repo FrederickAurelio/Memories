@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRouter from "./router/authRoute";
+import canvaRouter from "./router/canvaRoute";
 
 dotenv.config();
 
@@ -68,5 +69,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/canva", canvaRouter);
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));

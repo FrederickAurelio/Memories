@@ -1,5 +1,6 @@
 "use client";
 
+import { v4 as uuidv4 } from "uuid";
 import { useElements } from "@/app/_context/ElementContext";
 import imageCompression from "browser-image-compression";
 import { RefObject } from "react";
@@ -28,7 +29,7 @@ function InputImageCanva({ inputRef, inputImageType, stageSize }: Props) {
       if (inputImageType === "sticker")
         addElement({
           type: inputImageType,
-          id: new Date().toISOString(),
+          id: uuidv4(),
           x: stageSize.width / 2,
           y: stageSize.height / 2,
           src: base64,
@@ -43,7 +44,7 @@ function InputImageCanva({ inputRef, inputImageType, stageSize }: Props) {
       else
         addElement({
           type: inputImageType,
-          id: new Date().toISOString(),
+          id: uuidv4(),
           x: stageSize.width / 2,
           y: stageSize.height / 2,
           src: base64,

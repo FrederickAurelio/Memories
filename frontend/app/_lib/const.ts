@@ -168,7 +168,7 @@ export const sidebarOptions: SidebarOptionType[] = [
   {
     type: "link",
     name: "Create",
-    href: "/app/design/123",
+    href: "/app/design/new",
     icon: AiOutlinePlusCircle,
     iconFill: AiFillPlusCircle,
   },

@@ -15,9 +15,9 @@ export async function registerUserByEmail(
     const { firstName, lastName, password, email } =
       Object.fromEntries(formData);
 
-    // if (!firstName || !password || !email) {
-    //   return null;
-    // }
+    if (!firstName || !password || !email) {
+      return null;
+    }
 
     const cookieStore = await cookies();
     const cookiesidValue = cookieStore.get("connect.sid");
@@ -38,7 +38,6 @@ export async function registerUserByEmail(
     const data = (await response.json()) as FetchResponse & {
       data: { email: string };
     };
-    console.log(data);
     return data;
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);

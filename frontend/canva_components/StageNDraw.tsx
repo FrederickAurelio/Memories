@@ -1,5 +1,6 @@
 "use client";
 
+import { v4 as uuidv4 } from "uuid";
 import { useElements } from "@/app/_context/ElementContext";
 import Konva from "konva";
 import { Dispatch, RefObject, SetStateAction, useEffect } from "react";
@@ -50,7 +51,7 @@ function StageNDraw({
       addElement(
         {
           type: "draw",
-          id: new Date().toISOString(),
+          id: uuidv4(),
           points: [pos?.x as number, pos?.y as number],
           x: 0,
           y: 0,

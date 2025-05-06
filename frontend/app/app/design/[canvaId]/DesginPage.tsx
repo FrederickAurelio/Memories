@@ -5,16 +5,19 @@ import { mainToolboxOptions } from "@/app/_lib/const";
 import { Redo2Icon, Undo2Icon, ZoomIn, ZoomOut } from "lucide-react";
 import dynamic from "next/dynamic";
 import EditToolBar from "./EditToolBar";
+import SaveCanvaButton from "./SaveCanvaButton";
 import Toolbox from "./Toolbox";
 const Canva = dynamic(() => import("@/canva_components/Canva"), {
   ssr: false,
 });
 
-function DesignPage() {
+function DesignPage({ canvaId }: { canvaId: string }) {
   const { zoom, curStateStack, stateStack, isSelectedId } = useElements();
   return (
     <>
       <div className="relative col-start-1 col-end-2 flex flex-col items-end justify-around">
+        <SaveCanvaButton />
+
         <Toolbox
           toolboxOptions={[
             {
