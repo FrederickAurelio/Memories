@@ -18,9 +18,15 @@ import { toast } from "sonner";
 
 function SaveCanvaButton() {
   const [open, setOpen] = useState(false);
-  const { elements, setElements, setCurStateStack, setStateStack } =
-    useElements();
-  const [title, setTitle] = useState("");
+  const {
+    elements,
+    title,
+    setElements,
+    setCurStateStack,
+    setStateStack,
+    setTitle,
+  } = useElements();
+
   const [isPending, setIsPending] = useState(false);
 
   async function handleSave() {

@@ -180,3 +180,10 @@ export type ElementType =
   | SplineRopeElementType
   | LineRopeElementType
   | TextElementType;
+
+export type PhotoMetadata = {
+  imageId: string;
+  title: string;
+  date: Date;
+  description: string;
+};

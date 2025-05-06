@@ -17,7 +17,7 @@ type Props = {
 function Sticker({ draggable, element, isSelected }: Props) {
   const { handleSelectElement, updateElementState, handleTransformEndElement } =
     useElements();
-  const [imageDOM] = useImage(element.src);
+  const [imageDOM] = useImage(element.src, "use-credentials");
   const imageRef = useRef<Konva.Image>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
 

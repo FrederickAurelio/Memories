@@ -33,6 +33,7 @@ export type ElementContextType = {
   zoom: number;
   stateStack: ElementType[][];
   curStateStack: number;
+  title: string;
   setElements: (value: SetStateAction<ElementType[]>) => void;
   updateElementState(updatedEl: ElementType, skipUpdateStack?: boolean): void;
   handleSelectElement(elementId: string | null): void;
@@ -57,6 +58,7 @@ export type ElementContextType = {
   setCurStateStack: Dispatch<SetStateAction<number>>;
   setCopiedElement: Dispatch<SetStateAction<ElementType | null>>;
   setStateStack: Dispatch<SetStateAction<ElementType[][]>>;
+  setTitle: Dispatch<SetStateAction<string>>;
 };
 
 const ElementContext = createContext<ElementContextType | null>(null);
@@ -73,6 +75,8 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
 
   const [stateStack, setStateStack] = useState<ElementType[][]>([elements]);
   const [curStateStack, setCurStateStack] = useState(0);
+
+  const [title, setTitle] = useState("");
 
   function updateStack(newEls: ElementType[]) {
     if (curStateStack !== 0) {
@@ -199,6 +203,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
         zoom,
         stateStack,
         curStateStack,
+        title,
         setCopiedElement,
         setElements,
         updateElementState,
@@ -213,6 +218,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
         updateStack,
         setCurStateStack,
         setStateStack,
+        setTitle,
       }}
     >
       {children}

@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { BACKEND_BASE_URL } from "../const";
 import { base64ToFileWithName } from "../helpers";
-import { ElementType, FetchResponse } from "../types";
+import { ElementType, FetchResponse, PhotoMetadata } from "../types";
 
 export async function saveCanvaDesign(
   canvaTitle: string,
@@ -78,6 +78,36 @@ export async function saveCanvaDesign(
       }),
     });
     const data = (await response.json()) as FetchResponse;
+    return data;
+  } catch (error) {
+    throw new Error(`Something's wrong: ${error}`);
+  }
+}
+
+export async function getCanva(canvaId: string) {
+  try {
+    if (!canvaId) return null;
+
+    const cookieStore = await cookies();
+    const cookiesidValue = cookieStore.get("connect.sid");
+    const response = await fetch(`${BACKEND_BASE_URL}/api/canva/${canvaId}`, {
+      method: "GET",
+      headers: {
+        Cookie: `connect.sid=${cookiesidValue?.value}`,
+      },
+      credentials: "include",
+    });
+    const data = (await response.json()) as FetchResponse & {
+      data: {
+        _id: string;
+        userId: string;
+        title: string;
+        elements: ElementType[];
+        photoDescriptions: PhotoMetadata[];
+        createdAt: Date;
+        updatedAt: Date;
+      };
+    };
     return data;
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);

@@ -18,7 +18,7 @@ function PhotoImage({ draggable, element, isSelected }: Props) {
   const { updateElementState, handleSelectElement, handleTransformEndElement } =
     useElements();
 
-  const [imageDOM] = useImage(element.src);
+  const [imageDOM] = useImage(element.src, "use-credentials");
   const groupRef = useRef<Konva.Group>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
 
