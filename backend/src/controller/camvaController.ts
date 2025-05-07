@@ -23,7 +23,7 @@ export async function saveCanva(req: Request, res: Response) {
   try {
     const { title, elements } = saveCanvaSchema.parse(data);
     const photoDescriptions = elements
-      .filter((el) => el.type === "photo" || el.type === "sticker")
+      .filter((el) => el.type === "photo")
       .map((el) => {
         return { imageId: el.id, title: "", date: null, description: "" };
       });
@@ -40,6 +40,67 @@ export async function saveCanva(req: Request, res: Response) {
     return void res.status(200).json({
       success: true,
       message: "Canva saved successfully!",
+      errors: {},
+    });
+  } catch (error: any) {
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
+
+    return void res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: errors,
+    });
+  }
+}
+
+export async function updateCanva(req: Request, res: Response) {
+  const userId = req.session.userId;
+  if (!userId)
+    return void res.status(401).json({
+      success: false,
+      message: `Not authorized!`,
+      errors: {},
+    });
+  const { canvaId } = req.params;
+  const data = req.body;
+  try {
+    const { title, elements } = saveCanvaSchema.parse(data);
+    const photoDescriptions = elements
+      .filter((el) => el.type === "photo")
+      .map((el) => {
+        return { imageId: el.id, title: "", date: null, description: "" };
+      });
+
+    const canva = await Canva.findById(canvaId);
+    if (!canva)
+      return void res.status(404).json({
+        success: false,
+        message: "Design with the specified ID was not found.",
+        errors: {},
+      });
+
+    if (canva.userId.toString() !== userId.toString())
+      return void res.status(401).json({
+        success: false,
+        message: "Access denied to this design.",
+        errors: {},
+      });
+
+    canva.title = title;
+    canva.elements = elements;
+    canva.photoDescriptions = photoDescriptions.map((pd) => {
+      const alreadyExist = canva.photoDescriptions.find(
+        (oldPd) => oldPd.imageId === pd.imageId
+      );
+      return alreadyExist ? alreadyExist : pd;
+    });
+
+    await canva.save();
+
+    return void res.status(200).json({
+      success: true,
+      message: "Canva update successfully!",
       errors: {},
     });
   } catch (error: any) {
@@ -73,7 +134,7 @@ export async function getCanva(req: Request, res: Response) {
       });
 
     if (canva.userId.toString() !== userId.toString())
-      return void res.status(404).json({
+      return void res.status(401).json({
         success: false,
         message: "Access denied to this design.",
         errors: {},

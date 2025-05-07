@@ -71,12 +71,11 @@ const splineRopeElementSchema = z.object({
   strokeDash: z.boolean().optional(),
   x: z.number(),
   y: z.number(),
-  points: z
-    .tuple([
-      z.object({ x: z.number(), y: z.number() }),
-      z.object({ x: z.number(), y: z.number() }),
-      z.object({ x: z.number(), y: z.number() }),
-    ]),
+  points: z.tuple([
+    z.object({ x: z.number(), y: z.number() }),
+    z.object({ x: z.number(), y: z.number() }),
+    z.object({ x: z.number(), y: z.number() }),
+  ]),
   opacity: z.number(),
 });
 
@@ -89,11 +88,10 @@ const lineRopeElementSchema = z.object({
   strokeDash: z.boolean().optional(),
   x: z.number(),
   y: z.number(),
-  points: z
-    .tuple([
-      z.object({ x: z.number(), y: z.number() }),
-      z.object({ x: z.number(), y: z.number() }),
-    ]),
+  points: z.tuple([
+    z.object({ x: z.number(), y: z.number() }),
+    z.object({ x: z.number(), y: z.number() }),
+  ]),
   opacity: z.number(),
 });
 
@@ -237,6 +235,6 @@ export type ElementType =
 export type PhotoMetadata = {
   imageId: string;
   title: string;
-  date: Date;
+  date: Date | null;
   description: string;
 };

@@ -89,11 +89,11 @@ function LoadStateDialog({
                 return;
               } else if (canvaData?.message.includes("not found")) {
                 message =
-                  "Seems like the unsaved canva design is not found, redirecting to new design";
+                  "Seems like the canva design is not found, redirecting to new design";
                 redirectTo = "/app/design/new";
               } else if (canvaData?.message.includes("Access denied")) {
                 message =
-                  "Seems like the unsaved canva design is not yours, redirecting to view only";
+                  "Seems like the canva design is not yours, redirecting to view only";
                 redirectTo = `/app/canva/${canvaId}`;
               }
 
@@ -136,7 +136,8 @@ function LoadStateDialog({
             size="small"
             variant="secondary"
           >
-            Discard and Start New
+            Discard and
+            {canvaId !== "new" ? " Edit Selected Canva" : "Start New"}
           </Button>
           <Button
             onClick={() => handleClose(true)}

@@ -29,20 +29,56 @@ function SaveCanvaButton() {
 
   const [isPending, setIsPending] = useState(false);
 
+  function resetState() {
+    setCanva(canvaInitialState);
+    setElements([]);
+    setCurStateStack(0);
+    setStateStack([]);
+    setOpen(false);
+  }
+
   async function handleSave() {
     if (elements.length <= 0 || canva.title.length <= 2) return;
     setIsPending(true);
-    const result = await saveCanvaDesign(canva.title, elements);
-    if (result?.success) {
-      setCanva(canvaInitialState);
-      setElements([]);
-      setCurStateStack(0);
-      setStateStack([]);
-      setOpen(false);
-      toast.success(result.message);
+
+    if (canva._id === "new") {
+      const saveResult = await saveCanvaDesign(canva.title, elements);
+      if (saveResult?.success) {
+        resetState();
+        toast.success(saveResult.message);
+      } else {
+        toast.error(saveResult?.message);
+      }
     } else {
-      toast.error(result?.message);
+      const updateResult = await saveCanvaDesign(
+        canva.title,
+        elements,
+        canva._id,
+      );
+      if (updateResult?.success) {
+        resetState();
+        toast.success(updateResult.message);
+      } else {
+        if (
+          updateResult?.message.includes("not found") ||
+          updateResult?.message.includes("Access denied")
+        ) {
+          toast.error(
+            "We couldn't find the design to update, so we've saved as a new one for you instead.",
+          );
+          const result = await saveCanvaDesign(canva.title, elements);
+          if (result?.success) {
+            resetState();
+            toast.success(result.message);
+          } else {
+            toast.error(result?.message);
+          }
+        } else {
+          toast.error(updateResult?.message);
+        }
+      }
     }
+
     setIsPending(false);
   }
   return (

@@ -8,6 +8,7 @@ import { ElementType, FetchResponse, PhotoMetadata } from "../types";
 export async function saveCanvaDesign(
   canvaTitle: string,
   elements: ElementType[],
+  canvaId?: string,
 ) {
   try {
     if (!canvaTitle || elements.length <= 0) return null;
@@ -34,7 +35,10 @@ export async function saveCanvaDesign(
 
     const image: File[] = [];
     const newElements = elements.map((el) => {
-      if (el.type === "photo" || el.type === "sticker") {
+      if (
+        (el.type === "photo" || el.type === "sticker") &&
+        el.src.startsWith("data:image/")
+      ) {
         const { file, filename } = base64ToFileWithName(
           el.src,
           `${userId}-${el.id}`,
@@ -65,18 +69,21 @@ export async function saveCanvaDesign(
     const dataImage = (await responseImage.json()) as FetchResponse;
     if (!dataImage.success) return dataImage;
 
-    const response = await fetch(`${BACKEND_BASE_URL}/api/canva/save`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: `connect.sid=${cookiesidValue?.value}`,
+    const response = await fetch(
+      `${BACKEND_BASE_URL}/api/canva${canvaId ? `/${canvaId}` : ""}`,
+      {
+        method: canvaId ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `connect.sid=${cookiesidValue?.value}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title: canvaTitle,
+          elements: newElements,
+        }),
       },
-      credentials: "include",
-      body: JSON.stringify({
-        title: canvaTitle,
-        elements: newElements,
-      }),
-    });
+    );
     const data = (await response.json()) as FetchResponse;
     return data;
   } catch (error) {
