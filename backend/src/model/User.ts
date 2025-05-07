@@ -89,7 +89,7 @@ const UserSchema = new Schema<User>(
     },
     isPublicProfile: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   { timestamps: true }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useElements } from "@/app/_context/ElementContext";
-import { BACKEND_BASE_URL, imageMargin, imageMarginBot } from "@/app/_lib/const";
+import { imageMargin, imageMarginBot } from "@/app/_lib/const";
 import { PhotoElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { memo, useEffect, useRef } from "react";
@@ -19,7 +19,7 @@ function PhotoImage({ draggable, element, isSelected }: Props) {
     useElements();
 
   const [imageDOM] = useImage(
-    `${BACKEND_BASE_URL}/${element.src}`,
+    `${element.src.startsWith("data:image/") ? element.src : `/api/${element.src}`}`,
     "use-credentials",
   );
   const groupRef = useRef<Konva.Group>(null);

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { errorHandlers } from "../helpers";
 import Canva from "../model/Canva";
 import { elementSchema } from "../types";
+import User from "../model/User";
 
 const saveCanvaSchema = z.object({
   title: z
@@ -141,13 +142,6 @@ export async function getCanva(req: Request, res: Response) {
         errors: {},
       });
 
-    // const addUrlElements = canva.elements.map((el) => {
-    //   if (el.type === "sticker" || el.type === "photo") {
-    //     return { ...el, src: `${req.protocol}://${req.get("host")}/${el.src}` };
-    //   } else return el;
-    // });
-
-    // canva.elements = addUrlElements;
     return void res.status(200).json({
       success: true,
       message: "Fetch canva successfully!",
@@ -176,6 +170,27 @@ export async function getImage(req: Request, res: Response) {
     });
 
   const { imageId } = req.params;
+
+  const imageOwnerId = imageId.split("-")[0];
+  const imageOwner = await User.findById(imageOwnerId);
+  if (!imageOwner) {
+    return void res.status(404).json({
+      success: false,
+      message: `The Image is no longer available!`,
+      errors: {},
+    });
+  }
+
+  if (!imageOwner.isPublicProfile) {
+    if (imageOwnerId !== userId.toString()) {
+      return void res.status(401).json({
+        success: false,
+        message: `Not authorized!`,
+        errors: {},
+      });
+    }
+  }
+
   try {
     const imagePath = path.join(process.cwd(), "uploads", imageId);
     res.sendFile(imagePath, (err) => {

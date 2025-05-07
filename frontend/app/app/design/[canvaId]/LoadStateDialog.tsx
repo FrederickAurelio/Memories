@@ -137,7 +137,7 @@ function LoadStateDialog({
             variant="secondary"
           >
             Discard and
-            {canvaId !== "new" ? " Edit Selected Canva" : "Start New"}
+            {canvaId !== "new" ? " Edit Selected Canva" : " Start New"}
           </Button>
           <Button
             onClick={() => handleClose(true)}
