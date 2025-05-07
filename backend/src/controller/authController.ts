@@ -10,7 +10,7 @@ import { add, isPast } from "date-fns";
 export async function isAuthenticated(req: Request, res: Response) {
   if (req.session.userId) {
     const currentUser = await User.findById(req.session.userId).select(
-      "firstName lastName email avatar _id"
+      "firstName lastName email avatar _id isPublicProfile"
     );
     return void res.status(200).json({
       success: true,

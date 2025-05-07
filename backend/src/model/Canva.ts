@@ -1,7 +1,7 @@
 import { model, Schema, SchemaDefinitionProperty, Types } from "mongoose";
 import { ElementType, PhotoMetadata } from "../types";
 
-type Canva = {
+export type CanvaType = {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
   title: string;
@@ -11,7 +11,7 @@ type Canva = {
   updatedAt: Date;
 };
 
-const CanvaSchema = new Schema<Canva>(
+const CanvaSchema = new Schema<CanvaType>(
   {
     userId: {
       type: Schema.Types.ObjectId,

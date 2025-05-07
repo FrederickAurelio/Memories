@@ -15,6 +15,7 @@ type User = {
   providerId?: string;
   avatar?: string;
   githubUsername?: string;
+  isPublicProfile?: boolean;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -85,6 +86,10 @@ const UserSchema = new Schema<User>(
     githubUsername: {
       type: String,
       default: "",
+    },
+    isPublicProfile: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

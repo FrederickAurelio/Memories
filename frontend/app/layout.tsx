@@ -27,7 +27,7 @@ export default function RootLayout({
         className={`${GeistSans.className} bg-neutral-100 text-neutral-800 antialiased`}
       >
         {children}
-        <Toaster position="top-center" expand={true} richColors />
+        <Toaster position="top-center" expand={true} richColors theme="light" />
       </body>
     </html>
   );

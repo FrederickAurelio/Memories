@@ -26,6 +26,7 @@ export async function getCurrentUserWithCookies() {
         firstName: string;
         lastName: string;
         avatar: string;
+        isPublicProfile: boolean;
         _id: string;
       };
     };

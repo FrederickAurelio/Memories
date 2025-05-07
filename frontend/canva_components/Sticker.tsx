@@ -1,7 +1,7 @@
 "use client";
 
 import { useElements } from "@/app/_context/ElementContext";
-import { strokeDashGap } from "@/app/_lib/const";
+import { BACKEND_BASE_URL, strokeDashGap } from "@/app/_lib/const";
 import { StickerElementType } from "@/app/_lib/types";
 import Konva from "konva";
 import { memo, useEffect, useRef } from "react";
@@ -17,7 +17,10 @@ type Props = {
 function Sticker({ draggable, element, isSelected }: Props) {
   const { handleSelectElement, updateElementState, handleTransformEndElement } =
     useElements();
-  const [imageDOM] = useImage(element.src, "use-credentials");
+  const [imageDOM] = useImage(
+    `${BACKEND_BASE_URL}/${element.src}`,
+    "use-credentials",
+  );
   const imageRef = useRef<Konva.Image>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
 

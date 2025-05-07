@@ -1,8 +1,9 @@
+import { Request, Response } from "express";
+import path from "path";
 import { z } from "zod";
 import { errorHandlers } from "../helpers";
-import { Request, Response } from "express";
-import { elementSchema } from "../types";
 import Canva from "../model/Canva";
+import { elementSchema } from "../types";
 
 const saveCanvaSchema = z.object({
   title: z
@@ -140,6 +141,13 @@ export async function getCanva(req: Request, res: Response) {
         errors: {},
       });
 
+    // const addUrlElements = canva.elements.map((el) => {
+    //   if (el.type === "sticker" || el.type === "photo") {
+    //     return { ...el, src: `${req.protocol}://${req.get("host")}/${el.src}` };
+    //   } else return el;
+    // });
+
+    // canva.elements = addUrlElements;
     return void res.status(200).json({
       success: true,
       message: "Fetch canva successfully!",
@@ -147,6 +155,41 @@ export async function getCanva(req: Request, res: Response) {
       errors: {},
     });
   } catch (error: any) {
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
+
+    return void res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: errors,
+    });
+  }
+}
+
+export async function getImage(req: Request, res: Response) {
+  const userId = req.session.userId;
+  if (!userId)
+    return void res.status(401).json({
+      success: false,
+      message: `Not authorized!`,
+      errors: {},
+    });
+
+  const { imageId } = req.params;
+  try {
+    const imagePath = path.join(process.cwd(), "uploads", imageId);
+    res.sendFile(imagePath, (err) => {
+      if (err) {
+        console.error("Error sending file:", err);
+        return res.status(500).json({
+          success: false,
+          message: "An error occurred while trying to send the image.",
+          errors: err,
+        });
+      }
+    });
+  } catch (error: any) {
+    console.error("Error:", error);
     const { errors, message } = errorHandlers(error);
     const statusCode = message.includes("validation") ? 400 : 500;
 

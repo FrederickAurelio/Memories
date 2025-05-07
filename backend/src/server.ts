@@ -1,12 +1,13 @@
 "use strict";
 
-import express, { NextFunction, Request, Response } from "express";
-import session from "express-session";
-import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+import express, { NextFunction, Request, Response } from "express";
+import session from "express-session";
+import mongoose from "mongoose";
+import { getImage } from "./controller/camvaController";
 import authRouter from "./router/authRoute";
 import canvaRouter from "./router/canvaRoute";
 
@@ -46,6 +47,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: {
+      sameSite: "none",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 20160 * 60000,
@@ -70,5 +72,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/canva", canvaRouter);
+
+app.get("/uploads/:imageId", getImage);
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
