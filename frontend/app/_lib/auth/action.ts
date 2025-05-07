@@ -7,6 +7,34 @@ import { redirect } from "next/navigation";
 import * as crypto from "crypto";
 import { setCookieRecentLogin, setCookieSid } from "../helpers";
 
+export async function getCurrentUserWithCookies() {
+  try {
+    const cookieStore = await cookies();
+    const cookiesidValue = cookieStore.get("connect.sid");
+
+    const response = await fetch(`${BACKEND_BASE_URL}/api/auth/auth-status`, {
+      method: "GET",
+      headers: {
+        Cookie: `connect.sid=${cookiesidValue?.value}`,
+      },
+      credentials: "include",
+    });
+
+    const data = (await response.json()) as FetchResponse & {
+      data: {
+        email: string;
+        firstName: string;
+        lastName: string;
+        avatar: string;
+        _id: string;
+      };
+    };
+    return data;
+  } catch (error) {
+    throw new Error(`Something's wrong: ${error}`);
+  }
+}
+
 export async function registerUserByEmail(
   _: FetchResponse | null,
   formData: FormData,

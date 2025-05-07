@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/app/_components/Button";
-import { useElements } from "@/app/_context/ElementContext";
+import { canvaInitialState, useElements } from "@/app/_context/ElementContext";
 import { saveCanvaDesign } from "@/app/_lib/canva/action";
 import {
   Dialog,
@@ -20,21 +20,21 @@ function SaveCanvaButton() {
   const [open, setOpen] = useState(false);
   const {
     elements,
-    title,
+    canva,
     setElements,
     setCurStateStack,
     setStateStack,
-    setTitle,
+    setCanva,
   } = useElements();
 
   const [isPending, setIsPending] = useState(false);
 
   async function handleSave() {
-    if (elements.length <= 0 || title.length <= 2) return;
+    if (elements.length <= 0 || canva.title.length <= 2) return;
     setIsPending(true);
-    const result = await saveCanvaDesign(title, elements);
+    const result = await saveCanvaDesign(canva.title, elements);
     if (result?.success) {
-      setTitle("");
+      setCanva(canvaInitialState);
       setElements([]);
       setCurStateStack(0);
       setStateStack([]);
@@ -74,15 +74,19 @@ function SaveCanvaButton() {
           disabled={isPending}
           id="canvaTitle"
           placeholder="Enter a title..."
-          value={title}
+          value={canva.title}
           onChange={(e) => {
-            setTitle(e.target.value.slice(0, 60));
+            setCanva((c) => {
+              return { ...c, title: e.target.value.slice(0, 60) };
+            });
           }}
           className="w-full rounded-lg border-2 border-neutral-300 p-2 text-lg disabled:cursor-not-allowed disabled:border-neutral-200"
         />
         <DialogFooter>
           <Button
-            disabled={isPending || elements.length <= 0 || title.length <= 2}
+            disabled={
+              isPending || elements.length <= 0 || canva.title.length <= 2
+            }
             onClick={handleSave}
             className="rounded-lg py-1 transition-none hover:scale-100 hover:border-neutral-700 hover:bg-neutral-700"
             size="small"

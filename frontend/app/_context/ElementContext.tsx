@@ -33,7 +33,11 @@ export type ElementContextType = {
   zoom: number;
   stateStack: ElementType[][];
   curStateStack: number;
-  title: string;
+  canva: {
+    title: string;
+    _id: string;
+    userId: string;
+  };
   setElements: (value: SetStateAction<ElementType[]>) => void;
   updateElementState(updatedEl: ElementType, skipUpdateStack?: boolean): void;
   handleSelectElement(elementId: string | null): void;
@@ -58,12 +62,25 @@ export type ElementContextType = {
   setCurStateStack: Dispatch<SetStateAction<number>>;
   setCopiedElement: Dispatch<SetStateAction<ElementType | null>>;
   setStateStack: Dispatch<SetStateAction<ElementType[][]>>;
-  setTitle: Dispatch<SetStateAction<string>>;
+  setCanva: Dispatch<
+    SetStateAction<{
+      title: string;
+      _id: string;
+      userId: string;
+    }>
+  >;
 };
 
 const ElementContext = createContext<ElementContextType | null>(null);
 
+export const canvaInitialState = {
+  title: "",
+  _id: "",
+  userId: "",
+};
+
 function ElementProvider({ children }: { children: React.ReactNode }) {
+  const [canva, setCanva] = useLocalStorage("canva", canvaInitialState);
   const [elements, setElements] = useLocalStorage<ElementType[]>(
     "elements",
     [],
@@ -75,8 +92,6 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
 
   const [stateStack, setStateStack] = useState<ElementType[][]>([elements]);
   const [curStateStack, setCurStateStack] = useState(0);
-
-  const [title, setTitle] = useState("");
 
   function updateStack(newEls: ElementType[]) {
     if (curStateStack !== 0) {
@@ -203,7 +218,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
         zoom,
         stateStack,
         curStateStack,
-        title,
+        canva,
         setCopiedElement,
         setElements,
         updateElementState,
@@ -218,7 +233,7 @@ function ElementProvider({ children }: { children: React.ReactNode }) {
         updateStack,
         setCurStateStack,
         setStateStack,
-        setTitle,
+        setCanva,
       }}
     >
       {children}
