@@ -12,10 +12,9 @@ type Props = {
   draggable: boolean;
   element: DrawElementType;
   isSelected: boolean;
-  mode?: "view" | "edit";
 };
 
-function Draw({ draggable, element, isSelected, mode = "edit" }: Props) {
+function Draw({ draggable, element, isSelected }: Props) {
   const {
     updateElementState,
     removeElement,
@@ -79,32 +78,24 @@ function Draw({ draggable, element, isSelected, mode = "edit" }: Props) {
         opacity={element.opacity}
         lineCap="round"
         lineJoin="round"
-        onClick={
-          mode === "edit" ? () => handleSelectElement(element.id) : undefined
-        }
-        onTap={
-          mode === "edit" ? () => handleSelectElement(element.id) : undefined
-        }
-        onDragStart={
-          mode === "edit" ? () => handleSelectElement(element.id) : undefined
-        }
+        onClick={() => handleSelectElement(element.id)}
+        onTap={() => handleSelectElement(element.id)}
+        onDragStart={() => handleSelectElement(element.id)}
         draggable={draggable}
         onDragEnd={handleTransformEndElement}
         onTransformEnd={handleTransformEndElement}
         ref={drawRef}
       />
-      {mode === "edit" && (
-        <Transformer
-          ref={transformerRef}
-          flipEnabled={false}
-          boundBoxFunc={(oldBox, newBox) => {
-            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-              return oldBox;
-            }
-            return newBox;
-          }}
-        />
-      )}
+      <Transformer
+        ref={transformerRef}
+        flipEnabled={false}
+        boundBoxFunc={(oldBox, newBox) => {
+          if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+            return oldBox;
+          }
+          return newBox;
+        }}
+      />
     </>
   );
 }

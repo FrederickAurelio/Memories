@@ -15,10 +15,9 @@ type Props = {
   draggable: boolean;
   element: TextElementType;
   isSelected: boolean;
-  mode?: "view" | "edit";
 };
 
-function Text({ draggable, element, isSelected, mode = "edit" }: Props) {
+function Text({ draggable, element, isSelected }: Props) {
   const textRef = useRef<Konva.Text>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -70,28 +69,22 @@ function Text({ draggable, element, isSelected, mode = "edit" }: Props) {
         fontSize={element.fontSize}
         fontFamily={element.fontFamily}
         rotation={element.rotation}
-        onClick={
-          mode === "edit" ? () => handleSelectElement(element.id) : undefined
-        }
-        onTap={
-          mode === "edit" ? () => handleSelectElement(element.id) : undefined
-        }
-        onDragStart={
-          mode === "edit" ? () => handleSelectElement(element.id) : undefined
-        }
+        onClick={() => handleSelectElement(element.id)}
+        onTap={() => handleSelectElement(element.id)}
+        onDragStart={() => handleSelectElement(element.id)}
         onDragEnd={(e) => handleTransformEndElement(e, element, textRef)}
         onTransform={(e) => handleTransformEndElement(e, element, textRef)}
         draggable={draggable}
         ref={textRef}
       />
-      {mode === "edit" && isEditing && (
+      {isEditing && (
         <TextEditor
           textRef={textRef}
           onChange={handleTextChange}
           onClose={() => setIsEditing(false)}
         />
       )}
-      {mode === "edit" && !isEditing && (
+      {!isEditing && (
         <Transformer
           ref={transformerRef}
           flipEnabled={false}

@@ -1,43 +1,16 @@
 "use client";
 
-import { useElements } from "@/app/_context/ElementContext";
-import { ShapeElementType } from "@/app/_lib/types";
-import Konva from "konva";
-import { memo, useEffect, useRef } from "react";
-import {
-  Arrow,
-  Ellipse,
-  Rect,
-  RegularPolygon,
-  Star,
-  Transformer,
-} from "react-konva";
-import Heart from "./Heart";
 import { strokeDashGap } from "@/app/_lib/const";
-import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
+import { ShapeElementType } from "@/app/_lib/types";
+import { memo } from "react";
+import { Arrow, Ellipse, Rect, RegularPolygon, Star } from "react-konva";
+import Heart from "./Heart";
 
 type Props = {
-  draggable: boolean;
   element: ShapeElementType;
-  isSelected: boolean;
 };
 
-function Shapes({ draggable, element, isSelected }: Props) {
-  const { handleSelectElement, handleTransformEndElement } = useElements();
-  const shapeRef = useRef<Konva.Shape>(null);
-  const transformerRef = useRef<Konva.Transformer>(null);
-
-  useEffect(() => {
-    if (!transformerRef.current || !shapeRef.current) return;
-
-    if (isSelected) {
-      transformerRef.current.nodes([shapeRef.current]);
-      transformerRef.current.getLayer()?.batchDraw();
-    } else {
-      transformerRef.current.nodes([]);
-    }
-  }, [isSelected]);
-
+function Shapes({ element }: Props) {
   const commonProps = {
     id: element.id,
     name: "object",
@@ -51,15 +24,7 @@ function Shapes({ draggable, element, isSelected }: Props) {
     x: element.x,
     y: element.y,
     rotation: element.rotation,
-    onClick: () => handleSelectElement(element.id),
-    onTap: () => handleSelectElement(element.id),
-    onDragStart: () => handleSelectElement(element.id),
-    onDragEnd: (e: Konva.KonvaEventObject<DragEvent>) =>
-      handleTransformEndElement(e, element, shapeRef),
-    onTransformEnd: (e: KonvaEventObject<Event, Node<NodeConfig>>) =>
-      handleTransformEndElement(e, element, shapeRef),
-    draggable,
-    ref: shapeRef as never,
+    draggable: false,
   };
 
   return (
@@ -102,30 +67,12 @@ function Shapes({ draggable, element, isSelected }: Props) {
       )}
 
       {element.type === "shape-heart" && <Heart {...commonProps} />}
-      <Transformer
-        ref={transformerRef}
-        flipEnabled={false}
-        enabledAnchors={
-          element.type === "shape-hexagon" ||
-          element.type === "shape-star" ||
-          element.type === "shape-triangle"
-            ? ["top-left", "top-right", "bottom-left", "bottom-right"]
-            : undefined
-        }
-        boundBoxFunc={(oldBox, newBox) => {
-          if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-            return oldBox;
-          }
-          return newBox;
-        }}
-      />
     </>
   );
 }
 
 const areEqual = (prev: Props, next: Props) => {
   return (
-    prev.draggable === next.draggable &&
     prev.element.id === next.element.id &&
     prev.element.x === next.element.x &&
     prev.element.y === next.element.y &&
@@ -137,8 +84,7 @@ const areEqual = (prev: Props, next: Props) => {
     prev.element.fill === next.element.fill &&
     prev.element.strokeWidth === next.element.strokeWidth &&
     prev.element.strokeDash === next.element.strokeDash &&
-    prev.element.opacity === next.element.opacity &&
-    prev.isSelected === next.isSelected
+    prev.element.opacity === next.element.opacity
   );
 };
 

@@ -11,10 +11,9 @@ type Props = {
   draggable: boolean;
   element: SplineRopeElementType;
   isSelected: boolean;
-  mode?: "view" | "edit";
 };
 
-function SplineRope({ draggable, element, isSelected, mode = "edit" }: Props) {
+function SplineRope({ draggable, element, isSelected }: Props) {
   const {
     updateElementState,
     removeElement,
@@ -30,15 +29,9 @@ function SplineRope({ draggable, element, isSelected, mode = "edit" }: Props) {
       y={element.y}
       opacity={element.opacity}
       ref={shapeRef}
-      onClick={
-        mode === "edit" ? () => handleSelectElement(element.id) : undefined
-      }
-      onTap={
-        mode === "edit" ? () => handleSelectElement(element.id) : undefined
-      }
-      onDragStart={
-        mode === "edit" ? () => handleSelectElement(element.id) : undefined
-      }
+      onClick={() => handleSelectElement(element.id)}
+      onTap={() => handleSelectElement(element.id)}
+      onDragStart={() => handleSelectElement(element.id)}
       draggable={draggable}
       onDragEnd={(e) => {
         const { x, y, isGroup } = e.target.attrs;
@@ -84,8 +77,7 @@ function SplineRope({ draggable, element, isSelected, mode = "edit" }: Props) {
           context.fillStrokeShape(shape);
         }}
       />
-      {mode === "edit" &&
-        isSelected &&
+      {isSelected &&
         element.points.map((point, i) => {
           return (
             <Circle

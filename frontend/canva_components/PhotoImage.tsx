@@ -12,10 +12,9 @@ type Props = {
   draggable: boolean;
   element: PhotoElementType;
   isSelected: boolean;
-  mode?: "view" | "edit";
 };
 
-function PhotoImage({ draggable, element, isSelected, mode = "edit" }: Props) {
+function PhotoImage({ draggable, element, isSelected }: Props) {
   const { updateElementState, handleSelectElement, handleTransformEndElement } =
     useElements();
 
@@ -61,15 +60,9 @@ function PhotoImage({ draggable, element, isSelected, mode = "edit" }: Props) {
         y={element.y}
         rotation={element.rotation}
         opacity={element.opacity}
-        onClick={
-          mode === "edit" ? () => handleSelectElement(element.id) : undefined
-        }
-        onTap={
-          mode === "edit" ? () => handleSelectElement(element.id) : undefined
-        }
-        onDragStart={
-          mode === "edit" ? () => handleSelectElement(element.id) : undefined
-        }
+        onClick={() => handleSelectElement(element.id)}
+        onTap={() => handleSelectElement(element.id)}
+        onDragStart={() => handleSelectElement(element.id)}
         onDragEnd={(e) => handleTransformEndElement(e, element, groupRef)}
         onTransformEnd={(e) => handleTransformEndElement(e, element, groupRef)}
         draggable={draggable}
@@ -97,18 +90,16 @@ function PhotoImage({ draggable, element, isSelected, mode = "edit" }: Props) {
           image={imageDOM}
         />
       </Group>
-      {mode === "edit" && (
-        <Transformer
-          ref={transformerRef}
-          flipEnabled={false}
-          boundBoxFunc={(oldBox, newBox) => {
-            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-              return oldBox;
-            }
-            return newBox;
-          }}
-        />
-      )}
+      <Transformer
+        ref={transformerRef}
+        flipEnabled={false}
+        boundBoxFunc={(oldBox, newBox) => {
+          if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+            return oldBox;
+          }
+          return newBox;
+        }}
+      />
     </>
   );
 }

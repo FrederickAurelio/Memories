@@ -1,24 +1,39 @@
 "use client";
 
-const PhotoImage = dynamic(() => import("@/canva_components/PhotoImage"), {
+const ViewOnlyPhotoImage = dynamic(
+  () => import("@/canva_components/ViewOnlyPhotoImage"),
+  {
+    ssr: false,
+  },
+);
+const ViewOnlyShapes = dynamic(
+  () => import("@/canva_components/ViewOnlyShapes"),
+  {
+    ssr: false,
+  },
+);
+const ViewOnlySticker = dynamic(
+  () => import("@/canva_components/ViewOnlySticker"),
+  {
+    ssr: false,
+  },
+);
+const ViewOnlyDraw = dynamic(() => import("@/canva_components/ViewOnlyDraw"), {
   ssr: false,
 });
-const Shapes = dynamic(() => import("@/canva_components/Shapes"), {
-  ssr: false,
-});
-const Sticker = dynamic(() => import("@/canva_components/Sticker"), {
-  ssr: false,
-});
-const Draw = dynamic(() => import("@/canva_components/Draw"), {
-  ssr: false,
-});
-const SplineRope = dynamic(() => import("@/canva_components/SplineRope"), {
-  ssr: false,
-});
-const LineRope = dynamic(() => import("@/canva_components/LineRope"), {
-  ssr: false,
-});
-const Text = dynamic(() => import("@/canva_components/Text"), {
+const ViewOnlySplineRope = dynamic(
+  () => import("@/canva_components/ViewOnlySplineRope"),
+  {
+    ssr: false,
+  },
+);
+const ViewOnlyLineRope = dynamic(
+  () => import("@/canva_components/ViewOnlyLineRope"),
+  {
+    ssr: false,
+  },
+);
+const ViewOnlyText = dynamic(() => import("@/canva_components/ViewOnlyText"), {
   ssr: false,
 });
 import {
@@ -73,74 +88,37 @@ function ViewOnlyCanva({ elements }: { elements: ElementType[] }) {
           {elements.map((e) => {
             if (e.type === "photo")
               return (
-                <PhotoImage
-                  draggable={false}
-                  isSelected={false}
-                  mode="view"
+                <ViewOnlyPhotoImage
                   key={e.id}
                   element={e as PhotoElementType}
                 />
               );
             else if (e.type.startsWith("shape"))
               return (
-                <Shapes
-                  draggable={false}
-                  isSelected={false}
-                  mode="view"
-                  key={e.id}
-                  element={e as ShapeElementType}
-                />
+                <ViewOnlyShapes key={e.id} element={e as ShapeElementType} />
               );
             else if (e.type.startsWith("sticker"))
               return (
-                <Sticker
-                  draggable={false}
-                  isSelected={false}
-                  mode="view"
-                  key={e.id}
-                  element={e as StickerElementType}
-                />
+                <ViewOnlySticker key={e.id} element={e as StickerElementType} />
               );
             else if (e.type.startsWith("draw"))
-              return (
-                <Draw
-                  draggable={false}
-                  isSelected={false}
-                  mode="view"
-                  key={e.id}
-                  element={e as DrawElementType}
-                />
-              );
+              return <ViewOnlyDraw key={e.id} element={e as DrawElementType} />;
             else if (e.type.startsWith("rope-spline"))
               return (
-                <SplineRope
-                  draggable={false}
-                  isSelected={false}
-                  mode="view"
+                <ViewOnlySplineRope
                   key={e.id}
                   element={e as SplineRopeElementType}
                 />
               );
             else if (e.type.startsWith("rope-line"))
               return (
-                <LineRope
-                  draggable={false}
-                  isSelected={false}
-                  mode="view"
+                <ViewOnlyLineRope
                   key={e.id}
                   element={e as LineRopeElementType}
                 />
               );
             else if (e.type.startsWith("text"))
-              return (
-                <Text
-                  draggable={false}
-                  isSelected={false}
-                  mode="view"
-                  key={e.id}
-                  element={e as TextElementType}
-                />
-              );
+              return <ViewOnlyText key={e.id} element={e as TextElementType} />;
           })}
         </Layer>
       </Stage>
