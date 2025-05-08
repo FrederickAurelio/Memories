@@ -187,3 +187,17 @@ export type PhotoMetadata = {
   date: Date;
   description: string;
 };
+
+export type CanvaDataType = {
+  data: {
+    _id: string;
+    userId: {
+      _id: string;
+    };
+    title: string;
+    elements: ElementType[];
+    photoDescriptions: PhotoMetadata[];
+    createdAt: Date;
+    updatedAt: Date;
+  };
+};

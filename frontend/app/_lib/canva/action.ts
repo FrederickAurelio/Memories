@@ -1,9 +1,14 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { getCurrentUserWithCookies } from "../auth/action";
 import { BACKEND_BASE_URL } from "../const";
 import { base64ToFileWithName } from "../helpers";
-import { ElementType, FetchResponse, PhotoMetadata } from "../types";
+import {
+  CanvaDataType,
+  ElementType,
+  FetchResponse
+} from "../types";
 
 export async function saveCanvaDesign(
   canvaTitle: string,
@@ -91,7 +96,8 @@ export async function saveCanvaDesign(
   }
 }
 
-export async function getCanva(canvaId: string) {
+// If want to view only directly fetch from backend
+export async function getCanvaForEditOnly(canvaId: string) {
   try {
     if (!canvaId) return null;
 
@@ -104,18 +110,17 @@ export async function getCanva(canvaId: string) {
       },
       credentials: "include",
     });
-    const data = (await response.json()) as FetchResponse & {
-      data: {
-        _id: string;
-        userId: string;
-        title: string;
-        elements: ElementType[];
-        photoDescriptions: PhotoMetadata[];
-        createdAt: Date;
-        updatedAt: Date;
-      };
-    };
-    return data;
+    const canvaData = (await response.json()) as FetchResponse & CanvaDataType;
+
+    const userData = await getCurrentUserWithCookies();
+    if (canvaData.data.userId._id.toString() !== userData.data._id.toString()) {
+      return {
+        success: false,
+        message: "Access denied to this design.",
+        errors: {},
+      } as FetchResponse & CanvaDataType;
+    }
+    return canvaData;
   } catch (error) {
     throw new Error(`Something's wrong: ${error}`);
   }

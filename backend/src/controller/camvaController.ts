@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 import path from "path";
 import { z } from "zod";
 import { errorHandlers } from "../helpers";
-import Canva from "../model/Canva";
+import Canva, { CanvaType } from "../model/Canva";
 import { elementSchema } from "../types";
-import User from "../model/User";
+import User, { UserType } from "../model/User";
+import { Types } from "mongoose";
 
 const saveCanvaSchema = z.object({
   title: z
@@ -127,7 +128,10 @@ export async function getCanva(req: Request, res: Response) {
     });
   const { canvaId } = req.params;
   try {
-    const canva = await Canva.findById(canvaId);
+    const canva = await Canva.findById(canvaId).populate<{
+      userId: Pick<UserType, "_id" | "isPublicProfile">;
+    }>("userId", "_id isPublicProfile");
+
     if (!canva)
       return void res.status(404).json({
         success: false,
@@ -135,12 +139,15 @@ export async function getCanva(req: Request, res: Response) {
         errors: {},
       });
 
-    if (canva.userId.toString() !== userId.toString())
-      return void res.status(401).json({
-        success: false,
-        message: "Access denied to this design.",
-        errors: {},
-      });
+    if (!canva.userId.isPublicProfile) {
+      // in here need to add || include friends (are you a friend?)
+      if (canva.userId._id.toString() !== userId.toString())
+        return void res.status(401).json({
+          success: false,
+          message: "Access denied to this design.",
+          errors: {},
+        });
+    }
 
     return void res.status(200).json({
       success: true,

@@ -1,6 +1,6 @@
 import { model, Schema, Types } from "mongoose";
 
-type User = {
+export type UserType = {
   _id: Types.ObjectId;
   firstName: string;
   lastName?: string;
@@ -20,7 +20,7 @@ type User = {
   updatedAt: Date;
 };
 
-const UserSchema = new Schema<User>(
+const UserSchema = new Schema<UserType>(
   {
     firstName: {
       type: String,

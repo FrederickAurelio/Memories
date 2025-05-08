@@ -3,7 +3,7 @@
 import Button from "@/app/_components/Button";
 import { canvaInitialState, useElements } from "@/app/_context/ElementContext";
 import { getCurrentUserWithCookies } from "@/app/_lib/auth/action";
-import { getCanva } from "@/app/_lib/canva/action";
+import { getCanvaForEditOnly } from "@/app/_lib/canva/action";
 import {
   Dialog,
   DialogContent,
@@ -75,7 +75,7 @@ function LoadStateDialog({
             }, 300);
           } else {
             async function fetchEls() {
-              const canvaData = await getCanva(canvaId);
+              const canvaData = await getCanvaForEditOnly(canvaId);
               if (canvaData?.success) {
                 const { elements, title, _id } = canvaData.data;
                 setElements(elements);
