@@ -12,9 +12,10 @@ type Props = {
   draggable: boolean;
   element: StickerElementType;
   isSelected: boolean;
+  mode?: "view" | "edit";
 };
 
-function Sticker({ draggable, element, isSelected }: Props) {
+function Sticker({ draggable, element, isSelected, mode = "edit" }: Props) {
   const { handleSelectElement, updateElementState, handleTransformEndElement } =
     useElements();
   const [imageDOM] = useImage(
@@ -63,24 +64,32 @@ function Sticker({ draggable, element, isSelected }: Props) {
         rotation={element.rotation}
         opacity={element.opacity}
         image={imageDOM}
-        onClick={() => handleSelectElement(element.id)}
-        onTap={() => handleSelectElement(element.id)}
-        onDragStart={() => handleSelectElement(element.id)}
+        onClick={
+          mode === "edit" ? () => handleSelectElement(element.id) : undefined
+        }
+        onTap={
+          mode === "edit" ? () => handleSelectElement(element.id) : undefined
+        }
+        onDragStart={
+          mode === "edit" ? () => handleSelectElement(element.id) : undefined
+        }
         onDragEnd={(e) => handleTransformEndElement(e, element, imageRef)}
         onTransformEnd={(e) => handleTransformEndElement(e, element, imageRef)}
         draggable={draggable}
         ref={imageRef}
       />
-      <Transformer
-        ref={transformerRef}
-        flipEnabled={false}
-        boundBoxFunc={(oldBox, newBox) => {
-          if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-            return oldBox;
-          }
-          return newBox;
-        }}
-      />
+      {mode == "edit" && (
+        <Transformer
+          ref={transformerRef}
+          flipEnabled={false}
+          boundBoxFunc={(oldBox, newBox) => {
+            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+              return oldBox;
+            }
+            return newBox;
+          }}
+        />
+      )}
     </>
   );
 }

@@ -182,6 +182,7 @@ export async function getImage(req: Request, res: Response) {
   }
 
   if (!imageOwner.isPublicProfile) {
+    // in here need to add || include friends (are you a friend?)
     if (imageOwnerId !== userId.toString()) {
       return void res.status(401).json({
         success: false,

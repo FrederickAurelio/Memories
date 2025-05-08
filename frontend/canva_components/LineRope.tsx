@@ -11,9 +11,10 @@ type Props = {
   draggable: boolean;
   element: LineRopeElementType;
   isSelected: boolean;
+  mode?: "view" | "edit";
 };
 
-function LineRope({ draggable, element, isSelected }: Props) {
+function LineRope({ draggable, element, isSelected, mode = "edit" }: Props) {
   const shapeRef = useRef<Konva.Group>(null);
   const {
     updateElementState,
@@ -28,9 +29,15 @@ function LineRope({ draggable, element, isSelected }: Props) {
       y={element.y}
       opacity={element.opacity}
       ref={shapeRef}
-      onClick={() => handleSelectElement(element.id)}
-      onTap={() => handleSelectElement(element.id)}
-      onDragStart={() => handleSelectElement(element.id)}
+      onClick={
+        mode === "edit" ? () => handleSelectElement(element.id) : undefined
+      }
+      onTap={
+        mode === "edit" ? () => handleSelectElement(element.id) : undefined
+      }
+      onDragStart={
+        mode === "edit" ? () => handleSelectElement(element.id) : undefined
+      }
       draggable={draggable}
       onDragEnd={(e) => {
         const { x, y, isGroup } = e.target.attrs;
@@ -64,7 +71,8 @@ function LineRope({ draggable, element, isSelected }: Props) {
           element.points[1].y,
         ]}
       />
-      {isSelected &&
+      {mode === "edit" &&
+        isSelected &&
         element.points.map((point, i) => {
           return (
             <Circle

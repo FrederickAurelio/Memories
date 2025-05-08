@@ -20,9 +20,10 @@ type Props = {
   draggable: boolean;
   element: ShapeElementType;
   isSelected: boolean;
+  mode?: "view" | "edit";
 };
 
-function Shapes({ draggable, element, isSelected }: Props) {
+function Shapes({ draggable, element, isSelected, mode = "edit" }: Props) {
   const { handleSelectElement, handleTransformEndElement } = useElements();
   const shapeRef = useRef<Konva.Shape>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
@@ -51,9 +52,11 @@ function Shapes({ draggable, element, isSelected }: Props) {
     x: element.x,
     y: element.y,
     rotation: element.rotation,
-    onClick: () => handleSelectElement(element.id),
-    onTap: () => handleSelectElement(element.id),
-    onDragStart: () => handleSelectElement(element.id),
+    onClick:
+      mode === "edit" ? () => handleSelectElement(element.id) : undefined,
+    onTap: mode === "edit" ? () => handleSelectElement(element.id) : undefined,
+    onDragStart:
+      mode === "edit" ? () => handleSelectElement(element.id) : undefined,
     onDragEnd: (e: Konva.KonvaEventObject<DragEvent>) =>
       handleTransformEndElement(e, element, shapeRef),
     onTransformEnd: (e: KonvaEventObject<Event, Node<NodeConfig>>) =>
@@ -102,23 +105,26 @@ function Shapes({ draggable, element, isSelected }: Props) {
       )}
 
       {element.type === "shape-heart" && <Heart {...commonProps} />}
-      <Transformer
-        ref={transformerRef}
-        flipEnabled={false}
-        enabledAnchors={
-          element.type === "shape-hexagon" ||
-          element.type === "shape-star" ||
-          element.type === "shape-triangle"
-            ? ["top-left", "top-right", "bottom-left", "bottom-right"]
-            : undefined
-        }
-        boundBoxFunc={(oldBox, newBox) => {
-          if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-            return oldBox;
+
+      {mode === "edit" && (
+        <Transformer
+          ref={transformerRef}
+          flipEnabled={false}
+          enabledAnchors={
+            element.type === "shape-hexagon" ||
+            element.type === "shape-star" ||
+            element.type === "shape-triangle"
+              ? ["top-left", "top-right", "bottom-left", "bottom-right"]
+              : undefined
           }
-          return newBox;
-        }}
-      />
+          boundBoxFunc={(oldBox, newBox) => {
+            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+              return oldBox;
+            }
+            return newBox;
+          }}
+        />
+      )}
     </>
   );
 }

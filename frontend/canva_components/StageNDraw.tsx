@@ -123,9 +123,9 @@ function StageNDraw({
         cursor: `${selectedTool.startsWith("draw") ? "crosshair" : "default"}`,
       }}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleMouseDown}
       onMousemove={handleMouseMove}
       onMouseup={handleMouseUp}
-      onTouchStart={handleMouseDown}
       onTouchMove={handleMouseMove}
       onTouchEnd={handleMouseUp}
       width={stageSize.width}
