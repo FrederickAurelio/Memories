@@ -6,21 +6,34 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, InfoIcon } from "lucide-react";
+import { CalendarIcon, InfoIcon, SaveIcon } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button as ShadCnButton } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
+import Button from "@/app/_components/Button";
+import { updateCanvaPhotoInfo } from "@/app/_lib/canva/action";
+import { TbLoader2 } from "react-icons/tb";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Props = {
+  canvaId: string | undefined;
   canvaTitle: string | undefined;
   photoDescriptions: PhotoMetadata[];
   isSelectedId: string | null;
 };
 
-function DescForm({ canvaTitle, photoDescriptions, isSelectedId }: Props) {
+function DescForm({
+  canvaTitle,
+  photoDescriptions,
+  isSelectedId,
+  canvaId,
+}: Props) {
+  const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
   const [titleState, setTitlteState] = useState(canvaTitle);
   const [photoDescState, setPhotoDescState] = useState(photoDescriptions);
   const opt = [
@@ -42,11 +55,43 @@ function DescForm({ canvaTitle, photoDescriptions, isSelectedId }: Props) {
         ?.description,
     },
   ] as const;
+
+  async function handleSave() {
+    setIsPending(true);
+    const data = await updateCanvaPhotoInfo(
+      titleState,
+      photoDescState,
+      canvaId,
+    );
+    if (data?.success) {
+      toast.success(data.message);
+      setTimeout(() => {
+        router.push(`/app/canva/${canvaId}`);
+      }, 750);
+    } else toast.error(data?.message);
+    setIsPending(false);
+  }
   return (
     <>
-      <div className="mb-6 flex flex-col">
+      <div className="flex justify-center">
+        <Button
+          onClick={handleSave}
+          disabled={(titleState ? titleState.length <= 2 : true) || isPending}
+          className="mb-3 flex items-center justify-center gap-1 rounded-lg border-neutral-700 py-1 text-neutral-700 duration-75 hover:scale-x-100 hover:scale-y-100 hover:border-red-600 hover:text-red-600 disabled:opacity-50"
+          variant="secondary"
+          size="small"
+        >
+          {isPending ? (
+            <TbLoader2 size={28} className="animate-spin" />
+          ) : (
+            <SaveIcon size={28} />
+          )}
+          <p className="text-lg">{isPending ? "Saving..." : "Save"}</p>
+        </Button>
+      </div>
+      <div className="mb-4 flex flex-col">
         <label className="text-sm text-neutral-500" htmlFor="canvaTitle">
-          Canva Title
+          Canva Title (at least 3 char)
         </label>
         <input
           name="canvaTitle"
@@ -87,7 +132,7 @@ function DescForm({ canvaTitle, photoDescriptions, isSelectedId }: Props) {
                         else
                           return {
                             ...pd,
-                            [inp.id]: e.target.value,
+                            [inp.id]: e.target.value.slice(0, 60),
                           };
                       });
                     });
@@ -113,7 +158,7 @@ function DescForm({ canvaTitle, photoDescriptions, isSelectedId }: Props) {
                         else
                           return {
                             ...pd,
-                            [inp.id]: e.target.value,
+                            [inp.id]: e.target.value.slice(0, 350),
                           };
                       });
                     });
@@ -129,7 +174,7 @@ function DescForm({ canvaTitle, photoDescriptions, isSelectedId }: Props) {
                 </label>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button
+                    <ShadCnButton
                       variant={"outline"}
                       className={cn(
                         "w-full justify-start border-2 border-neutral-300 text-left font-normal",
@@ -142,7 +187,7 @@ function DescForm({ canvaTitle, photoDescriptions, isSelectedId }: Props) {
                       ) : (
                         <span>Pick a date</span>
                       )}
-                    </Button>
+                    </ShadCnButton>
                   </PopoverTrigger>
                   <PopoverContent side="right" className="w-auto p-0">
                     <Calendar

@@ -38,14 +38,18 @@ function EditDescPage({ canvaData }: Props) {
 
       return () => clearTimeout(timeout); // clean up
     }
+  }, [canvaData, router]);
+
+  useEffect(() => {
     toast.info(
       "Select a polaroid photo in the canvas to edit its information here.",
     );
-  }, [canvaData, router]);
+  }, []);
   return (
     <>
       <div className="flex h-full w-full flex-grow flex-col gap-3 py-4 pr-[14px]">
         <DescForm
+          canvaId={canvaData?.data?._id}
           isSelectedId={isSelectedId}
           canvaTitle={canvaData?.data?.title}
           photoDescriptions={canvaData?.data?.photoDescriptions || []}

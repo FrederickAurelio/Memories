@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { getCanva, saveCanva, updateCanva } from "../controller/camvaController";
+import {
+  getCanva,
+  saveCanva,
+  updateCanva,
+  updateCanvaPhotoInfo,
+} from "../controller/camvaController";
 import multer from "multer";
 import path from "path";
 
@@ -47,6 +52,6 @@ canvaRouter.post(
 canvaRouter.post("/", saveCanva);
 canvaRouter.get("/:canvaId", getCanva);
 canvaRouter.put("/:canvaId", updateCanva);
-
+canvaRouter.put("/edit-info/:canvaId", updateCanvaPhotoInfo);
 
 export default canvaRouter;

@@ -2,6 +2,7 @@
 import Button from "@/app/_components/Button";
 import { canvaInitialState, useElements } from "@/app/_context/ElementContext";
 import { saveCanvaDesign } from "@/app/_lib/canva/action";
+import { FetchResponse } from "@/app/_lib/types";
 import {
   Dialog,
   DialogContent,
@@ -12,11 +13,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SaveIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TbLoader2 } from "react-icons/tb";
 import { toast } from "sonner";
 
+type addOnRes = {
+  data: {
+    canvaId: string;
+  };
+};
+
 function SaveCanvaButton() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const {
     elements,
@@ -42,22 +51,33 @@ function SaveCanvaButton() {
     setIsPending(true);
 
     if (canva._id === "new") {
-      const saveResult = await saveCanvaDesign(canva.title, elements);
+      const saveResult = (await saveCanvaDesign(
+        canva.title,
+        elements,
+      )) as FetchResponse & addOnRes;
       if (saveResult?.success) {
         resetState();
         toast.success(saveResult.message);
+        setTimeout(
+          () => router.push(`/app/edit-info/${saveResult.data.canvaId}`),
+          500,
+        );
       } else {
         toast.error(saveResult?.message);
       }
     } else {
-      const updateResult = await saveCanvaDesign(
+      const updateResult = (await saveCanvaDesign(
         canva.title,
         elements,
         canva._id,
-      );
+      )) as FetchResponse & addOnRes;
       if (updateResult?.success) {
         resetState();
         toast.success(updateResult.message);
+        setTimeout(
+          () => router.push(`/app/edit-info/${updateResult.data.canvaId}`),
+          500,
+        );
       } else {
         if (
           updateResult?.message.includes("not found") ||
@@ -66,10 +86,17 @@ function SaveCanvaButton() {
           toast.error(
             "We couldn't find the design to update, so we've saved as a new one for you instead.",
           );
-          const result = await saveCanvaDesign(canva.title, elements);
+          const result = (await saveCanvaDesign(
+            canva.title,
+            elements,
+          )) as FetchResponse & addOnRes;
           if (result?.success) {
             resetState();
             toast.success(result.message);
+            setTimeout(
+              () => router.push(`/app/edit-info/${result.data.canvaId}`),
+              500,
+            );
           } else {
             toast.error(result?.message);
           }

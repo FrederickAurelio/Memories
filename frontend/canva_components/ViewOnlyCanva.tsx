@@ -66,7 +66,6 @@ function ViewOnlyCanva({
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
 
   function handleSelectElement(id: string | null) {
-    console.log(id);
     setIsSelectedId(id);
   }
 

@@ -7,7 +7,8 @@ import { base64ToFileWithName } from "../helpers";
 import {
   CanvaDataType,
   ElementType,
-  FetchResponse
+  FetchResponse,
+  PhotoMetadata,
 } from "../types";
 
 export async function saveCanvaDesign(
@@ -89,6 +90,45 @@ export async function saveCanvaDesign(
         }),
       },
     );
+    const data = (await response.json()) as FetchResponse & {
+      data: {
+        canvaId: string;
+      };
+    };
+    return data;
+  } catch (error) {
+    throw new Error(`Something's wrong: ${error}`);
+  }
+}
+
+export async function updateCanvaPhotoInfo(
+  canvaTitle: string | undefined,
+  photoDescriptions: PhotoMetadata[],
+  canvaId: string | undefined,
+) {
+  if (!canvaTitle || photoDescriptions.length <= 0 || !canvaId) return null;
+  try {
+    const cookieStore = await cookies();
+    const cookiesidValue = cookieStore.get("connect.sid");
+
+    const body = JSON.stringify({
+      title: canvaTitle,
+      photoDescriptions: photoDescriptions,
+    });
+
+    const response = await fetch(
+      `${BACKEND_BASE_URL}/api/canva/edit-info/${canvaId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `connect.sid=${cookiesidValue?.value}`,
+        },
+        credentials: "include",
+        body: body,
+      },
+    );
+
     const data = (await response.json()) as FetchResponse;
     return data;
   } catch (error) {

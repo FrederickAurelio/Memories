@@ -2,10 +2,9 @@ import { Request, Response } from "express";
 import path from "path";
 import { z } from "zod";
 import { errorHandlers } from "../helpers";
-import Canva, { CanvaType } from "../model/Canva";
-import { elementSchema } from "../types";
+import Canva from "../model/Canva";
 import User, { UserType } from "../model/User";
-import { Types } from "mongoose";
+import { elementSchema, PhotoMetadata } from "../types";
 
 const saveCanvaSchema = z.object({
   title: z
@@ -44,6 +43,9 @@ export async function saveCanva(req: Request, res: Response) {
       success: true,
       message: "Canva saved successfully!",
       errors: {},
+      data: {
+        canvaId: newCanva._id,
+      },
     });
   } catch (error: any) {
     const { errors, message } = errorHandlers(error);
@@ -104,6 +106,78 @@ export async function updateCanva(req: Request, res: Response) {
     return void res.status(200).json({
       success: true,
       message: "Canva update successfully!",
+      errors: {},
+      data: {
+        canvaId: canva._id,
+      },
+    });
+  } catch (error: any) {
+    const { errors, message } = errorHandlers(error);
+    const statusCode = message.includes("validation") ? 400 : 500;
+
+    return void res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: errors,
+    });
+  }
+}
+
+const updateCanvaPhotoInfoSchema = z.object({
+  title: z
+    .string()
+    .min(3, "Title must be at least 3 characters long.")
+    .max(60, "Title cannot exceed 60 characters."),
+  photoDescriptions: z.array(
+    z.object({
+      imageId: z.string(),
+      title: z.string().optional(),
+      date: z.string().nullable().optional(),
+      description: z.string().optional() || z.null(),
+    })
+  ),
+});
+export async function updateCanvaPhotoInfo(req: Request, res: Response) {
+  const userId = req.session.userId;
+  if (!userId)
+    return void res.status(401).json({
+      success: false,
+      message: `Not authorized!`,
+      errors: {},
+    });
+  const { canvaId } = req.params;
+  const data = req.body;
+
+  try {
+    const { title, photoDescriptions } = updateCanvaPhotoInfoSchema.parse(data);
+
+    const canva = await Canva.findById(canvaId);
+    if (!canva)
+      return void res.status(404).json({
+        success: false,
+        message: "Design with the specified ID was not found.",
+        errors: {},
+      });
+
+    if (canva.userId.toString() !== userId.toString())
+      return void res.status(401).json({
+        success: false,
+        message: "Access denied to this design.",
+        errors: {},
+      });
+
+    canva.title = title;
+    canva.photoDescriptions = canva.photoDescriptions.map((cpd) => {
+      return {
+        ...photoDescriptions.find((pd) => cpd.imageId === pd.imageId),
+        imageId: cpd.imageId,
+      };
+    }) as PhotoMetadata[];
+
+    await canva.save();
+    return void res.status(200).json({
+      success: true,
+      message: "Canva information update successfully!",
       errors: {},
     });
   } catch (error: any) {
