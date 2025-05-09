@@ -7,8 +7,7 @@ async function editDesc({ params }: { params: Promise<{ canvaId: string }> }) {
   const canvaData = await getCanvaForEditOnly(canvaId);
 
   return (
-    <div className="flex h-full w-full items-center">
-      <div className="flex h-full w-full bg-red-100">a</div>
+    <div className="flex h-full w-full items-center justify-between">
       <EditDescPage canvaData={canvaData} />
     </div>
   );

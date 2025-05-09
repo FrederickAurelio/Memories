@@ -48,15 +48,28 @@ import {
 } from "@/app/_lib/types";
 import Konva from "konva";
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Layer, Stage } from "react-konva";
 
-function ViewOnlyCanva({ elements }: { elements: ElementType[] }) {
-  const [isSelectedId, setIsSelectedId] = useState<null | string>(null);
+function ViewOnlyCanva({
+  elements,
+  isSelectedId,
+  setIsSelectedId,
+}: {
+  elements: ElementType[];
+  isSelectedId: string | null;
+  setIsSelectedId: Dispatch<SetStateAction<string | null>>;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
+
+  function handleSelectElement(id: string | null) {
+    console.log(id);
+    setIsSelectedId(id);
+  }
+
   useEffect(() => {
     function updateSize() {
       if (containerRef.current) {
@@ -89,6 +102,9 @@ function ViewOnlyCanva({ elements }: { elements: ElementType[] }) {
             if (e.type === "photo")
               return (
                 <ViewOnlyPhotoImage
+                  mode="edit"
+                  isSelectedId={isSelectedId}
+                  handleSelectElement={handleSelectElement}
                   key={e.id}
                   element={e as PhotoElementType}
                 />

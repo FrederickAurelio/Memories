@@ -1,12 +1,10 @@
 "use client";
-import {
-  CanvaDataType,
-  FetchResponse
-} from "@/app/_lib/types";
+import { CanvaDataType, FetchResponse } from "@/app/_lib/types";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import DescForm from "./DescForm";
 
 const ViewOnlyCanva = dynamic(
   () => import("@/canva_components/ViewOnlyCanva"),
@@ -20,6 +18,7 @@ type Props = {
 };
 
 function EditDescPage({ canvaData }: Props) {
+  const [isSelectedId, setIsSelectedId] = useState<null | string>(null);
   const router = useRouter();
   useEffect(() => {
     if (!canvaData?.success) {
@@ -39,15 +38,30 @@ function EditDescPage({ canvaData }: Props) {
 
       return () => clearTimeout(timeout); // clean up
     }
+    toast.info(
+      "Select a polaroid photo in the canvas to edit its information here.",
+    );
   }, [canvaData, router]);
   return (
-    <div className="relative w-fit">
-      <div
-        className={`aspect-video w-[1200] bg-white shadow-[0_1px_20px_rgba(38,38,38,0.20)]`}
-      >
-        <ViewOnlyCanva elements={canvaData?.data?.elements || []} />
+    <>
+      <div className="flex h-full w-full flex-grow flex-col gap-3 py-4 pr-[14px]">
+        <DescForm
+          isSelectedId={isSelectedId}
+          canvaTitle={canvaData?.data?.title}
+          photoDescriptions={canvaData?.data?.photoDescriptions || []}
+        />
       </div>
-    </div>
+
+      <div
+        className={`aspect-video w-[1200] flex-shrink-0 bg-white shadow-[0_1px_20px_rgba(38,38,38,0.20)]`}
+      >
+        <ViewOnlyCanva
+          isSelectedId={isSelectedId}
+          setIsSelectedId={setIsSelectedId}
+          elements={canvaData?.data?.elements || []}
+        />
+      </div>
+    </>
   );
 }
 
