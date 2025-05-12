@@ -1,7 +1,8 @@
 "use client";
 
+import { format } from "date-fns";
 import { imageMargin, imageMarginBot } from "@/app/_lib/const";
-import { PhotoElementType } from "@/app/_lib/types";
+import { PhotoElementType, PhotoMetadata } from "@/app/_lib/types";
 import {
   HoverCard,
   HoverCardContent,
@@ -13,6 +14,7 @@ import { Html } from "react-konva-utils";
 import useImage from "use-image";
 
 type Props = {
+  photoDescription?: PhotoMetadata;
   element: PhotoElementType;
   isSelectedId: string | null;
   handleSelectElement: (elementId: string | null) => void;
@@ -20,6 +22,7 @@ type Props = {
 };
 
 function PhotoImage({
+  photoDescription,
   element,
   isSelectedId,
   handleSelectElement,
@@ -98,7 +101,7 @@ function PhotoImage({
         />
       </Group>
 
-      {mode === "view" && (
+      {mode === "view" && photoDescription && (
         <Html>
           <div
             style={{
@@ -125,8 +128,24 @@ function PhotoImage({
                   }}
                 ></div>
               </HoverCardTrigger>
-              <HoverCardContent className="z-30">
-                <h1></h1>
+              <HoverCardContent
+                side="right"
+                className="z-30 w-64 rounded-xl p-4 shadow-lg"
+              >
+                <div className="flex flex-col gap-1">
+                  <h1 className="text-base font-semibold text-neutral-800">
+                    {photoDescription?.title || "Untitled Photo"}
+                  </h1>
+                  <p className="text-justify text-sm leading-tight text-neutral-700">
+                    {photoDescription?.description ||
+                      "No description provided for this photo."}
+                  </p>
+                  <p className="mt-1 text-xs text-neutral-500">
+                    {photoDescription?.date
+                      ? format(photoDescription.date, "PPP")
+                      : "Date not specified"}
+                  </p>
+                </div>
               </HoverCardContent>
             </HoverCard>
           </div>
