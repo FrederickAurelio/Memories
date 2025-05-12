@@ -16,7 +16,7 @@ import useImage from "use-image";
 type Props = {
   photoDescription?: PhotoMetadata;
   element: PhotoElementType;
-  isSelectedId: string | null;
+  isSelectedId: string | null | undefined;
   handleSelectElement: (elementId: string | null) => void;
   mode: "edit" | "view";
 };
@@ -140,7 +140,7 @@ function PhotoImage({
                     {photoDescription?.description ||
                       "No description provided for this photo."}
                   </p>
-                  <p className="mt-1 text-xs text-neutral-500">
+                  <p className="mt-1 text-sm text-neutral-500">
                     {photoDescription?.date
                       ? format(photoDescription.date, "PPP")
                       : "Date not specified"}

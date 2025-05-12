@@ -41,6 +41,7 @@ import {
   ElementType,
   LineRopeElementType,
   PhotoElementType,
+  PhotoMetadata,
   ShapeElementType,
   SplineRopeElementType,
   StickerElementType,
@@ -52,15 +53,17 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Layer, Stage } from "react-konva";
 
 function ViewOnlyCanva({
+  photoDescriptions,
   photoImageMode,
   elements,
   isSelectedId,
   setIsSelectedId,
 }: {
+  photoDescriptions?: PhotoMetadata[];
   photoImageMode: "view" | "edit";
   elements: ElementType[];
-  isSelectedId: string | null;
-  setIsSelectedId: Dispatch<SetStateAction<string | null>>;
+  isSelectedId?: string | null;
+  setIsSelectedId?: Dispatch<SetStateAction<string | null>>;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
@@ -68,7 +71,7 @@ function ViewOnlyCanva({
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
 
   function handleSelectElement(id: string | null) {
-    setIsSelectedId(id);
+    if (setIsSelectedId) setIsSelectedId(id);
   }
 
   useEffect(() => {
@@ -87,12 +90,14 @@ function ViewOnlyCanva({
     <div ref={containerRef} className="flex h-full w-full">
       <Stage
         onMouseDown={(e) => {
+          if (photoImageMode !== "edit") return;
           const clickedOnEmpty = e.target === e.target.getStage();
-          if (clickedOnEmpty) setIsSelectedId(null);
+          if (clickedOnEmpty && setIsSelectedId) setIsSelectedId(null);
         }}
         onTouchStart={(e) => {
+          if (photoImageMode !== "edit") return;
           const clickedOnEmpty = e.target === e.target.getStage();
-          if (clickedOnEmpty) setIsSelectedId(null);
+          if (clickedOnEmpty && setIsSelectedId) setIsSelectedId(null);
         }}
         width={stageSize.width}
         height={stageSize.height}
@@ -103,6 +108,9 @@ function ViewOnlyCanva({
             if (e.type === "photo")
               return (
                 <ViewOnlyPhotoImage
+                  photoDescription={photoDescriptions?.find(
+                    (pd) => pd.imageId === e.id,
+                  )}
                   mode={photoImageMode}
                   isSelectedId={isSelectedId}
                   handleSelectElement={handleSelectElement}
