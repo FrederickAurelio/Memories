@@ -52,10 +52,12 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Layer, Stage } from "react-konva";
 
 function ViewOnlyCanva({
+  photoImageMode,
   elements,
   isSelectedId,
   setIsSelectedId,
 }: {
+  photoImageMode: "view" | "edit";
   elements: ElementType[];
   isSelectedId: string | null;
   setIsSelectedId: Dispatch<SetStateAction<string | null>>;
@@ -101,7 +103,7 @@ function ViewOnlyCanva({
             if (e.type === "photo")
               return (
                 <ViewOnlyPhotoImage
-                  mode="edit"
+                  mode={photoImageMode}
                   isSelectedId={isSelectedId}
                   handleSelectElement={handleSelectElement}
                   key={e.id}

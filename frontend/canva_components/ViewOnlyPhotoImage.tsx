@@ -2,8 +2,14 @@
 
 import { imageMargin, imageMarginBot } from "@/app/_lib/const";
 import { PhotoElementType } from "@/app/_lib/types";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { memo, useState } from "react";
 import { Group, Image, Rect } from "react-konva";
+import { Html } from "react-konva-utils";
 import useImage from "use-image";
 
 type Props = {
@@ -24,20 +30,27 @@ function PhotoImage({
     `${element.src.startsWith("data:image/") ? element.src : `/api/${element.src}`}`,
     "use-credentials",
   );
-
   return (
     <>
       <Group
-        onMouseEnter={(e) => {
-          const container = e.target.getStage()?.container();
-          if (container) container.style.cursor = "pointer";
-          setIsHovering(true);
-        }}
-        onMouseLeave={(e) => {
-          const container = e.target.getStage()?.container();
-          if (container) container.style.cursor = "default";
-          setIsHovering(false);
-        }}
+        onMouseEnter={
+          mode === "edit"
+            ? (e) => {
+                const container = e.target.getStage()?.container();
+                if (container) container.style.cursor = "pointer";
+                setIsHovering(true);
+              }
+            : undefined
+        }
+        onMouseLeave={
+          mode === "edit"
+            ? (e) => {
+                const container = e.target.getStage()?.container();
+                if (container) container.style.cursor = "pointer";
+                setIsHovering(false);
+              }
+            : undefined
+        }
         id={element.id}
         name="object"
         width={element.width}
@@ -84,6 +97,41 @@ function PhotoImage({
           image={imageDOM}
         />
       </Group>
+
+      {mode === "view" && (
+        <Html>
+          <div
+            style={{
+              position: "absolute",
+              top: element.y,
+              left: element.x,
+              pointerEvents: "auto", // important so you can interact
+              zIndex: 100,
+            }}
+          >
+            <HoverCard
+              open={isHovering}
+              onOpenChange={(o) => {
+                setIsHovering(o);
+              }}
+              openDelay={0}
+              closeDelay={100}
+            >
+              <HoverCardTrigger className="z-30">
+                <div
+                  style={{
+                    width: element.width,
+                    height: element.height,
+                  }}
+                ></div>
+              </HoverCardTrigger>
+              <HoverCardContent className="z-30">
+                <h1></h1>
+              </HoverCardContent>
+            </HoverCard>
+          </div>
+        </Html>
+      )}
     </>
   );
 }

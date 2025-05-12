@@ -60,6 +60,7 @@ function EditDescPage({ canvaData }: Props) {
         className={`aspect-video w-[1200] flex-shrink-0 bg-white shadow-[0_1px_20px_rgba(38,38,38,0.20)]`}
       >
         <ViewOnlyCanva
+          photoImageMode={"edit"}
           isSelectedId={isSelectedId}
           setIsSelectedId={setIsSelectedId}
           elements={canvaData?.data?.elements || []}
