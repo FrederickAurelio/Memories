@@ -5,6 +5,7 @@ import { errorHandlers } from "../helpers";
 import Canva from "../model/Canva";
 import User, { UserType } from "../model/User";
 import { elementSchema, PhotoMetadata } from "../types";
+import Friend from "../model/Friend";
 
 const saveCanvaSchema = z.object({
   title: z
@@ -214,13 +215,26 @@ export async function getCanva(req: Request, res: Response) {
       });
 
     if (!canva.userId.isPublicProfile) {
-      // in here need to add || include friends (are you a friend?)
-      if (canva.userId._id.toString() !== userId.toString())
-        return void res.status(401).json({
-          success: false,
-          message: "Access denied to this design.",
-          errors: {},
-        });
+      const isFriend = await Friend.findOne({
+        status: "accepted",
+        $or: [
+          { recipientId: userId, requesterId: canva.userId._id },
+          { recipientId: canva.userId._id, requesterId: userId },
+        ],
+      });
+      if (!isFriend) {
+        if (canva.userId._id.toString() !== userId.toString())
+          return void res.status(401).json({
+            success: false,
+            message: "Access denied to this design.",
+            errors: {},
+            data: {
+              userId: {
+                _id: canva.userId._id,
+              },
+            },
+          });
+      }
     }
 
     return void res.status(200).json({
@@ -263,13 +277,21 @@ export async function getImage(req: Request, res: Response) {
   }
 
   if (!imageOwner.isPublicProfile) {
-    // in here need to add || include friends (are you a friend?)
-    if (imageOwnerId !== userId.toString()) {
-      return void res.status(401).json({
-        success: false,
-        message: `Not authorized!`,
-        errors: {},
-      });
+    const isFriend = await Friend.findOne({
+      status: "accepted",
+      $or: [
+        { recipientId: userId, requesterId: imageOwner._id },
+        { recipientId: imageOwner._id, requesterId: userId },
+      ],
+    });
+    if (!isFriend) {
+      if (imageOwnerId !== userId.toString()) {
+        return void res.status(401).json({
+          success: false,
+          message: `Not authorized!`,
+          errors: {},
+        });
+      }
     }
   }
 
